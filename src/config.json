@@ -1,0 +1,8 @@
+{
+    "custom tag&deck string 1": "xx",
+    "custom tag&deck string 2": "all:",
+    "modify_tag": true,
+    "modify_note": true,
+    "modify_card": true,
+    "modify_deck": true
+} 
