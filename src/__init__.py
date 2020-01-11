@@ -68,11 +68,11 @@ def onSearchEditTextChange(self, arg):
             alltags = ["tag:" + t for t in self.mw.col.tags.all()]
             decks = ["deck:" + d  for d in sorted(self.col.decks.allNames())]
             vals = (-len(c1), True, alltags + decks)
-    elif c2:
-        if arg[-len(c2):] == c2:
-            alltags = ["tag:" + t for t in self.mw.col.tags.all()]
-            decks = ["deck:" + d  for d in sorted(self.col.decks.allNames())]
-            vals = (-len(c2), True, alltags + decks)
+        elif c2:
+            if arg[-len(c2):] == c2:
+                alltags = ["tag:" + t for t in self.mw.col.tags.all()]
+                decks = ["deck:" + d  for d in sorted(self.col.decks.allNames())]
+                vals = (-len(c2), True, alltags + decks)
     if vals:
         d = FilterDialog(parent=self, values=vals[2])
         if d.exec():
