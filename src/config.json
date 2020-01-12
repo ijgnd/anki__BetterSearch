@@ -1,8 +1,14 @@
 {
     "custom tag&deck string 1": "xx",
     "custom tag&deck string 2": "all:",
-    "modify_tag": true,
-    "modify_note": true,
     "modify_card": true,
-    "modify_deck": true
+    "modify_deck": true,
+    "modify_note": true,
+    "modify_tag": true,
+    "shortcut - focus search box and card selector dialog": "Ctrl+H, c",
+    "shortcut - focus search box and note selector dialog": "Ctrl+H, n",
+    "shortcut - focus search box and tag selector dialog": "Ctrl+H, t",
+    "shortcut - focus search box and tag/deck selector dialog": "Ctrl+H, m",
+    "shortcut - focus search box and deck selector dialog": "Ctrl+H, d",
+    "shortcuts trigger search by default": true
 } 
