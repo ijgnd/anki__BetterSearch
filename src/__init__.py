@@ -36,6 +36,13 @@ def gc(arg, fail=False):
         return fail
 
 
+night_mode_on = False
+def refresh_night_mode_state(nm_state):
+    global night_mode_on
+    night_mode_on = nm_state
+addHook("night_mode_state_changed", refresh_night_mode_state)
+
+
 def mysearch(self):
     self.form.searchEdit.editTextChanged.connect(self.onSearchEditTextChange)
 Browser.setupSearch = wrap(Browser.setupSearch,mysearch)
@@ -76,7 +83,7 @@ def onSearchEditTextChange(self, arg):
             decks = ["deck:" + d  for d in sorted(self.col.decks.allNames())]
             vals = (-len(c2), 0, True, alltags + decks)
     if vals:
-        d = FilterDialog(parent=self, values=vals[3])
+        d = FilterDialog(parent=self, values=vals[3], nm=night_mode_on)
         if d.exec():
             if not vals[0]:
                 t = le.text()
@@ -94,12 +101,59 @@ def onSearchEditTextChange(self, arg):
 Browser.onSearchEditTextChange = onSearchEditTextChange
 
 
-def insert_helper(self, val):
-    l = self.form.searchEdit.lineEdit()
-    if l.text() == self._searchPrompt:
-        l.setText(val)
-    else:
-        l.setText(l.text() + val)
+# doesn't work: when I press cancel the dialog is opened once more and if I cancel val remains
+# in the search bar
+# def insert_helper(self, val):
+#     l = self.form.searchEdit.lineEdit()
+#     if l.text() == self._searchPrompt:
+#         l.setText(val)
+#     else:
+#         l.setText(l.text() + val)
+#     mod = self.mw.app.keyboardModifiers() & Qt.ShiftModifier
+#     if gc("shortcuts trigger search by default"):
+#         if not mod:
+#             self.onSearchActivated()
+#     else:
+#         if mod:
+#             self.onSearchActivated()
+
+
+def insert_helper(self, arg):
+    le = self.form.searchEdit.lineEdit()
+    # vals = (insert arg into searchboxstring, 
+    #         UseFilterDialogKey(False means Value),
+    #         ListForFilterDialog)
+    if arg == "tag:":
+        vals = (True, True, self.col.tags.all())
+    elif arg == "note:":
+        vals = (True, True, self.col.models.allNames())
+    elif arg == "card:":
+        d = {}
+        for m in self.col.models.all():
+            modelname = m['name']
+            for t in m['tmpls']:
+                d[t['name'] + " (" + modelname + ")"] = t['name']
+        vals = (True, False, d)
+    elif arg == "deck:":
+        vals = (True, True, sorted(self.col.decks.allNames()))
+    elif arg == "xx":
+        alltags = ["tag:" + t for t in self.mw.col.tags.all()]
+        decks = ["deck:" + d  for d in sorted(self.col.decks.allNames())]
+        vals = (False, True, alltags + decks)
+    d = FilterDialog(parent=self, values=vals[2], nm=night_mode_on)
+    if d.exec():
+        t = le.text()
+        # clear preset text if necessary
+        if t == self._searchPrompt:
+            t = ""
+        if vals[1]:
+            sel = d.selkey
+        else:
+            sel = d.selvalue
+        if vals[0]:
+            le.setText(t + "  " + arg + '"' + sel + '"')
+        else:
+            le.setText(t + "  " +       '"' + sel + '"')       
     mod = self.mw.app.keyboardModifiers() & Qt.ShiftModifier
     if gc("shortcuts trigger search by default"):
         if not mod:
@@ -125,7 +179,7 @@ def setupMenu(browser):
     c4 = gc("shortcut - focus search box and tag/deck selector dialog")
     if c4:
         d = QShortcut(QKeySequence(c4), browser)
-        d.activated.connect(lambda b=browser: insert_helper(b, gc("custom tag&deck string 1", "xx")))
+        d.activated.connect(lambda b=browser: insert_helper(b, "xx"))
     c5 = gc("shortcut - focus search box and deck selector dialog")
     if c5:
         e = QShortcut(QKeySequence(c5), browser)

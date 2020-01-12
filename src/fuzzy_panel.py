@@ -41,8 +41,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 # from PyQt5.QtCore import *
 # from PyQt5.QtGui import *
 # from PyQt5.QtWidgets import *
+from aqt import mw
 from aqt.qt import *
-from aqt.utils import tooltip
+from aqt.utils import tooltip, restoreGeom, saveGeom
+
+
 
 
 class PanelInputLine(QLineEdit):
@@ -51,22 +54,28 @@ class PanelInputLine(QLineEdit):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setStyleSheet('background-color:#ffffff')
 
     def keyPressEvent(self, event):
         super().keyPressEvent(event)
+        mod = mw.app.keyboardModifiers() & Qt.ControlModifier
         key = event.key()
         if key == Qt.Key_Down:
             self.down_pressed.emit()
         elif key == Qt.Key_Up:
             self.up_pressed.emit()
-
+        elif mod and (key == Qt.Key_N):
+            self.down_pressed.emit()
+        elif mod and (key == Qt.Key_P):
+            self.up_pressed.emit()
+        elif mod and (key == Qt.Key_H):
+            self.up_pressed.emit()
 
 class FilterDialog(QDialog):
-    def __init__(self, parent=None, values=None, windowtitle="", max_items=2000, prefill=""):
+    def __init__(self, parent=None, values=None, windowtitle="", max_items=2000, prefill="", nm=False):
         super().__init__(parent)
         self.parent = parent
         self.max_items = max_items
+        self.night_mode_on = nm
         self.setObjectName("FilterDialog")
         if windowtitle:
             self.setWindowTitle(windowtitle)
@@ -94,14 +103,51 @@ class FilterDialog(QDialog):
         vlay.addWidget(self.buttonbox)
         # self.buttonbox.accepted.disconnect(self.accept)
         #   leads to: TypeError: disconnect() failed between 'accepted' and 'accept'
-        self.buttonbox.accepted.connect(self.onAccept)
+        self.buttonbox.accepted.connect(self.accept)
         self.buttonbox.rejected.connect(self.reject)
         self.update_listbox()
         self.setLayout(vlay)
-        self.setMinimumWidth(1000)
+        self.resize(800, 350)
+        restoreGeom(self, "BrowserSearchInserterFP")
         self.list_box.setAlternatingRowColors(True)
 
         # style
+        if self.night_mode_on:
+            listWid_sel_bg = "#dfffbb"
+            listWid_sel_border = "#fcea20"
+            listWid_bg = "#272828"
+            listWid_bg_alt = "#808383"
+            listWid_selectedcolor = "#d7d7d7"
+            le_bg =  "#272828"
+            le_bordercolor = "#a8a8a8"
+        else:
+            listWid_sel_bg = "lightblue"
+            listWid_sel_border = "#ff5918"
+            listWid_bg = "#f0f0f0"
+            listWid_bg_alt = "#E0E0E0"
+            listWid_selectedcolor = "black"
+            le_bg = "#f0f0f0"
+            le_bordercolor = "#3265a8"
+        # setting the font size for item:selected via stylesheet doesn't work for me in 2020-01
+        # https://doc.qt.io/qt-5/richtext-html-subset.html
+        # these didn't help: font-size: 20pt;  // doesn't work  20pt; 12pt; x-large - 
+        if self.night_mode_on:
+            self.setStyleSheet(f""" QListWidget{{
+                                    background: {listWid_bg};
+                                }}
+                                QListWidget:item:alternate {{
+                                    background: {listWid_bg_alt};
+                                }}  
+                                QListWidget:item:selected{{
+                                    border: 1px solid {listWid_sel_border};
+                                    color: {listWid_selectedcolor};
+                                }}
+                                QLineEdit {{
+                                    background-color: {le_bg};
+                                    border: 1px solid {le_bordercolor};
+                                }}             
+                                """
+                           )
         '''
         self.setStyleSheet(""" QListWidget:item:selected{
                                     background: lightblue;
@@ -131,14 +177,19 @@ class FilterDialog(QDialog):
         self.list_box.installEventFilter(self)
         self.input_line.setFocus()
 
-    def onAccept(self):
+    def reject(self):
+        saveGeom(self, "BrowserSearchInserterFP")
+        QDialog.reject(self)
+
+    def accept(self):
+        saveGeom(self, "BrowserSearchInserterFP")
         row = self.list_box.currentRow()
         if len(self.fuzzy_items) > 0:
             row = self.list_box.currentRow()
             self.selkey = self.fuzzy_items[row]
             if self.dict:
                 self.selvalue = self.dict[self.selkey]
-            self.accept()
+            QDialog.accept(self)
         else:
             tooltip('nothing selected. Aborting ...')
             return
@@ -181,10 +232,10 @@ class FilterDialog(QDialog):
             self.list_box.setCurrentRow(row + 1)
 
     def return_pressed(self):
-        self.onAccept()
+        self.accept()
 
     def item_doubleclicked(self):
-        self.onAccept()
+        self.accept()
 
     def eventFilter(self, watched, event):
         if event.type() == QEvent.KeyPress and event.matches(QKeySequence.InsertParagraphSeparator):
