@@ -85,6 +85,8 @@ def onSearchEditTextChange(self, arg):
     if vals:
         d = FilterDialog(parent=self, values=vals[3], nm=night_mode_on)
         if d.exec():
+            shiftmod = self.mw.app.keyboardModifiers() & Qt.ShiftModifier
+            ctrlmod = self.mw.app.keyboardModifiers() & Qt.ControlModifier
             if not vals[0]:
                 t = le.text()
                 n = vals[1]
@@ -94,10 +96,22 @@ def onSearchEditTextChange(self, arg):
             else:
                 b = le.text()[:vals[0]]
             if vals[2]:
-                i = d.selkey
+                sel = d.selkey
             else:
-                i = d.selvalue
-            le.setText(b + '"' + i + '"')
+                sel = d.selvalue
+            # maybe add '*' to match other deeper nested hierarchical tags
+            if arg[-4:] == "tag:":
+                if gc("tag insertion - add '*' to matches") == "all" and not ctrlmod:
+                    sel = sel + '*'
+                elif gc("tag insertion - add '*' to matches") == "if_has_subtags" and not ctrlmod:
+                    other_subtags_matched = []
+                    selplus = sel + "::"
+                    for e in vals[3]:
+                        if e.startswith(selplus):
+                            other_subtags_matched.append(e)
+                    if other_subtags_matched:
+                        sel = sel + '*'
+            le.setText(b + '"' + sel + '"')
 Browser.onSearchEditTextChange = onSearchEditTextChange
 
 
@@ -142,6 +156,8 @@ def insert_helper(self, arg):
         vals = (False, True, alltags + decks)
     d = FilterDialog(parent=self, values=vals[2], nm=night_mode_on)
     if d.exec():
+        shiftmod = self.mw.app.keyboardModifiers() & Qt.ShiftModifier
+        ctrlmod = self.mw.app.keyboardModifiers() & Qt.ControlModifier
         t = le.text()
         # clear preset text if necessary
         if t == self._searchPrompt:
@@ -150,17 +166,30 @@ def insert_helper(self, arg):
             sel = d.selkey
         else:
             sel = d.selvalue
+        # maybe add '*' to match other deeper nested hierarchical tags
+        if arg == "tag:":
+            if gc("tag insertion - add '*' to matches") == "all" and not ctrlmod:
+                sel = sel + '*'
+            elif gc("tag insertion - add '*' to matches") == "if_has_subtags" and not ctrlmod:
+                other_subtags_matched = []
+                selplus = sel + "::"
+                for e in vals[2]:
+                    if e.startswith(selplus):
+                        other_subtags_matched.append(e)
+                if other_subtags_matched:
+                    sel = sel + '*'
         if vals[0]:
-            le.setText(t + "  " + arg + '"' + sel + '"')
+            nt = t + "  " + arg + '"' + sel + '"'
         else:
-            le.setText(t + "  " +       '"' + sel + '"')       
-    mod = self.mw.app.keyboardModifiers() & Qt.ShiftModifier
-    if gc("shortcuts trigger search by default"):
-        if not mod:
-            self.onSearchActivated()
-    else:
-        if mod:
-            self.onSearchActivated()
+            nt = t + "  " +       '"' + sel + '"'        
+        le.setText(nt)
+        # shiftmod toggle default search trigger setting 
+        if gc("shortcuts trigger search by default"):
+            if not shiftmod:
+                self.onSearchActivated()
+        else:
+            if shiftmod:
+                self.onSearchActivated()
 
 
 def setupMenu(browser):

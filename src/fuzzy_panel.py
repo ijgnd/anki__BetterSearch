@@ -71,7 +71,7 @@ class PanelInputLine(QLineEdit):
             self.up_pressed.emit()
 
 class FilterDialog(QDialog):
-    def __init__(self, parent=None, values=None, windowtitle="", max_items=2000, prefill="", nm=False):
+    def __init__(self, parent=None, values=None, windowtitle="", max_items=10000, prefill="", nm=False):
         super().__init__(parent)
         self.parent = parent
         self.max_items = max_items
