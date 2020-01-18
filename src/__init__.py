@@ -204,6 +204,7 @@ def insert_helper(self, arg):
     if d.exec():
         shiftmod = self.mw.app.keyboardModifiers() & Qt.ShiftModifier
         ctrlmod = self.mw.app.keyboardModifiers() & Qt.ControlModifier
+        altmod = self.mw.app.keyboardModifiers() & Qt.AltModifier
         t = le.text()
         # clear preset text if necessary
         if t == self._searchPrompt:
@@ -224,10 +225,14 @@ def insert_helper(self, arg):
                         other_subtags_matched.append(e)
                 if other_subtags_matched:
                     sel = sel + '*'
-        if vals[0]:
-            nt = t + "  " + arg + '"' + sel + '"'
+        if altmod:
+            neg = "-"
         else:
-            nt = t + "  " +       '"' + sel + '"'        
+            neg = ""
+        if vals[0]:
+            nt = t + "  " + neg + arg + '"' + sel + '"'
+        else:
+            nt = t + "  " + neg +       '"' + sel + '"'
         le.setText(nt)
         # shiftmod toggle default search trigger setting 
         if gc("shortcuts trigger search by default"):
