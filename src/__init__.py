@@ -20,26 +20,68 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from anki.hooks import wrap, addHook
 
-from aqt import mw
+import aqt
 from aqt.browser import Browser
 from aqt.qt import *
-from aqt.utils import getText
+from aqt.utils import getText, showCritical
 
 from .fuzzy_panel import FilterDialog
 
 
 def gc(arg, fail=False):
-    conf = mw.addonManager.getConfig(__name__)
+    conf = aqt.mw.addonManager.getConfig(__name__)
     if conf:
         return conf.get(arg, fail)
     else:
         return fail
 
 
+tup = None
+def check_for_advancedBrowser():
+    global tup
+    try:
+        __import__("874215009").advancedbrowser.core.AdvancedBrowser
+    except:
+        tup = Browser
+    else:
+        tup = (AdvancedBrowser, Browser)
+addHook("profileLoaded", check_for_advancedBrowser)
+
+
+def warn_on_night_mode_change():
+    # add-on "Opening the same window multiple time"
+    try:
+        aqt.dialogs._openDialogs
+    except:
+        addon = False
+    else:
+        addon = True
+
+    if addon:
+        browsers = []
+        for e in aqt.dialogs._openDialogs:
+            if isinstance(e, tup):
+                browsers.append(e)
+    else:
+        if aqt.dialogs._dialogs["Browser"][1]:
+            browsers = True
+        else:
+            browsers = False
+
+    if browsers:
+        t = ("You changed the night mode state while a Browser window is open. Close all Browser "
+             "windows and reopen them. Otherwise the dialog of the add-on 'Browser Search Box: "
+             "Quick Insert Tag, Deck, Notetype' will have broken colors.")
+        showCritical(t)
+
+
 night_mode_on = False
 def refresh_night_mode_state(nm_state):
     global night_mode_on
+    prior = night_mode_on
     night_mode_on = nm_state
+    if nm_state != prior:
+        warn_on_night_mode_change()
 addHook("night_mode_state_changed", refresh_night_mode_state)
 
 
