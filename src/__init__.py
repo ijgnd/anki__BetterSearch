@@ -40,11 +40,11 @@ tup = None
 def check_for_advancedBrowser():
     global tup
     try:
-        __import__("874215009").advancedbrowser.core.AdvancedBrowser
+        a = __import__("874215009").advancedbrowser.core.AdvancedBrowser
     except:
         tup = Browser
-    else:
-        tup = (AdvancedBrowser, Browser)
+    else: 
+        tup = (a, Browser)
 addHook("profileLoaded", check_for_advancedBrowser)
 
 
