@@ -134,7 +134,11 @@ def onSearchEditTextChange(self, arg):
                 n = vals[1]
                 # multiple runs of insert_helper are still separated by spaces and in other 
                 # situations this makes the search more readable
-                b = t[:n] + " " + t[n:]  
+                # make sure that "-" remains in front of terms like deck
+                if len(t[:n]) > 0 and t[:n][-1] == "-":
+                    b = t[:n-1] + "  -" + t[n:]
+                else:
+                    b = t[:n] + "  " + t[n:]  
             else:
                 b = le.text()[:vals[0]]
             if vals[2]:
