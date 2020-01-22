@@ -117,7 +117,7 @@ class FilterDialog(QDialog):
             listWid_sel_border = "#fcea20"
             listWid_bg = "#272828"
             listWid_bg_alt = "#808383"
-            listWid_selectedcolor = "#d7d7d7"
+            color = "#d7d7d7"
             le_bg =  "#272828"
             le_bordercolor = "#a8a8a8"
         else:
@@ -125,24 +125,28 @@ class FilterDialog(QDialog):
             listWid_sel_border = "#ff5918"
             listWid_bg = "#f0f0f0"
             listWid_bg_alt = "#E0E0E0"
-            listWid_selectedcolor = "black"
+            color = "black"
             le_bg = "#f0f0f0"
             le_bordercolor = "#3265a8"
         # setting the font size for item:selected via stylesheet doesn't work for me in 2020-01
         # https://doc.qt.io/qt-5/richtext-html-subset.html
         # these didn't help: font-size: 20pt;  // doesn't work  20pt; 12pt; x-large - 
         if self.night_mode_on:
-            self.setStyleSheet(f""" QListWidget{{
+            self.setStyleSheet(f""" 
+                                QListWidget{{
                                     background: {listWid_bg};
+                                    color: {color};
                                 }}
                                 QListWidget:item:alternate {{
                                     background: {listWid_bg_alt};
+                                    color: {color};
                                 }}  
                                 QListWidget:item:selected{{
                                     border: 1px solid {listWid_sel_border};
-                                    color: {listWid_selectedcolor};
+                                    color: {color};
                                 }}
                                 QLineEdit {{
+                                    color: {color};
                                     background-color: {le_bg};
                                     border: 1px solid {le_bordercolor};
                                 }}             
