@@ -161,7 +161,15 @@ def onSearchEditTextChange(self, arg):
                             other_subtags_matched.append(e)
                     if other_subtags_matched:
                         sel = sel + '*'
+            # ugly fix for xx etc.
+            if (c1 and arg[-len(c1):] == c1) or (c2 and arg[-len(c2):] == c2):
+                if gc("tag insertion - add '*' to matches") == "all" and not ctrlmod:
+                    sel = sel + '*'
+            if arg[-5:] == "deck:" and gc("modify_deck"):
+                 if not ctrlmod:
+                     sel = sel + '*'
             le.setText(b + '"' + sel + '"')
+
 Browser.onSearchEditTextChange = onSearchEditTextChange
 
 
