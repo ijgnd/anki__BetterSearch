@@ -71,11 +71,12 @@ class PanelInputLine(QLineEdit):
             self.up_pressed.emit()
 
 class FilterDialog(QDialog):
-    def __init__(self, parent=None, values=None, windowtitle="", max_items=10000, prefill="", nm=False):
+    def __init__(self, parent=None, values=None, windowtitle="", max_items=10000, prefill="", nm=False, adjPos=False):
         super().__init__(parent)
         self.parent = parent
         self.max_items = max_items
         self.night_mode_on = nm
+        self.adjustposition = adjPos
         self.setObjectName("FilterDialog")
         if windowtitle:
             self.setWindowTitle(windowtitle)
@@ -87,6 +88,8 @@ class FilterDialog(QDialog):
             self.keys = sorted(values)
         self.fuzzy_items = self.keys[:max_items]
         self.initUI()
+        if self.adjustposition:
+            self.move()
         if prefill:
             self.input_line.setText(prefill)
 
@@ -180,6 +183,21 @@ class FilterDialog(QDialog):
         self.list_box.itemDoubleClicked.connect(self.item_doubleclicked)
         self.list_box.installEventFilter(self)
         self.input_line.setFocus()
+
+    def move(self):
+        sbar = self.parent.sidebarDockWidget
+        line = self.parent.form.searchEdit.lineEdit()
+        # line.cursor() refers to mouse position
+        cursor = line.cursorPosition()
+        if sbar.isVisible():
+            hori_offset = self.parent.x() + sbar.width() + 125 + int(4*cursor)
+        else:
+            hori_offset = self.parent.x() + 125 + int(4*cursor)
+        screen = mw.app.desktop().screenGeometry()
+        if hori_offset + self.width() > screen.width():
+            hori_offset = screen.width() - self.width()
+        vert_offset = self.parent.y() + 15
+        self.setGeometry(hori_offset, vert_offset, self.width(), self.height())
 
     def reject(self):
         saveGeom(self, "BrowserSearchInserterFP")
