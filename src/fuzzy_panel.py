@@ -89,7 +89,7 @@ class FilterDialog(QDialog):
         self.fuzzy_items = self.keys[:max_items]
         self.initUI()
         if self.adjustposition:
-            self.move()
+            self.moveWindow()
         if prefill:
             self.input_line.setText(prefill)
 
@@ -184,7 +184,7 @@ class FilterDialog(QDialog):
         self.list_box.installEventFilter(self)
         self.input_line.setFocus()
 
-    def move(self):
+    def moveWindow(self):
         sbar = self.parent.sidebarDockWidget
         line = self.parent.form.searchEdit.lineEdit()
         # line.cursor() refers to mouse position
