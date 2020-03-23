@@ -71,11 +71,10 @@ class PanelInputLine(QLineEdit):
             self.up_pressed.emit()
 
 class FilterDialog(QDialog):
-    def __init__(self, parent=None, values=None, windowtitle="", max_items=10000, prefill="", nm=False, adjPos=False):
+    def __init__(self, parent=None, values=None, windowtitle="", max_items=10000, prefill="", adjPos=False):
         super().__init__(parent)
         self.parent = parent
         self.max_items = max_items
-        self.night_mode_on = nm
         self.adjustposition = adjPos
         self.setObjectName("FilterDialog")
         if windowtitle:
@@ -113,67 +112,6 @@ class FilterDialog(QDialog):
         self.resize(800, 350)
         restoreGeom(self, "BrowserSearchInserterFP")
         self.list_box.setAlternatingRowColors(True)
-
-        # style
-        if self.night_mode_on:
-            listWid_sel_bg = "#dfffbb"
-            listWid_sel_border = "#fcea20"
-            listWid_bg = "#272828"
-            listWid_bg_alt = "#808383"
-            color = "#d7d7d7"
-            le_bg =  "#272828"
-            le_bordercolor = "#a8a8a8"
-        else:
-            listWid_sel_bg = "lightblue"
-            listWid_sel_border = "#ff5918"
-            listWid_bg = "#f0f0f0"
-            listWid_bg_alt = "#E0E0E0"
-            color = "black"
-            le_bg = "#f0f0f0"
-            le_bordercolor = "#3265a8"
-        # setting the font size for item:selected via stylesheet doesn't work for me in 2020-01
-        # https://doc.qt.io/qt-5/richtext-html-subset.html
-        # these didn't help: font-size: 20pt;  // doesn't work  20pt; 12pt; x-large - 
-        if self.night_mode_on:
-            self.setStyleSheet(f""" 
-                                QListWidget{{
-                                    background: {listWid_bg};
-                                    color: {color};
-                                }}
-                                QListWidget:item:alternate {{
-                                    background: {listWid_bg_alt};
-                                    color: {color};
-                                }}  
-                                QListWidget:item:selected{{
-                                    border: 1px solid {listWid_sel_border};
-                                    color: {color};
-                                }}
-                                QLineEdit {{
-                                    color: {color};
-                                    background-color: {le_bg};
-                                    border: 1px solid {le_bordercolor};
-                                }}             
-                                """
-                           )
-        '''
-        self.setStyleSheet(""" QListWidget:item:selected{
-                                    background: lightblue;
-                                    border: 1px solid #6a6ea9;
-                                }
-                                QListWidget{
-                                    background: #f0f0f0;
-                                    show-decoration-selected: 1;
-                                    font-family: "Times New Roman"                                
-                                }
-                                QListWidget::item:alternate {
-                                    background: #E0E0E0;
-                                }    
-                                QLineEdit {
-                                    background-color: #ffffff;
-                                }             
-                                """
-                           )
-        '''
 
         # connections
         self.input_line.textChanged.connect(self.text_changed)

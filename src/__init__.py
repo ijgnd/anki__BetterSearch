@@ -48,43 +48,6 @@ def check_for_advancedBrowser():
 addHook("profileLoaded", check_for_advancedBrowser)
 
 
-def warn_on_night_mode_change():
-    # add-on "Opening the same window multiple time"
-    try:
-        aqt.dialogs._openDialogs
-    except:
-        addon = False
-    else:
-        addon = True
-
-    if addon:
-        browsers = []
-        for e in aqt.dialogs._openDialogs:
-            if isinstance(e, tup):
-                browsers.append(e)
-    else:
-        if aqt.dialogs._dialogs["Browser"][1]:
-            browsers = True
-        else:
-            browsers = False
-
-    if browsers:
-        t = ("You changed the night mode state while a Browser window is open. Close all Browser "
-             "windows and reopen them. Otherwise the dialog of the add-on 'Browser Search Box: "
-             "Quick Insert Tag, Deck, Notetype' will have broken colors.")
-        showCritical(t)
-
-
-night_mode_on = False
-def refresh_night_mode_state(nm_state):
-    global night_mode_on
-    prior = night_mode_on
-    night_mode_on = nm_state
-    if nm_state != prior:
-        warn_on_night_mode_change()
-addHook("night_mode_state_changed", refresh_night_mode_state)
-
-
 def mysearch(self):
     self.form.searchEdit.editTextChanged.connect(self.onSearchEditTextChange)
 Browser.setupSearch = wrap(Browser.setupSearch,mysearch)
@@ -129,7 +92,7 @@ def onSearchEditTextChange(self, arg):
             adjPos = True
         else:
             adjPos = False
-        d = FilterDialog(parent=self, values=vals[3], nm=night_mode_on, adjPos=adjPos)
+        d = FilterDialog(parent=self, values=vals[3], adjPos=adjPos)
         if d.exec():
             shiftmod = self.mw.app.keyboardModifiers() & Qt.ShiftModifier
             ctrlmod = self.mw.app.keyboardModifiers() & Qt.ControlModifier
@@ -216,7 +179,7 @@ def insert_helper(self, arg):
         adjPos = True
     else:
         adjPos = False
-    d = FilterDialog(parent=self, values=vals[2], nm=night_mode_on, adjPos=adjPos)
+    d = FilterDialog(parent=self, values=vals[2], adjPos=adjPos)
     if d.exec():
         shiftmod = self.mw.app.keyboardModifiers() & Qt.ShiftModifier
         ctrlmod = self.mw.app.keyboardModifiers() & Qt.ControlModifier
