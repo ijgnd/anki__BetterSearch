@@ -1,5 +1,11 @@
 ### Config
 
+- `also use in create filtered deck dialog` (default is "true"): whether to show this dialog in the 
+filtered deck dialog. The shortcuts set in this config won't work in the create filtered deck dialog. 
+The deck list won't include existing filtered decks because cards that are already in a filtered 
+deck can't be added to another filtered deck.
+
+&nbsp;
 
 - `custom tag&deck string 1` (default is "xx"), `custom tag&deck string 2` (default is "all:"): when 
 you type into the browser search box if the last characters match the ones set in these settings 

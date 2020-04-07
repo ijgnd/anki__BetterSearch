@@ -24,6 +24,7 @@ import aqt
 from aqt.browser import Browser
 from aqt.qt import *
 from aqt.utils import getText, showCritical
+from aqt.dyndeckconf import DeckConf
 
 from .fuzzy_panel import FilterDialog
 
@@ -34,6 +35,22 @@ def gc(arg, fail=False):
         return conf.get(arg, fail)
     else:
         return fail
+
+
+def dyn_setup_search(self):
+    self.form.search.textChanged.connect(self.onDynSetupSearchEditTextChange)
+    self.form.search_2.textChanged.connect(self.onDynSetupSearchEditTextChange)
+DeckConf.initialSetup = wrap(DeckConf.initialSetup, dyn_setup_search)
+
+
+def onDynSetupSearchEditTextChange(self, arg):
+    parent = self
+    parent_is_browser = False
+    lineedit = self.sender()  # https://stackoverflow.com/a/33981172
+    mw = self.mw
+    col = self.mw.col
+    onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg)
+DeckConf.onDynSetupSearchEditTextChange = onDynSetupSearchEditTextChange
 
 
 tup = None
@@ -49,12 +66,22 @@ addHook("profileLoaded", check_for_advancedBrowser)
 
 
 def mysearch(self):
-    self.form.searchEdit.editTextChanged.connect(self.onSearchEditTextChange)
+    self.form.searchEdit.editTextChanged.connect(self.onBrowserSearchEditTextChange)
 Browser.setupSearch = wrap(Browser.setupSearch,mysearch)
 
 
-def onSearchEditTextChange(self, arg):
-    le = self.form.searchEdit.lineEdit()
+def onBrowserSearchEditTextChange(self, arg):
+    parent = self
+    parent_is_browser = True
+    lineedit = self.form.searchEdit.lineEdit()
+    mw = self.mw
+    col = self.col
+    onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg)
+Browser.onBrowserSearchEditTextChange = onBrowserSearchEditTextChange
+
+
+def onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg):
+    le = lineedit
     vals = False
     c1 = gc("custom tag&deck string 1", "")
     c2 = gc("custom tag&deck string 2", "")
@@ -64,38 +91,39 @@ def onSearchEditTextChange(self, arg):
     #         ListForFilterDialog)
     if arg[-4:] == "tag:":
         if gc("modify_tag"):
-            vals = (False, -4, True, self.col.tags.all())
+            vals = (False, -4, True, col.tags.all())
     elif arg[-5:] == "note:":
         if gc("modify_note"):
-            vals = (False, -5, True, self.col.models.allNames())
+            vals = (False, -5, True, col.models.allNames())
     elif arg[-5:] == "card:":
         if gc("modify_card"):
             d = {}
-            for m in self.col.models.all():
+            for m in col.models.all():
                 modelname = m['name']
                 for t in m['tmpls']:
                     d[t['name'] + " (" + modelname + ")"] = t['name']
             vals = (False, -5, False, d)
     elif arg[-5:] == "deck:":
         if gc("modify_deck"):
-            vals = (False, -5, True, sorted(self.col.decks.allNames()))
+            decks = sorted(col.decks.allNames(dyn=parent_is_browser))
+            vals = (False, -5, True, decks)
     elif c1 and arg[-len(c1):] == c1:
-            alltags = ["tag:" + t for t in self.mw.col.tags.all()]
-            decks = ["deck:" + d  for d in sorted(self.col.decks.allNames())]
+            alltags = ["tag:" + t for t in col.tags.all()]
+            decks = ["deck:" + d  for d in sorted(col.decks.allNames(dyn=parent_is_browser))]
             vals = (-len(c1), 0, True, alltags + decks)
     elif c2 and arg[-len(c2):] == c2:
-            alltags = ["tag:" + t for t in self.mw.col.tags.all()]
-            decks = ["deck:" + d  for d in sorted(self.col.decks.allNames())]
+            alltags = ["tag:" + t for t in col.tags.all()]
+            decks = ["deck:" + d  for d in sorted(col.decks.allNames(dyn=parent_is_browser))]
             vals = (-len(c2), 0, True, alltags + decks)
     if vals:
         if gc("autoadjust FilterDialog position", True):
             adjPos = True
         else:
             adjPos = False
-        d = FilterDialog(parent=self, values=vals[3], adjPos=adjPos)
+        d = FilterDialog(parent=parent, parent_is_browser=parent_is_browser, values=vals[3], adjPos=adjPos)
         if d.exec():
-            shiftmod = self.mw.app.keyboardModifiers() & Qt.ShiftModifier
-            ctrlmod = self.mw.app.keyboardModifiers() & Qt.ControlModifier
+            shiftmod = mw.app.keyboardModifiers() & Qt.ShiftModifier
+            ctrlmod = mw.app.keyboardModifiers() & Qt.ControlModifier
             if not vals[0]:
                 t = le.text()
                 n = vals[1]
@@ -133,7 +161,6 @@ def onSearchEditTextChange(self, arg):
                      sel = sel + '*'
             le.setText(b + '"' + sel + '"')
 
-Browser.onSearchEditTextChange = onSearchEditTextChange
 
 
 # doesn't work: when I press cancel the dialog is opened once more and if I cancel val remains
@@ -179,7 +206,7 @@ def insert_helper(self, arg):
         adjPos = True
     else:
         adjPos = False
-    d = FilterDialog(parent=self, values=vals[2], adjPos=adjPos)
+    d = FilterDialog(parent=self, parent_is_browser=True, values=vals[2], adjPos=adjPos)
     if d.exec():
         shiftmod = self.mw.app.keyboardModifiers() & Qt.ShiftModifier
         ctrlmod = self.mw.app.keyboardModifiers() & Qt.ControlModifier

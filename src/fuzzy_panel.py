@@ -71,9 +71,10 @@ class PanelInputLine(QLineEdit):
             self.up_pressed.emit()
 
 class FilterDialog(QDialog):
-    def __init__(self, parent=None, values=None, windowtitle="", max_items=10000, prefill="", adjPos=False):
+    def __init__(self, parent=None, parent_is_browser=False, values=None, windowtitle="", max_items=10000, prefill="", adjPos=False):
         super().__init__(parent)
         self.parent = parent
+        self.parent_is_browser = parent_is_browser
         self.max_items = max_items
         self.adjustposition = adjPos
         self.setObjectName("FilterDialog")
@@ -123,6 +124,8 @@ class FilterDialog(QDialog):
         self.input_line.setFocus()
 
     def moveWindow(self):
+        if not self.parent_is_browser:
+            return
         sbar = self.parent.sidebarDockWidget
         line = self.parent.form.searchEdit.lineEdit()
         # line.cursor() refers to mouse position
