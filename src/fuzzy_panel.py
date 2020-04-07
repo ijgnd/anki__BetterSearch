@@ -188,12 +188,16 @@ class FilterDialog(QDialog):
 
     def up_pressed(self):
         row = self.list_box.currentRow()
-        if row > 0:
+        if row == 0:
+            self.list_box.setCurrentRow(len(self.fuzzy_items) - 1) 
+        else:
             self.list_box.setCurrentRow(row - 1)
 
     def down_pressed(self):
         row = self.list_box.currentRow()
-        if row < len(self.fuzzy_items):
+        if row == len(self.fuzzy_items) - 1:
+            self.list_box.setCurrentRow(0)
+        else:
             self.list_box.setCurrentRow(row + 1)
 
     def return_pressed(self):
