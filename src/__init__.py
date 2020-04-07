@@ -81,7 +81,11 @@ Browser.onBrowserSearchEditTextChange = onBrowserSearchEditTextChange
 
 
 def decknames(col, also_include_filtered):
-    decks = col.decks.allNames(dyn=also_include_filtered) + ["filtered"]
+    decks = col.decks.allNames(dyn=also_include_filtered)
+    # also_include_filtered only True in the browser but not in the Create Filtered Deck dialog
+    # Filtered decks can't include filtered decks so I don't want "filtered" for those.
+    if also_include_filtered:  
+        decks += ["filtered"]
     return sorted(decks)
 
 
