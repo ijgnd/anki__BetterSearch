@@ -80,6 +80,16 @@ def onBrowserSearchEditTextChange(self, arg):
 Browser.onBrowserSearchEditTextChange = onBrowserSearchEditTextChange
 
 
+def decknames(col, also_include_filtered):
+    decks = col.decks.allNames(dyn=also_include_filtered) + ["filtered"]
+    return sorted(decks)
+
+
+def tags(col):
+    tags = col.tags.all() + ["none"]
+    return sorted(tags)
+
+
 def onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg):
     le = lineedit
     vals = False
@@ -91,7 +101,7 @@ def onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg):
     #         ListForFilterDialog)
     if arg[-4:] == "tag:":
         if gc("modify_tag"):
-            vals = (False, -4, True, col.tags.all())
+            vals = (False, -4, True, tags(col))
     elif arg[-5:] == "note:":
         if gc("modify_note"):
             vals = (False, -5, True, col.models.allNames())
@@ -105,15 +115,14 @@ def onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg):
             vals = (False, -5, False, d)
     elif arg[-5:] == "deck:":
         if gc("modify_deck"):
-            decks = sorted(col.decks.allNames(dyn=parent_is_browser))
-            vals = (False, -5, True, decks)
+            vals = (False, -5, True, decknames(col, parent_is_browser))
     elif c1 and arg[-len(c1):] == c1:
-            alltags = ["tag:" + t for t in col.tags.all()]
-            decks = ["deck:" + d  for d in sorted(col.decks.allNames(dyn=parent_is_browser))]
+            alltags = ["tag:" + t for t in tags(col)]
+            decks = ["deck:" + d  for d in decknames(col, parent_is_browser)]
             vals = (-len(c1), 0, True, alltags + decks)
     elif c2 and arg[-len(c2):] == c2:
-            alltags = ["tag:" + t for t in col.tags.all()]
-            decks = ["deck:" + d  for d in sorted(col.decks.allNames(dyn=parent_is_browser))]
+            alltags = ["tag:" + t for t in tags(col)]
+            decks = ["deck:" + d  for d in decknames(col, parent_is_browser)]
             vals = (-len(c2), 0, True, alltags + decks)
     if vals:
         if gc("autoadjust FilterDialog position", True):
@@ -142,7 +151,7 @@ def onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg):
                 sel = d.selvalue
             # maybe add '*' to match other deeper nested hierarchical tags
             if arg[-4:] == "tag:":
-                if gc("tag insertion - add '*' to matches") == "all" and not ctrlmod:
+                if gc("tag insertion - add '*' to matches") == "all" and not ctrlmod and sel not in ["none", "filtered"]:
                     sel = sel + '*'
                 elif gc("tag insertion - add '*' to matches") == "if_has_subtags" and not ctrlmod:
                     other_subtags_matched = []
@@ -150,14 +159,14 @@ def onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg):
                     for e in vals[3]:
                         if e.startswith(selplus):
                             other_subtags_matched.append(e)
-                    if other_subtags_matched:
+                    if other_subtags_matched and sel not in ["none", "filtered"]:
                         sel = sel + '*'
             # ugly fix for xx etc.
             if (c1 and arg[-len(c1):] == c1) or (c2 and arg[-len(c2):] == c2):
-                if gc("tag insertion - add '*' to matches") == "all" and not ctrlmod:
+                if gc("tag insertion - add '*' to matches") == "all" and not ctrlmod and sel not in ["tag:none", "deck:filtered"]:
                     sel = sel + '*'
             if arg[-5:] == "deck:" and gc("modify_deck"):
-                 if not ctrlmod:
+                 if not ctrlmod and sel not in ["none", "filtered"]:
                      sel = sel + '*'
             le.setText(b + '"' + sel + '"')
 
@@ -180,13 +189,14 @@ def onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg):
 #             self.onSearchActivated()
 
 
+# TODO maybe remerge with onSearchEditTextChange 
 def insert_helper(self, arg):
     le = self.form.searchEdit.lineEdit()
     # vals = (insert arg into searchboxstring, 
     #         UseFilterDialogKey(False means Value),
     #         ListForFilterDialog)
     if arg == "tag:":
-        vals = (True, True, self.col.tags.all())
+        vals = (True, True, tags(self.col))
     elif arg == "note:":
         vals = (True, True, self.col.models.allNames())
     elif arg == "card:":
@@ -197,10 +207,10 @@ def insert_helper(self, arg):
                 d[t['name'] + " (" + modelname + ")"] = t['name']
         vals = (True, False, d)
     elif arg == "deck:":
-        vals = (True, True, sorted(self.col.decks.allNames()))
+        vals = (True, True, decknames(self.col, True))
     elif arg == "xx":
-        alltags = ["tag:" + t for t in self.mw.col.tags.all()]
-        decks = ["deck:" + d  for d in sorted(self.col.decks.allNames())]
+        alltags = ["tag:" + t for t in tags(self.col)]
+        decks = ["deck:" + d  for d in decknames(self.col, True)]
         vals = (False, True, alltags + decks)
     if gc("autoadjust FilterDialog position", True):
         adjPos = True
@@ -221,7 +231,7 @@ def insert_helper(self, arg):
             sel = d.selvalue
         # maybe add '*' to match other deeper nested hierarchical tags
         if arg == "tag:":
-            if gc("tag insertion - add '*' to matches") == "all" and not ctrlmod:
+            if gc("tag insertion - add '*' to matches") == "all" and not ctrlmod and sel not in ["none", "filtered", "tag:none", "deck:filtered"]:
                 sel = sel + '*'
             elif gc("tag insertion - add '*' to matches") == "if_has_subtags" and not ctrlmod:
                 other_subtags_matched = []
@@ -229,8 +239,13 @@ def insert_helper(self, arg):
                 for e in vals[2]:
                     if e.startswith(selplus):
                         other_subtags_matched.append(e)
-                if other_subtags_matched:
+                if other_subtags_matched and sel not in ["none", "filtered", "tag:none", "deck:filtered"]:
                     sel = sel + '*'
+        elif arg == "deck:" and gc("modify_deck") and sel not in ["none", "filtered"]:
+            sel = sel + '*'
+        # ugly fix for xx etc.
+        elif arg == "xx" and gc("modify_deck") and sel not in ["none", "filtered", "tag:none", "deck:filtered"]:
+            sel = sel + '*'
         if altmod:
             neg = "-"
         else:
