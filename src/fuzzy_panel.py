@@ -149,6 +149,8 @@ class FilterDialog(QDialog):
         row = self.list_box.currentRow()
         if len(self.fuzzy_items) > 0:
             row = self.list_box.currentRow()
+            if row > len(self.fuzzy_items)-1:  # list are zero indexed
+                return  # avoid IndexError: list index out of range on the following line
             self.selkey = self.fuzzy_items[row]
             if self.dict:
                 self.selvalue = self.dict[self.selkey]
