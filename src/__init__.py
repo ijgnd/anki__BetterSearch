@@ -150,8 +150,10 @@ def onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg):
             else:
                 sel = d.selvalue
             # maybe add '*' to match other deeper nested hierarchical tags
-            if arg[-4:] == "tag:":
-                if gc("tag insertion - add '*' to matches") == "all" and not ctrlmod and sel not in ["none", "filtered"]:
+            if sel in ["none", "filtered", "tag:none", "deck:filtered"]:
+                pass
+            elif arg[-4:] == "tag:":
+                if gc("tag insertion - add '*' to matches") == "all" and not ctrlmod:
                     sel = sel + '*'
                 elif gc("tag insertion - add '*' to matches") == "if_has_subtags" and not ctrlmod:
                     other_subtags_matched = []
@@ -159,14 +161,14 @@ def onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg):
                     for e in vals[3]:
                         if e.startswith(selplus):
                             other_subtags_matched.append(e)
-                    if other_subtags_matched and sel not in ["none", "filtered"]:
+                    if other_subtags_matched:
                         sel = sel + '*'
             # ugly fix for xx etc.
-            if (c1 and arg[-len(c1):] == c1) or (c2 and arg[-len(c2):] == c2):
-                if gc("tag insertion - add '*' to matches") == "all" and not ctrlmod and sel not in ["tag:none", "deck:filtered"]:
+            elif (c1 and arg[-len(c1):] == c1) or (c2 and arg[-len(c2):] == c2):
+                if gc("tag insertion - add '*' to matches") == "all" and not ctrlmod:
                     sel = sel + '*'
-            if arg[-5:] == "deck:" and gc("modify_deck"):
-                 if not ctrlmod and sel not in ["none", "filtered"]:
+            elif arg[-5:] == "deck:" and gc("modify_deck"):
+                 if not ctrlmod:
                      sel = sel + '*'
             le.setText(b + '"' + sel + '"')
 
@@ -229,9 +231,12 @@ def insert_helper(self, arg):
             sel = d.selkey
         else:
             sel = d.selvalue
+
         # maybe add '*' to match other deeper nested hierarchical tags
-        if arg == "tag:":
-            if gc("tag insertion - add '*' to matches") == "all" and not ctrlmod and sel not in ["none", "filtered", "tag:none", "deck:filtered"]:
+        if sel in ["none", "filtered", "tag:none", "deck:filtered"]:
+            pass
+        elif arg == "tag:":
+            if gc("tag insertion - add '*' to matches") == "all" and not ctrlmod:
                 sel = sel + '*'
             elif gc("tag insertion - add '*' to matches") == "if_has_subtags" and not ctrlmod:
                 other_subtags_matched = []
@@ -239,13 +244,14 @@ def insert_helper(self, arg):
                 for e in vals[2]:
                     if e.startswith(selplus):
                         other_subtags_matched.append(e)
-                if other_subtags_matched and sel not in ["none", "filtered", "tag:none", "deck:filtered"]:
+                if other_subtags_matched:
                     sel = sel + '*'
-        elif arg == "deck:" and gc("modify_deck") and sel not in ["none", "filtered"]:
+        elif arg == "deck:" and gc("modify_deck"):
             sel = sel + '*'
         # ugly fix for xx etc.
-        elif arg == "xx" and gc("modify_deck") and sel not in ["none", "filtered", "tag:none", "deck:filtered"]:
+        elif arg == "xx" and gc("modify_deck"):
             sel = sel + '*'
+
         if altmod:
             neg = "-"
         else:
