@@ -182,8 +182,8 @@ class FilterDialog(QDialog):
                 search_string = ""
             if FILTER_WITH == "slzk_mod":
                 self.fuzzy_items = process_search_string_withStart(search_string, self.keys, self.max_items)
-                if search_string == "none":
-                    self.fuzzy_items.insert(0, self.fuzzy_items.pop(self.fuzzy_items.index("none")))
+                if search_string in self.fuzzy_items:
+                    self.fuzzy_items.insert(0, self.fuzzy_items.pop(self.fuzzy_items.index(search_string)))
             elif FILTER_WITH == "slzk":
                 self.fuzzy_items = process_search_string(search_string, self.keys, self.max_items)
         self.update_listbox()
