@@ -114,8 +114,9 @@ class FilterDialog(QDialog):
         self.button_accept_current.clicked.connect(self.accept_current)
         key = gc("modifier for insert current text only")
         self.button_accept_current.setToolTip(f"{key} + Return")
-        self.button_accept_current.setShortcut(f"{key}+Return")
-        #self.button_accept_current.setShortcut("Ctrl+Return")
+        # don't set in dialog because otherwise multiple modifiers aren't detected
+        # self.button_accept_current.setShortcut(f"{key}+Return")
+        # self.button_accept_current.setShortcut("Ctrl+Return")
         self.button_cancel = QPushButton("&Cancel", self)
         self.button_cancel.clicked.connect(self.reject)
 
@@ -174,6 +175,7 @@ class FilterDialog(QDialog):
             if row > len(self.fuzzy_items)-1:  # list are zero indexed
                 return  # avoid IndexError: list index out of range on the following line
             self.selkey = self.fuzzy_items[row]
+            self.inputline = self.input_line.text()
             if self.dict:
                 self.selvalue = self.dict[self.selkey]
             QDialog.accept(self)
@@ -187,6 +189,7 @@ class FilterDialog(QDialog):
         self.neg = self.cb_neg.isChecked()
         self.selvalue = self.input_line.text()
         self.selkey = self.input_line.text()
+        self.inputline = self.input_line.text()
         QDialog.accept(self)
 
     def update_listbox(self):

@@ -95,6 +95,9 @@ def overrides():
     #   META : override add * default  # originally Ctrl 
     #   ALT  : negate
     #   CTRL : insert current text only : already used in dialog
+    lineonly = False
+    if conf_to_key[gc("modifier for insert current text only")]():
+        lineonly = True
     override_autosearch_default = False
     if conf_to_key[gc("modifier for override autosearch default")]():
         override_autosearch_default = True
@@ -104,17 +107,20 @@ def overrides():
     negate = False
     if conf_to_key[gc("modifier for negate")]():
         negate = True
+    # print(f"ctrl - lineonly is {lineonly}")
     # print(f"shift - override_autosearch_default is {override_autosearch_default}")
-    # print(f"meta - override_add_star is {override_add_star}")
+    print(f"meta - override_add_star is {override_add_star}")
     # print(f"alt - negate is {negate}")
-    return override_autosearch_default, override_add_star, negate
+    return lineonly, override_autosearch_default, override_add_star, negate
 
 
 def onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg):
     le = lineedit
     vals = False
     c1 = gc("custom tag&deck string 1", "")
+    xx1 = c1 and arg[-len(c1):] == c1
     c2 = gc("custom tag&deck string 2", "")
+    xx2 = c2 and arg[-len(c2):] == c2
     # vals = (remove some characters from the right of searchboxstring, 
     #         InsertSpaceAtPos, 
     #         UseFilterDialogKey(orValue),
@@ -136,11 +142,11 @@ def onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg):
     elif arg[-5:] == "deck:":
         if gc("modify_deck"):
             vals = (False, -5, True, decknames(col, parent_is_browser))
-    elif c1 and arg[-len(c1):] == c1:
+    elif xx1:
         alltags = ["tag:" + t for t in tags(col)]
         decks = ["deck:" + d  for d in decknames(col, parent_is_browser)]
         vals = (-len(c1), 0, True, alltags + decks)
-    elif c2 and arg[-len(c2):] == c2:
+    elif xx2:
         alltags = ["tag:" + t for t in tags(col)]
         decks = ["deck:" + d  for d in decknames(col, parent_is_browser)]
         vals = (-len(c2), 0, True, alltags + decks)
@@ -151,7 +157,7 @@ def onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg):
             adjPos = False
         d = FilterDialog(parent=parent, parent_is_browser=parent_is_browser, values=vals[3], adjPos=adjPos)
         if d.exec():
-            override_autosearch_default, override_add_star, negate = overrides()
+            lineonly, override_autosearch_default, override_add_star, negate = overrides()
             if negate or d.neg:
                 neg = "-"
             else:
@@ -172,6 +178,15 @@ def onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg):
                 sel = d.selkey
             else:
                 sel = d.selvalue
+            if lineonly:
+                if xx1 or xx2:
+                    # I need to add tag or deck
+                    if d.selkey.startswith("tag:"):
+                        sel = "tag:" + d.inputline
+                    else:
+                        sel = "deck:" + d.inputline
+                else:
+                    sel = d.inputline
             # maybe add '*' to match other deeper nested hierarchical tags
             if sel in ["none", "filtered", "tag:none", "deck:filtered"]:
                 pass
@@ -191,7 +206,7 @@ def onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg):
                 if gc("tag insertion - add '*' to matches") == "all" and not override_add_star:
                     sel = sel + '*'
             elif arg[-5:] == "deck:" and gc("modify_deck"):
-                 if not override_add_star:
+                 if d.addstar and not override_add_star:
                      sel = sel + '*'
             le.setText(b + '"' + sel + '"')
             return (True, override_autosearch_default)  # shiftmod toggle default search trigger setting 
@@ -243,7 +258,7 @@ def _insert_helper(self, arg):
         adjPos = False
     d = FilterDialog(parent=self, parent_is_browser=True, values=vals[2], adjPos=adjPos)
     if d.exec():
-        override_autosearch_default, override_add_star, negate = overrides()
+        lineonly, override_autosearch_default, override_add_star, negate = overrides()
 
         t = le.text()
         # clear preset text if necessary
@@ -253,7 +268,15 @@ def _insert_helper(self, arg):
             sel = d.selkey
         else:
             sel = d.selvalue
-
+        if lineonly:
+            if arg == "xx":
+                # I need to add tag or deck
+                if d.selkey.startswith("tag:"):
+                    sel = "tag:" + d.inputline
+                else:
+                    sel = "deck:" + d.inputline
+            else:
+                sel = d.inputline
         # maybe add '*' to match other deeper nested hierarchical tags
         if sel in ["none", "filtered", "tag:none", "deck:filtered"]:
             pass
@@ -269,10 +292,12 @@ def _insert_helper(self, arg):
                 if other_subtags_matched:
                     sel = sel + '*'
         elif arg == "deck:" and gc("modify_deck"):
-            sel = sel + '*'
+            if d.addstar and not override_add_star:
+                sel = sel + '*'
         # ugly fix for xx etc.
         elif arg == "xx" and gc("modify_deck"):
-            sel = sel + '*'
+            if d.addstar and not override_add_star:
+                sel = sel + '*'
 
         if negate or d.neg:
             neg = "-"
