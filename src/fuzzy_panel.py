@@ -45,7 +45,7 @@ from aqt import mw
 from aqt.qt import *
 from aqt.utils import tooltip, restoreGeom, saveGeom
 
-
+from .config import gc
 
 
 class PanelInputLine(QLineEdit):
@@ -101,13 +101,33 @@ class FilterDialog(QDialog):
             self.list_box.insertItem(i, '')
         vlay.addWidget(self.input_line)
         vlay.addWidget(self.list_box)
-        self.buttonbox = QDialogButtonBox(QDialogButtonBox.Ok |
-                                          QDialogButtonBox.Cancel)
-        vlay.addWidget(self.buttonbox)
-        # self.buttonbox.accepted.disconnect(self.accept)
-        #   leads to: TypeError: disconnect() failed between 'accepted' and 'accept'
-        self.buttonbox.accepted.connect(self.accept)
-        self.buttonbox.rejected.connect(self.reject)
+
+        self.cb_star = QCheckBox("append *")
+        if gc("tag insertion - add '*' to matches"):
+            self.cb_star.setChecked(True)
+        self.cb_neg = QCheckBox("prepend search with '-'")
+        self.button_ok = QPushButton("&OK", self)
+        self.button_ok.clicked.connect(self.accept)
+        self.button_ok.setToolTip("Return")
+        # self.button_ok.setAutoDefault(True)
+        self.button_accept_current = QPushButton("O&K (only current Text)", self)
+        self.button_accept_current.clicked.connect(self.accept_current)
+        key = gc("modifier for insert current text only")
+        self.button_accept_current.setToolTip(f"{key} + Return")
+        self.button_accept_current.setShortcut(f"{key}+Return")
+        #self.button_accept_current.setShortcut("Ctrl+Return")
+        self.button_cancel = QPushButton("&Cancel", self)
+        self.button_cancel.clicked.connect(self.reject)
+
+        button_box = QHBoxLayout()
+        button_box.addStretch(1)
+        button_box.addWidget(self.cb_star)
+        button_box.addWidget(self.cb_neg)
+        button_box.addWidget(self.button_ok)
+        button_box.addWidget(self.button_accept_current)
+        button_box.addWidget(self.button_cancel)
+        vlay.addLayout(button_box)
+
         self.update_listbox()
         self.setLayout(vlay)
         self.resize(800, 350)
@@ -148,6 +168,8 @@ class FilterDialog(QDialog):
         saveGeom(self, "BrowserSearchInserterFP")
         row = self.list_box.currentRow()
         if len(self.fuzzy_items) > 0:
+            self.addstar = self.cb_star.isChecked()
+            self.neg = self.cb_neg.isChecked()
             row = self.list_box.currentRow()
             if row > len(self.fuzzy_items)-1:  # list are zero indexed
                 return  # avoid IndexError: list index out of range on the following line
@@ -158,6 +180,14 @@ class FilterDialog(QDialog):
         else:
             tooltip('nothing selected. Aborting ...')
             return
+
+    def accept_current(self):
+        saveGeom(self, "BrowserSearchInserterFP")
+        self.addstar = self.cb_star.isChecked()
+        self.neg = self.cb_neg.isChecked()
+        self.selvalue = self.input_line.text()
+        self.selkey = self.input_line.text()
+        QDialog.accept(self)
 
     def update_listbox(self):
         for i in range(self.max_items):

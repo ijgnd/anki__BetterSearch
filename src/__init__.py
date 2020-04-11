@@ -26,15 +26,8 @@ from aqt.qt import *
 from aqt.utils import getText, showCritical
 from aqt.dyndeckconf import DeckConf
 
+from .config import conf_to_key, gc, shiftdown, ctrldown, altdown, metadown
 from .fuzzy_panel import FilterDialog
-
-
-def gc(arg, fail=False):
-    conf = aqt.mw.addonManager.getConfig(__name__)
-    if conf:
-        return conf.get(arg, fail)
-    else:
-        return fail
 
 
 def dyn_setup_search(self):
@@ -76,7 +69,9 @@ def onBrowserSearchEditTextChange(self, arg):
     lineedit = self.form.searchEdit.lineEdit()
     mw = self.mw
     col = self.col
-    onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg)
+    dialogclosed = onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg)
+    if dialogclosed and dialogclosed[1]:
+        self.onSearchActivated()
 Browser.onBrowserSearchEditTextChange = onBrowserSearchEditTextChange
 
 
@@ -92,6 +87,27 @@ def decknames(col, also_include_filtered):
 def tags(col):
     tags = col.tags.all() + ["none"]
     return sorted(tags)
+
+
+def overrides():
+    # 4 Modifiers = 4 Overrides
+    #   SHIFT: override autosearch default
+    #   META : override add * default  # originally Ctrl 
+    #   ALT  : negate
+    #   CTRL : insert current text only : already used in dialog
+    override_autosearch_default = False
+    if conf_to_key[gc("modifier for override autosearch default")]():
+        override_autosearch_default = True
+    override_add_star = False
+    if conf_to_key[gc("modifier for override add * default")]():
+        override_add_star = True
+    negate = False
+    if conf_to_key[gc("modifier for negate")]():
+        negate = True
+    # print(f"shift - override_autosearch_default is {override_autosearch_default}")
+    # print(f"meta - override_add_star is {override_add_star}")
+    # print(f"alt - negate is {negate}")
+    return override_autosearch_default, override_add_star, negate
 
 
 def onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg):
@@ -121,13 +137,13 @@ def onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg):
         if gc("modify_deck"):
             vals = (False, -5, True, decknames(col, parent_is_browser))
     elif c1 and arg[-len(c1):] == c1:
-            alltags = ["tag:" + t for t in tags(col)]
-            decks = ["deck:" + d  for d in decknames(col, parent_is_browser)]
-            vals = (-len(c1), 0, True, alltags + decks)
+        alltags = ["tag:" + t for t in tags(col)]
+        decks = ["deck:" + d  for d in decknames(col, parent_is_browser)]
+        vals = (-len(c1), 0, True, alltags + decks)
     elif c2 and arg[-len(c2):] == c2:
-            alltags = ["tag:" + t for t in tags(col)]
-            decks = ["deck:" + d  for d in decknames(col, parent_is_browser)]
-            vals = (-len(c2), 0, True, alltags + decks)
+        alltags = ["tag:" + t for t in tags(col)]
+        decks = ["deck:" + d  for d in decknames(col, parent_is_browser)]
+        vals = (-len(c2), 0, True, alltags + decks)
     if vals:
         if gc("autoadjust FilterDialog position", True):
             adjPos = True
@@ -135,8 +151,11 @@ def onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg):
             adjPos = False
         d = FilterDialog(parent=parent, parent_is_browser=parent_is_browser, values=vals[3], adjPos=adjPos)
         if d.exec():
-            shiftmod = mw.app.keyboardModifiers() & Qt.ShiftModifier
-            ctrlmod = mw.app.keyboardModifiers() & Qt.ControlModifier
+            override_autosearch_default, override_add_star, negate = overrides()
+            if negate or d.neg:
+                neg = "-"
+            else:
+                neg = ""
             if not vals[0]:
                 t = le.text()
                 n = vals[1]
@@ -146,9 +165,9 @@ def onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg):
                 if len(t[:n]) > 0 and t[:n][-1] == "-":
                     b = t[:n-1] + "  -" + t[n:]
                 else:
-                    b = t[:n] + "  " + t[n:]  
+                    b = t[:n] + "  " + neg + t[n:]  
             else:
-                b = le.text()[:vals[0]]
+                b = neg + le.text()[:vals[0]]
             if vals[2]:
                 sel = d.selkey
             else:
@@ -157,9 +176,9 @@ def onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg):
             if sel in ["none", "filtered", "tag:none", "deck:filtered"]:
                 pass
             elif arg[-4:] == "tag:":
-                if gc("tag insertion - add '*' to matches") == "all" and not ctrlmod:
+                if (gc("tag insertion - add '*' to matches") == "all" or d.addstar) and not override_add_star:
                     sel = sel + '*'
-                elif gc("tag insertion - add '*' to matches") == "if_has_subtags" and not ctrlmod:
+                elif gc("tag insertion - add '*' to matches") == "if_has_subtags" or d.addstar and not override_add_star:
                     other_subtags_matched = []
                     selplus = sel + "::"
                     for e in vals[3]:
@@ -169,13 +188,13 @@ def onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg):
                         sel = sel + '*'
             # ugly fix for xx etc.
             elif (c1 and arg[-len(c1):] == c1) or (c2 and arg[-len(c2):] == c2):
-                if gc("tag insertion - add '*' to matches") == "all" and not ctrlmod:
+                if gc("tag insertion - add '*' to matches") == "all" and not override_add_star:
                     sel = sel + '*'
             elif arg[-5:] == "deck:" and gc("modify_deck"):
-                 if not ctrlmod:
+                 if not override_add_star:
                      sel = sel + '*'
             le.setText(b + '"' + sel + '"')
-
+            return (True, override_autosearch_default)  # shiftmod toggle default search trigger setting 
 
 
 # doesn't work: when I press cancel the dialog is opened once more and if I cancel val remains
@@ -196,7 +215,7 @@ def onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg):
 
 
 # TODO maybe remerge with onSearchEditTextChange 
-def insert_helper(self, arg):
+def _insert_helper(self, arg):
     le = self.form.searchEdit.lineEdit()
     # vals = (insert arg into searchboxstring, 
     #         UseFilterDialogKey(False means Value),
@@ -224,9 +243,8 @@ def insert_helper(self, arg):
         adjPos = False
     d = FilterDialog(parent=self, parent_is_browser=True, values=vals[2], adjPos=adjPos)
     if d.exec():
-        shiftmod = self.mw.app.keyboardModifiers() & Qt.ShiftModifier
-        ctrlmod = self.mw.app.keyboardModifiers() & Qt.ControlModifier
-        altmod = self.mw.app.keyboardModifiers() & Qt.AltModifier
+        override_autosearch_default, override_add_star, negate = overrides()
+
         t = le.text()
         # clear preset text if necessary
         if t == self._searchPrompt:
@@ -240,9 +258,9 @@ def insert_helper(self, arg):
         if sel in ["none", "filtered", "tag:none", "deck:filtered"]:
             pass
         elif arg == "tag:":
-            if gc("tag insertion - add '*' to matches") == "all" and not ctrlmod:
+            if (gc("tag insertion - add '*' to matches") == "all" or d.addstar) and not override_add_star:
                 sel = sel + '*'
-            elif gc("tag insertion - add '*' to matches") == "if_has_subtags" and not ctrlmod:
+            elif gc("tag insertion - add '*' to matches") == "if_has_subtags" or d.addstar and not override_add_star:
                 other_subtags_matched = []
                 selplus = sel + "::"
                 for e in vals[2]:
@@ -256,7 +274,7 @@ def insert_helper(self, arg):
         elif arg == "xx" and gc("modify_deck"):
             sel = sel + '*'
 
-        if altmod:
+        if negate or d.neg:
             neg = "-"
         else:
             neg = ""
@@ -265,13 +283,18 @@ def insert_helper(self, arg):
         else:
             nt = t + "  " + neg +       '"' + sel + '"'
         le.setText(nt)
-        # shiftmod toggle default search trigger setting 
-        if gc("shortcuts trigger search by default"):
-            if not shiftmod:
-                self.onSearchActivated()
-        else:
-            if shiftmod:
-                self.onSearchActivated()
+        return override_autosearch_default
+
+
+def insert_helper(self, arg):
+    override_autosearch_default = _insert_helper(self, arg)
+    # shiftmod toggle default search trigger setting 
+    if gc("shortcuts trigger search by default"):
+        if not override_autosearch_default:
+            self.onSearchActivated()
+    else:
+        if override_autosearch_default:
+            self.onSearchActivated()
 
 
 def setupMenu(browser):

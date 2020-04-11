@@ -1,7 +1,12 @@
-### Config
+<h1>Before you change the config make sure to read the descriptions below. Some of the 
+configuration options are still experimental and may not work. I already included them 
+because even in their current state they should benefit some users.</h1> 
+
+&nbsp;
 
 - `also use in create filtered deck dialog` (default is "true"): whether to show this dialog in the 
-filtered deck dialog. The shortcuts set in this config won't work in the create filtered deck dialog. 
+filtered deck dialog. The shortcuts set in this config won't work in the create filtered deck 
+dialog. 
 The deck list won't include existing filtered decks because cards that are already in a filtered 
 deck can't be added to another filtered deck.
 
@@ -9,7 +14,8 @@ deck can't be added to another filtered deck.
 
 - `custom tag&deck string 1` (default is "xx"), `custom tag&deck string 2` (default is "all:"): when 
 you type into the browser search box if the last characters match the ones set in these settings 
-a dialog with a list of your tags and decks is opened. The selected entry is inserted into the search box.
+a dialog with a list of your tags and decks is opened. The selected entry is inserted into the 
+search box.
 
 &nbsp;
 
@@ -28,6 +34,18 @@ The selected entry is inserted into the search box.
 
 &nbsp;
 
+The config options 
+
+-  `modifier for override autosearch default`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(default is "Shift"), 
+-  `modifier for override add * default`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(default is "Meta"), 
+-  `modifier for negate`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(default is "Alt"),
+-  `modifier for insert current text only`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(default is "Ctrl")
+
+only accept the values "Shift", "Meta", "Alt", "Ctrl" as input. On a Mac "Ctrl" means "Cmd". 
+**You may not use "Cmd" for these four config values.**.
+
+&nbsp;
+
 &nbsp;
 
 - `shortcut - focus search box and card selector dialog` (default is "Ctrl+H, c"): shortcut to open 
@@ -38,8 +56,9 @@ a dialog with a list of your decks. The selected entry is inserted into the sear
 a dialog with a list of your note types. The selected entry is inserted into the search box.
 - `shortcut - focus search box and tag selector dialog` (default is "Ctrl+H, t"): shortcut to open 
 a dialog with a list of your tags. The selected entry is inserted into the search box.
-- `shortcut - focus search box and tag/deck selector dialog` (default is "Ctrl+H, m"): shortcut to open 
-a dialog with a list of your tags and decks. The selected entry is inserted into the search box.
+- `shortcut - focus search box and tag/deck selector dialog` (default is "Ctrl+H, m"): shortcut to 
+open a dialog with a list of your tags and decks. The selected entry is inserted into the search 
+box.
 
 &nbsp;
 
@@ -47,5 +66,5 @@ a dialog with a list of your tags and decks. The selected entry is inserted into
 
 &nbsp;
 
-- `tag insertion - add '*' to matches` (default is "all"): possible values: "all", "if_has_subtags", "none"
-
+- `tag insertion - add '*' to matches` (default is "all"): possible values: "all", "if_has_subtags",
+"none"

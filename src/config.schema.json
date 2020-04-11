@@ -1,0 +1,103 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Browser Search Box: Quick Insert Tag, Deck, Notetype",
+  "properties": {
+    "also use in create filtered deck dialog": {
+        "type": "boolean",
+        "default": true,
+        "description": ""
+    },
+    "autoadjust FilterDialog position": {
+        "type": "boolean",
+        "default": true,
+        "description": ""
+    },
+    "custom tag&deck string 1": {
+        "type": "string",
+        "default": "xx",
+        "description": ""
+    },
+    "custom tag&deck string 2": {
+        "type": "string",
+        "default": "all:",
+        "description": ""
+    },
+    "modifier for override autosearch default": {
+        "type": "string",
+        "enum": [ "Shift", "Meta", "Alt", "Ctrl" ],
+        "default": "Shift"
+    },
+    "modifier for override add * default": {
+        "type": "string",
+        "enum": [ "Shift", "Meta", "Alt", "Ctrl" ],
+        "default": "Meta"
+    },
+    "modifier for negate": {
+        "type": "string",
+        "enum": [ "Shift", "Meta", "Alt", "Ctrl" ],
+        "default": "Alt"
+    },
+    "modifier for insert current text only": {
+        "type": "string",
+        "enum": [ "Shift", "Meta", "Alt", "Ctrl" ],
+        "default": "Ctrl"
+    },
+    "modify_card": {
+        "type": "boolean",
+        "default": true,
+        "description": ""
+      },
+    "modify_deck": {
+        "type": "boolean",
+        "default": true,
+        "description": ""
+    },
+    "modify_note": {
+        "type": "boolean",
+        "default": true,
+        "description": ""
+    },
+    "modify_tag": {
+        "type": "boolean",
+        "default": true,
+        "description": ""
+    },    
+    "shortcut - focus search box and card selector dialog": {
+        "type": "string",
+        "default": "Ctrl+H, c",
+        "description": ""
+     },
+    "shortcut - focus search box and deck selector dialog": {
+        "type": "string",
+        "default": "Ctrl+H, d",
+        "description": ""
+    },
+    "shortcut - focus search box and note selector dialog": {
+        "type": "string",
+        "default": "Ctrl+H, n",
+        "description": ""
+    },
+    "shortcut - focus search box and tag selector dialog": {
+        "type": "string",
+        "default": "Ctrl+H, t",
+        "description": ""
+    },
+    "shortcut - focus search box and tag/deck selector dialog": {
+        "type": "string",
+        "default": "Ctrl+H, m",
+        "description": ""
+    },
+    "shortcuts trigger search by default": {
+        "type": "boolean",
+        "default": true,
+        "description": ""
+    },
+    "tag insertion - add '*' to matches": {
+        "type": "string",
+        "default": "all",
+        "description": ""
+    }
+  }
+}
+
