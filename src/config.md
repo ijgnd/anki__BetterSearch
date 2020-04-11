@@ -1,6 +1,4 @@
-<h1>Before you change the config make sure to read the descriptions below. Some of the 
-configuration options are still experimental and may not work. I already included them 
-because even in their current state they should benefit some users.</h1> 
+<h1>Before you change the config make sure to read the descriptions below</h1> 
 
 &nbsp;
 
