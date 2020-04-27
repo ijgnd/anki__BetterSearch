@@ -1,6 +1,13 @@
+<b>If you find a bug let me know  <a href="https://anki.tenderapp.com/discussions/add-ons/40694-browser-search-box-quick-insert-tag-deck-notetype-official-thread?unresolve=true" rel="nofollow">in the official anki support forum</a>, on <a href="https://github.com/ijgnd/anki__browser_search__quick_insert_tag_deck_notetype/issues" rel="nofollow">github</a> or via reddit (/u/ijgnord).</b>
+
 <img src="https://raw.githubusercontent.com/ijgnd/anki__browser_search__quick_insert_tag_deck_notetype/master/screenshots/quick_insert_white.gif">
 
-With this add-on when you type "tag:", "deck:", "note:", or "card:" into the browser search bar a dialog opens that allows you to filter and insert a matching tag/deck/notetype name/cardtype name into the search bar. There's also a dialog that puts tags and decknames into one selection dialog. This latter option might be useful if you have many tags and many subdecks. By default this dialog is opened by typing in "all:" or "xx". In the add-on config you can disable the filter dialog for each search tag and set custom strings for the merged deck/tag dialog.
+With this add-on when you type "tag:", "deck:", "note:", or "card:" into the browser search bar a dialog opens that allows you to filter and insert a matching tag/deck/notetype name/cardtype name into the search bar. 
+
+This add-on also adds two special filter dialogs:
+
+- If you type in "all:" or "xx"  a dialog opens that contains tags and decknames in one selection dialog. This might might be useful if you have many tags and many subdecks. This is inspired by the search on ankimobile.
+- if you type in "cfn:" a dialog opens where you can select a card of a certain note type so that you'll e.g. get <code>("card:Card 2" and "note:Basic (optional reversed card)")</code>. "cfn" stands for "card from note". This feature was added in 2020-04.
 
 There are also shortcuts that open the filter dialogs directly (that you can adjust in the config), e.g. "Ctrl+H, T" opens the tag filer dialog in the browser even if the focus is not in the search box. 
 
@@ -8,10 +15,15 @@ By default a filter dialog that was opened by a shortcut runs the search. You ca
 
 In the dialog you can go down with the down arrow or Ctrl+N and go up with the up arrow or Ctrl+H or Ctrl+P.
 
-<b># Night Mode Compatibility</b>
-For me and some other people recent versions of this add-on work with the add-on <a href="https://ankiweb.net/shared/info/1496166067" rel="nofollow">night mode</a> if the night mode version was released on 2020-01-13 or later. Other people say it's not working with the add-on night mode for them (e.g. see negative review below). In this case: I would update Anki and update all the add-ons you have installed from the add-on dialog and restart Anki. If this still doesn't help I would disable Night mode in all dialogs from the main window -&gt; View -&gt; Night Mode -&gt; Enable in dialogs. 
+This addon also works in the "Create Filtered Decks" window.
 
 <b># Versions</b>
+- 2020-04-19 added "cfn:" dialog (and cards dialog now only shows card names), added extra button to only insert current text, don't add * when it's not allowed in Anki 2.1.22, etc.
+- 2020-04-08 in the filter dialog if the search string exactly matches a list entry always put it first
+- 2020-04-07 include "tag:none", "deck:filtered"; add "*" when triggered by shortcuts from the browser, improve fuzzypanel
+- 2020-04-06 filter dialog also works in the "Create Filtered Decks" window (only for Anki 2.1.22 or later)
+- 2020-03-24 better positioning for filter dialog, remove night-mode specific code (only for Anki 2.1.22 or later)
+- 2020-01-22 another night mode fix
 - 2020-01-18 fix for exclude (#3); if dialog was opened with a shortcut: if Alt was pressed when closing the dialog prepend "-", night mode warning
 - 2020-01-12 by default add '*' to inserted tags, adjustable in the config. Don't add '*' if ctrl was pressed when closing the dialog.
 - 2020-01-12 direct shortcuts, night mode compatibility, remembers dialog size

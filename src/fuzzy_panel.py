@@ -1,5 +1,27 @@
 """
-pyqt dialog that 
+Copyright (c): 2018  Rene Schallner
+               2019- ijgnd
+    
+This file (fuzzy_panel.py) is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This file is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this file.  If not, see <http://www.gnu.org/licenses/>.
+
+
+extracted from https://github.com/renerocksai/sublimeless_zk/tree/6738375c0e371f0c2fde0aa9e539242cfd2b4777/src
+mainly from fuzzypanel.py (both Classes) and utils.py (the helper functions from the 
+bottom of this file)
+
+
+This is a pyqt dialog that 
 - takes a list or dict
 - shows the listitems or dictkeys in a QListWidget that you can filter
 - returns select listitem or dictkey/dictvalue
@@ -16,31 +38,8 @@ syntax for the default search method:
 - " to search for space (e.g. "the wind"), 
 - _ to indicate that the line must start with this string (e.g. _wind won't match some wind)
 
-extracted from https://raw.githubusercontent.com/renerocksai/sublimeless_zk/
-mainly from fuzzypanel.py (both Classes) and utils.py (the helper functions from the 
-bottom of this file)
-
-Copyright (c): 2019 ijgnd
-               2018 Rene Schallner (sublimeless_zk)
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as
-published by the Free Software Foundation, either version 3 of the
-License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Affero General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-
-# from PyQt5.QtCore import *
-# from PyQt5.QtGui import *
-# from PyQt5.QtWidgets import *
 from aqt import mw
 from aqt.qt import *
 from aqt.utils import tooltip, restoreGeom, saveGeom
@@ -71,12 +70,13 @@ class PanelInputLine(QLineEdit):
             self.up_pressed.emit()
 
 class FilterDialog(QDialog):
-    def __init__(self, parent=None, parent_is_browser=False, values=None, windowtitle="", max_items=10000, prefill="", adjPos=False):
+    def __init__(self, parent=None, parent_is_browser=False, values=None, windowtitle="", max_items=10000, prefill="", adjPos=False, allowstar=True):
         super().__init__(parent)
         self.parent = parent
         self.parent_is_browser = parent_is_browser
         self.max_items = max_items
         self.adjustposition = adjPos
+        self.allowstar = allowstar
         self.setObjectName("FilterDialog")
         if windowtitle:
             self.setWindowTitle(windowtitle)
@@ -105,15 +105,20 @@ class FilterDialog(QDialog):
         self.cb_star = QCheckBox("append *")
         if gc("tag insertion - add '*' to matches"):
             self.cb_star.setChecked(True)
+        if not self.allowstar:
+            self.cb_star.setVisible(False)
         self.cb_neg = QCheckBox("prepend search with '-'")
         self.button_ok = QPushButton("&OK", self)
         self.button_ok.clicked.connect(self.accept)
         self.button_ok.setToolTip("Return")
         # self.button_ok.setAutoDefault(True)
         self.button_accept_current = QPushButton("O&K (only current Text)", self)
-        self.button_accept_current.clicked.connect(self.accept_current)
         key = gc("modifier for insert current text only")
         self.button_accept_current.setToolTip(f"{key} + Return")
+        if self.allowstar:  # shortcut only if this function makes sense
+            self.button_accept_current.clicked.connect(self.accept_current)
+        else:
+            self.button_accept_current.setVisible(False)
         # don't set in dialog because otherwise multiple modifiers aren't detected
         # self.button_accept_current.setShortcut(f"{key}+Return")
         # self.button_accept_current.setShortcut("Ctrl+Return")
@@ -176,6 +181,8 @@ class FilterDialog(QDialog):
                 return  # avoid IndexError: list index out of range on the following line
             self.selkey = self.fuzzy_items[row]
             self.inputline = self.input_line.text()
+            self.lineonly = False
+            self.selvalue = None
             if self.dict:
                 self.selvalue = self.dict[self.selkey]
             QDialog.accept(self)
@@ -189,6 +196,7 @@ class FilterDialog(QDialog):
         self.neg = self.cb_neg.isChecked()
         self.selvalue = self.input_line.text()
         self.selkey = self.input_line.text()
+        self.lineonly = True
         self.inputline = self.input_line.text()
         QDialog.accept(self)
 

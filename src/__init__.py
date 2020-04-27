@@ -15,10 +15,32 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+
+
+This add-on uses the file fuzzy_panel.py which has this copyright and permission notice:
+
+    Copyright (c): 2018  Rene Schallner
+                   2019- ijgnd
+        
+    This file (fuzzy_panel.py) is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This file is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this file.  If not, see <http://www.gnu.org/licenses/>.
+"""
 """
 
 
 from anki.hooks import wrap, addHook
+from anki.utils import pointVersion
 
 import aqt
 from aqt.browser import Browser
@@ -109,7 +131,7 @@ def overrides():
         negate = True
     # print(f"ctrl - lineonly is {lineonly}")
     # print(f"shift - override_autosearch_default is {override_autosearch_default}")
-    print(f"meta - override_add_star is {override_add_star}")
+    # print(f"meta - override_add_star is {override_add_star}")
     # print(f"alt - negate is {negate}")
     return lineonly, override_autosearch_default, override_add_star, negate
 
@@ -128,40 +150,62 @@ def onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg):
     if arg[-4:] == "tag:":
         if gc("modify_tag"):
             vals = (False, -4, True, tags(col))
+        allowstar = True
     elif arg[-5:] == "note:":
         if gc("modify_note"):
             vals = (False, -5, True, col.models.allNames())
+        allowstar = False if pointVersion() < 24 else True
     elif arg[-5:] == "card:":
         if gc("modify_card"):
-            d = {}
+            cards = set()
             for m in col.models.all():
-                modelname = m['name']
                 for t in m['tmpls']:
-                    d[t['name'] + " (" + modelname + ")"] = t['name']
-            vals = (False, -5, False, d)
+                    cards.add(t['name'])
+            vals = (False, -5, True, cards)
+        allowstar = False if pointVersion() < 24 else True      
+    elif arg == "cfn:":  # cards from note
+        d = {}
+        for m in col.models.all():
+            modelname = m['name']
+            for t in m['tmpls']:
+                d[t['name'] + " (" + modelname + ")"] = t['name']
+        vals = (False, -4, False, d)
+        allowstar = False
     elif arg[-5:] == "deck:":
         if gc("modify_deck"):
             vals = (False, -5, True, decknames(col, parent_is_browser))
+        allowstar = True
     elif xx1:
         alltags = ["tag:" + t for t in tags(col)]
         decks = ["deck:" + d  for d in decknames(col, parent_is_browser)]
         vals = (-len(c1), 0, True, alltags + decks)
+        allowstar = True
     elif xx2:
         alltags = ["tag:" + t for t in tags(col)]
         decks = ["deck:" + d  for d in decknames(col, parent_is_browser)]
         vals = (-len(c2), 0, True, alltags + decks)
+        allowstar = True
     if vals:
         if gc("autoadjust FilterDialog position", True):
             adjPos = True
         else:
             adjPos = False
-        d = FilterDialog(parent=parent, parent_is_browser=parent_is_browser, values=vals[3], adjPos=adjPos)
+        d = FilterDialog(parent=parent, parent_is_browser=parent_is_browser, values=vals[3], adjPos=adjPos, allowstar=allowstar)
         if d.exec():
+            # print('###############################')
             lineonly, override_autosearch_default, override_add_star, negate = overrides()
+            if d.lineonly:
+                lineonly = True
+            # print(f"d.selkey is {d.selkey}")
+            # print(f"d.inputline is {d.inputline}")
+            # print(f"d.selvalue is {d.selvalue}")
+            # print(f"lineonly is {lineonly}")
+            # print(f"allowstar is {allowstar}")
             if negate or d.neg:
                 neg = "-"
             else:
                 neg = ""
+
             if not vals[0]:
                 t = le.text()
                 n = vals[1]
@@ -174,11 +218,19 @@ def onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg):
                     b = t[:n] + "  " + neg + t[n:]  
             else:
                 b = neg + le.text()[:vals[0]]
-            if vals[2]:
-                sel = d.selkey
+            # print(f"b is:  {b}")
+
+            if not vals[2]:  # only True for cfn, allowstar is always wrong: quick workaround finish here
+                mycard = d.selvalue
+                mynote = d.selkey.lstrip(d.selvalue)[1:-1]
+                mysearch = f'''("card:{mycard}" and "note:{mynote}")'''
+                already_in_line = b[:-4]  # substract cfn:
+                le.setText(already_in_line + mysearch)
+                return (True, override_autosearch_default)
             else:
-                sel = d.selvalue
-            if lineonly:
+                sel = d.selkey
+            # print(f"sel is {sel}")
+            if lineonly and allowstar:
                 if xx1 or xx2:
                     # I need to add tag or deck
                     if d.selkey.startswith("tag:"):
@@ -191,9 +243,9 @@ def onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg):
             if sel in ["none", "filtered", "tag:none", "deck:filtered"]:
                 pass
             elif arg[-4:] == "tag:":
-                if (gc("tag insertion - add '*' to matches") == "all" or d.addstar) and not override_add_star:
+                if allowstar and (gc("tag insertion - add '*' to matches") == "all" or d.addstar) and not override_add_star:
                     sel = sel + '*'
-                elif gc("tag insertion - add '*' to matches") == "if_has_subtags" or d.addstar and not override_add_star:
+                elif allowstar and gc("tag insertion - add '*' to matches") == "if_has_subtags" or d.addstar and not override_add_star:
                     other_subtags_matched = []
                     selplus = sel + "::"
                     for e in vals[3]:
@@ -201,11 +253,18 @@ def onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg):
                             other_subtags_matched.append(e)
                     if other_subtags_matched:
                         sel = sel + '*'
+            # in 2.1.24 card: and note: can also use *
+            elif arg[-5:] == "card:":
+                if allowstar and (gc("tag insertion - add '*' to matches") == "all" or d.addstar) and not override_add_star:
+                    sel = sel + '*'
+            elif arg[-5:] == "note:":          
+                if allowstar and (gc("tag insertion - add '*' to matches") == "all" or d.addstar) and not override_add_star:
+                    sel = sel + '*'
             # ugly fix for xx etc.
             elif (c1 and arg[-len(c1):] == c1) or (c2 and arg[-len(c2):] == c2):
-                if gc("tag insertion - add '*' to matches") == "all" and not override_add_star:
+                if allowstar and gc("tag insertion - add '*' to matches") == "all" and not override_add_star:
                     sel = sel + '*'
-            elif arg[-5:] == "deck:" and gc("modify_deck"):
+            elif allowstar and arg[-5:] == "deck:" and gc("modify_deck"):
                  if d.addstar and not override_add_star:
                      sel = sel + '*'
             le.setText(b + '"' + sel + '"')
@@ -237,28 +296,42 @@ def _insert_helper(self, arg):
     #         ListForFilterDialog)
     if arg == "tag:":
         vals = (True, True, tags(self.col))
+        allowstar = True
     elif arg == "note:":
         vals = (True, True, self.col.models.allNames())
+        allowstar = False if pointVersion() < 24 else True
     elif arg == "card:":
+        cards = set()
+        for m in self.col.models.all():
+            for t in m['tmpls']:
+                cards.add(t['name'])
+        vals = (True, True, cards)
+        allowstar = False if pointVersion() < 24 else True      
+    elif arg == "cfn:":
         d = {}
         for m in self.col.models.all():
             modelname = m['name']
             for t in m['tmpls']:
                 d[t['name'] + " (" + modelname + ")"] = t['name']
         vals = (True, False, d)
+        allowstar = False
     elif arg == "deck:":
         vals = (True, True, decknames(self.col, True))
+        allowstar = True
     elif arg == "xx":
         alltags = ["tag:" + t for t in tags(self.col)]
         decks = ["deck:" + d  for d in decknames(self.col, True)]
         vals = (False, True, alltags + decks)
+        allowstar = True
     if gc("autoadjust FilterDialog position", True):
         adjPos = True
     else:
         adjPos = False
-    d = FilterDialog(parent=self, parent_is_browser=True, values=vals[2], adjPos=adjPos)
+    d = FilterDialog(parent=self, parent_is_browser=True, values=vals[2], adjPos=adjPos, allowstar=allowstar)
     if d.exec():
         lineonly, override_autosearch_default, override_add_star, negate = overrides()
+        if d.lineonly:
+            lineonly = True
 
         t = le.text()
         # clear preset text if necessary
@@ -268,7 +341,7 @@ def _insert_helper(self, arg):
             sel = d.selkey
         else:
             sel = d.selvalue
-        if lineonly:
+        if lineonly and allowstar:
             if arg == "xx":
                 # I need to add tag or deck
                 if d.selkey.startswith("tag:"):
@@ -281,9 +354,9 @@ def _insert_helper(self, arg):
         if sel in ["none", "filtered", "tag:none", "deck:filtered"]:
             pass
         elif arg == "tag:":
-            if (gc("tag insertion - add '*' to matches") == "all" or d.addstar) and not override_add_star:
+            if allowstar and (gc("tag insertion - add '*' to matches") == "all" or d.addstar) and not override_add_star:
                 sel = sel + '*'
-            elif gc("tag insertion - add '*' to matches") == "if_has_subtags" or d.addstar and not override_add_star:
+            elif allowstar and gc("tag insertion - add '*' to matches") == "if_has_subtags" or d.addstar and not override_add_star:
                 other_subtags_matched = []
                 selplus = sel + "::"
                 for e in vals[2]:
@@ -291,11 +364,18 @@ def _insert_helper(self, arg):
                         other_subtags_matched.append(e)
                 if other_subtags_matched:
                     sel = sel + '*'
-        elif arg == "deck:" and gc("modify_deck"):
+        elif allowstar and arg == "deck:" and gc("modify_deck"):
             if d.addstar and not override_add_star:
                 sel = sel + '*'
+        # in 2.1.24 card: and note: can also use *
+        elif arg == "card:":
+            if allowstar and (gc("tag insertion - add '*' to matches") == "all" or d.addstar) and not override_add_star:
+                sel = sel + '*'
+        elif arg == "note:":          
+            if allowstar and (gc("tag insertion - add '*' to matches") == "all" or d.addstar) and not override_add_star:
+                sel = sel + '*'
         # ugly fix for xx etc.
-        elif arg == "xx" and gc("modify_deck"):
+        elif allowstar and arg == "xx" and gc("modify_deck"):
             if d.addstar and not override_add_star:
                 sel = sel + '*'
 
