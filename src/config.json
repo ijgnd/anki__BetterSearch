@@ -3,6 +3,7 @@
     "autoadjust FilterDialog position": true,
     "custom tag&deck string 1": "xx",
     "custom tag&deck string 2": "all:",
+    "ignore upper and lower case (case insensitive search)": false,
     "modifier for override autosearch default": "Shift",
     "modifier for override add * default": "Meta",
     "modifier for negate": "Alt",

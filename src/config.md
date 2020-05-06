@@ -17,6 +17,12 @@ search box.
 
 &nbsp;
 
+- `ignore upper and lower case (case insensitive search)` (default is "false"): if this setting 
+is "true" the search will be case insensitive. If "false" (the default) typing only in lower case 
+means case insensitive search while one upper case character makes the search case sensitive.
+
+&nbsp;
+
 - `modify_card` (default is true): when you type into the browser search box if the last 
 characters in the search box are "card:" a dialog with a list of your card types is opened. 
 The selected entry is inserted into the search box.

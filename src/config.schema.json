@@ -23,6 +23,11 @@
         "default": "all:",
         "description": ""
     },
+    "ignore upper and lower case (case insensitive search)": {
+        "type": "boolean",
+        "default": false,
+        "description": ""
+    },
     "modifier for override autosearch default": {
         "type": "string",
         "enum": [ "Shift", "Meta", "Alt", "Ctrl" ],

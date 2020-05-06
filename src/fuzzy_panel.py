@@ -272,6 +272,8 @@ class FilterDialog(QDialog):
 
 def process_search_string_withStart(search_terms, keys, max):
     """inspired by find_in_files from sublimelesszk"""
+    if gc("ignore upper and lower case (case insensitive search)"):
+        search_terms = search_terms.lower()
     search_terms = split_search_terms_withStart(search_terms)
     results = []
     for lent in keys:
