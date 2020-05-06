@@ -41,7 +41,20 @@ syntax for the default search method:
 """
 
 from aqt import mw
-from aqt.qt import *
+from aqt.qt import (
+    QCheckBox,
+    QDialog,
+    QEvent,
+    QHBoxLayout,
+    QKeySequence,
+    QLineEdit,
+    QListWidget,
+    QPushButton,
+    Qt,
+    QVBoxLayout,
+    QWidget,
+    pyqtSignal,
+)
 from aqt.utils import tooltip, restoreGeom, saveGeom
 
 from .config import gc
