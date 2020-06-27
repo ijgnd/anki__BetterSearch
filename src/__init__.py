@@ -64,7 +64,7 @@ def onDynSetupSearchEditTextChange(self, arg):
     lineedit = self.sender()  # https://stackoverflow.com/a/33981172
     mw = self.mw
     col = self.mw.col
-    onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg)
+    onSearchEditTextChange(parent, parent_is_browser, lineedit.text, lineedit.setText, mw, col, arg)
 DeckConf.onDynSetupSearchEditTextChange = onDynSetupSearchEditTextChange
 
 
@@ -91,7 +91,7 @@ def onBrowserSearchEditTextChange(self, arg):
     lineedit = self.form.searchEdit.lineEdit()
     mw = self.mw
     col = self.col
-    dialogclosed = onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg)
+    dialogclosed = onSearchEditTextChange(parent, parent_is_browser, lineedit.text, lineedit.setText, mw, col, arg)
     if dialogclosed and dialogclosed[1]:
         self.onSearchActivated()
 Browser.onBrowserSearchEditTextChange = onBrowserSearchEditTextChange
@@ -136,8 +136,7 @@ def overrides():
     return lineonly, override_autosearch_default, override_add_star, negate
 
 
-def onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg):
-    le = lineedit
+def onSearchEditTextChange(parent, parent_is_browser, func_gettext, func_settext, mw, col, arg):
     vals = False
     c1 = gc("custom tag&deck string 1", "")
     xx1 = c1 and arg[-len(c1):] == c1
@@ -207,7 +206,7 @@ def onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg):
                 neg = ""
 
             if not vals[0]:
-                t = le.text()
+                t = func_gettext()
                 n = vals[1]
                 # multiple runs of insert_helper are still separated by spaces and in other 
                 # situations this makes the search more readable
@@ -217,7 +216,7 @@ def onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg):
                 else:
                     b = t[:n] + "  " + neg + t[n:]  
             else:
-                b = neg + le.text()[:vals[0]]
+                b = neg + func_gettext()[:vals[0]]
             # print(f"b is:  {b}")
 
             if not vals[2]:  # only True for cfn, allowstar is always wrong: quick workaround finish here
@@ -225,7 +224,7 @@ def onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg):
                 mynote = d.selkey.lstrip(d.selvalue)[1:-1]
                 mysearch = f'''("card:{mycard}" and "note:{mynote}")'''
                 already_in_line = b[:-4]  # substract cfn:
-                le.setText(already_in_line + mysearch)
+                func_settext(already_in_line + mysearch)
                 return (True, override_autosearch_default)
             else:
                 sel = d.selkey
@@ -267,7 +266,7 @@ def onSearchEditTextChange(parent, parent_is_browser, lineedit, mw, col, arg):
             elif allowstar and arg[-5:] == "deck:" and gc("modify_deck"):
                  if d.addstar and not override_add_star:
                      sel = sel + '*'
-            le.setText(b + '"' + sel + '"')
+            func_settext(b + '"' + sel + '"')
             return (True, override_autosearch_default)  # shiftmod toggle default search trigger setting 
 
 
