@@ -111,6 +111,34 @@ def tags(col):
     return sorted(tags)
 
 
+def is_values():
+    return [
+        "is:due",
+        "is:new",
+        "is:learn",
+        "is:review",
+        "is:suspended",
+        "is:buried",
+        "is:learn is:review",
+        "-is:learn is:review",
+        "is:learn -is:review",
+    ]
+
+
+def is_values_with_explanations():
+    return {
+    "is:due (review cards and learning cards waiting to be studied)" : "is:due",
+    "is:new (new cards)" : "is:new",
+    "is:learn (cards in learning)" : "is:learn",
+    "is:review (reviews (both due and not due) and lapsed cards)" : "is:review",
+    "is:suspended (cards that have been manually suspended)" : "is:suspended",
+    "is:buried (cards that have been buried, either automatically (siblings) or manually)" : "is:buried",
+    "is:learn is:review (cards that have lapsed and are awaiting relearning)" : "is:learn is:review",
+    "-is:learn is:review (review cards, not including lapsed cards)" : "-is:learn is:review",
+    "is:learn -is:review (cards that are in learning for the first time)" : "is:learn -is:review",
+    }
+
+
 def overrides():
     # 4 Modifiers = 4 Overrides
     #   SHIFT: override autosearch default
@@ -144,15 +172,25 @@ def onSearchEditTextChange(parent, parent_is_browser, func_gettext, func_settext
     xx2 = c2 and arg[-len(c2):] == c2
     # vals = (remove some characters from the right of searchboxstring, 
     #         InsertSpaceAtPos, 
-    #         UseFilterDialogKey(orValue),
-    #         ListForFilterDialog)
+    #         UseFilterDialogValue: if values tuple with info, if list is False
+    #         FilterDialogLines
+    #         surround search with ""
+    #        )
+    if arg[-3:] == "is:":
+        if gc("modify_is"):
+            if gc("modify_is__show_explanations"):
+                vals = (False, -3, "is_with_explanations", is_values_with_explanations(), False)
+            else:
+                print('in false false')
+                vals = (-3, -3, False, is_values(), False)
+        allowstar = False
     if arg[-4:] == "tag:":
         if gc("modify_tag"):
-            vals = (False, -4, True, tags(col))
+            vals = (False, -4, False, tags(col), False)
         allowstar = True
     elif arg[-5:] == "note:":
         if gc("modify_note"):
-            vals = (False, -5, True, col.models.allNames())
+            vals = (False, -5, False, col.models.allNames(), True)
         allowstar = False if pointVersion() < 24 else True
     elif arg[-5:] == "card:":
         if gc("modify_card"):
@@ -160,7 +198,7 @@ def onSearchEditTextChange(parent, parent_is_browser, func_gettext, func_settext
             for m in col.models.all():
                 for t in m['tmpls']:
                     cards.add(t['name'])
-            vals = (False, -5, True, cards)
+            vals = (False, -5, False, cards, True)
         allowstar = False if pointVersion() < 24 else True      
     elif arg == "cfn:":  # cards from note
         d = {}
@@ -168,22 +206,23 @@ def onSearchEditTextChange(parent, parent_is_browser, func_gettext, func_settext
             modelname = m['name']
             for t in m['tmpls']:
                 d[t['name'] + " (" + modelname + ")"] = t['name']
-        vals = (False, -4, False, d)
+        vals = (False, -4, "cfn", d, True)
         allowstar = False
     elif arg[-5:] == "deck:":
         if gc("modify_deck"):
-            vals = (False, -5, True, decknames(col, parent_is_browser))
+            vals = (False, -5, False, decknames(col, parent_is_browser), True)
         allowstar = True
     elif xx1:
         alltags = ["tag:" + t for t in tags(col)]
         decks = ["deck:" + d  for d in decknames(col, parent_is_browser)]
-        vals = (-len(c1), 0, True, alltags + decks)
+        vals = (-len(c1), 0, False, alltags + decks, True)
         allowstar = True
     elif xx2:
         alltags = ["tag:" + t for t in tags(col)]
         decks = ["deck:" + d  for d in decknames(col, parent_is_browser)]
-        vals = (-len(c2), 0, True, alltags + decks)
+        vals = (-len(c2), 0, False, alltags + decks, True)
         allowstar = True
+
     if vals:
         if gc("autoadjust FilterDialog position", True):
             adjPos = True
@@ -219,13 +258,21 @@ def onSearchEditTextChange(parent, parent_is_browser, func_gettext, func_settext
                 b = neg + func_gettext()[:vals[0]]
             # print(f"b is:  {b}")
 
-            if not vals[2]:  # only True for cfn, allowstar is always wrong: quick workaround finish here
-                mycard = d.selvalue
-                mynote = d.selkey.lstrip(d.selvalue)[1:-1]
-                mysearch = f'''("card:{mycard}" and "note:{mynote}")'''
-                already_in_line = b[:-4]  # substract cfn:
-                func_settext(already_in_line + mysearch)
-                return (True, override_autosearch_default)
+
+            # vals[2] = UseFilterDialogValue: if values tuple with info, if list is False
+            # sofar only True for cases where allowstar is always wrong: quick workaround finish here
+            if vals[2]:
+                if vals[2] == "cfn":
+                    mycard = d.selvalue
+                    mynote = d.selkey.lstrip(d.selvalue)[1:-1]
+                    mysearch = f'''("card:{mycard}" and "note:{mynote}")'''
+                    already_in_line = b[:-4]  # substract cfn:
+                    func_settext(already_in_line + mysearch)
+                    return (True, override_autosearch_default)
+                elif vals[2] == "is_with_explanations":
+                    already_in_line = b[:-3]  # substract is:
+                    func_settext(already_in_line + d.selvalue)
+                    return (True, override_autosearch_default)               
             else:
                 sel = d.selkey
             # print(f"sel is {sel}")
@@ -266,7 +313,9 @@ def onSearchEditTextChange(parent, parent_is_browser, func_gettext, func_settext
             elif allowstar and arg[-5:] == "deck:" and gc("modify_deck"):
                  if d.addstar and not override_add_star:
                      sel = sel + '*'
-            func_settext(b + '"' + sel + '"')
+            if vals[4]:  # surround with ""
+                sel = '"' + sel + '"'
+            func_settext(b + sel)
             return (True, override_autosearch_default)  # shiftmod toggle default search trigger setting 
 
 
