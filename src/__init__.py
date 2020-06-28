@@ -1,6 +1,7 @@
 """
 Add-on for Anki
 Copyright (c): 2020 ijgnd
+               lovac42 (toolbar.py)
 
 
 This program is free software: you can redistribute it and/or modify
@@ -44,6 +45,9 @@ from anki.utils import pointVersion
 
 import aqt
 from aqt.browser import Browser
+from aqt.gui_hooks import (
+    browser_menus_did_init,
+)
 from aqt.qt import *
 from aqt.utils import getText, showCritical
 from aqt.dyndeckconf import DeckConf
@@ -51,6 +55,7 @@ from aqt.dyndeckconf import DeckConf
 from .config import conf_to_key, gc, shiftdown, ctrldown, altdown, metadown
 from .date_dialog import DateRangeDialog
 from .fuzzy_panel import FilterDialog
+from .toolbar import getMenu
 
 
 def dyn_setup_search(self):
@@ -68,6 +73,10 @@ def onDynSetupSearchEditTextChange(self, arg):
     col = self.mw.col
     onSearchEditTextChange(parent, move_dialog_in_browser, include_filtered_in_deck, lineedit.text, lineedit.setText, mw, col, arg)
 DeckConf.onDynSetupSearchEditTextChange = onDynSetupSearchEditTextChange
+
+
+
+
 
 
 tup = None
@@ -98,6 +107,40 @@ def onBrowserSearchEditTextChange(self, arg):
     if dialogclosed and dialogclosed[1]:
         self.onSearchActivated()
 Browser.onBrowserSearchEditTextChange = onBrowserSearchEditTextChange
+
+
+def date_range_dialog_helper(self, term):
+    # self is browser
+    d = DateRangeDialog(self, term)
+    if d.exec():
+        TriggerSearchAfter = gc("modify: window opened by search strings triggers search by default")
+        lineonly, override_autosearch_default, override_add_star, negate = overrides()
+        if override_autosearch_default:
+            TriggerSearchAfter ^= True
+        le = self.form.searchEdit.lineEdit()
+        new = le.text() + "  " + d.searchtext
+        le.setText(new)
+        if TriggerSearchAfter:
+            self.onSearchActivated()
+
+
+def setupBrowserMenu(self):
+    # self is browser
+    view = getMenu(self, "&View")
+
+    action = QAction(self)
+    action.setText("Show Date Range Dialog for Added")
+    view.addAction(action)
+    action.triggered.connect(lambda _, b=self, t="added": date_range_dialog_helper(b, t))
+
+    action = QAction(self)
+    action.setText("Show Date Range Dialog for Rated")
+    view.addAction(action)
+    action.triggered.connect(lambda _, b=self, t="rated": date_range_dialog_helper(b, t))
+browser_menus_did_init.append(setupBrowserMenu)
+
+
+
 
 
 def decknames(col, also_include_filtered):
