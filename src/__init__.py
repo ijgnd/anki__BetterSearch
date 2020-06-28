@@ -152,6 +152,15 @@ def props():
         "prop:reps<10 - cards that have been answered less than 10 times": "prop:reps<",
     }
 
+
+def fieldnames():
+    fieldnames = set()
+    for model in aqt.mw.col.models.all():
+        for t in model["flds"]:
+            fieldnames.add(t["name"] + ":")
+    return list(fieldnames)
+
+
 def overrides():
     # 4 Modifiers = 4 Overrides
     #   SHIFT: override autosearch default
@@ -191,6 +200,29 @@ def onSearchEditTextChange(parent, move_dialog_in_browser, include_filtered_in_d
     #         5 infotext
     #         6 windowtitle
     #        )
+    if arg[-6:] == "field:":
+        if gc("modify_field"):
+            infotxt = (
+"<b>"
+"This dialog only inserts the field name to search. After closing the dialog you <br>"
+"must enter the actual search term for the field.</b><br>"
+"When searching fields keep in mind that searching on fields requires an 'exact match' by default.<br>"
+"Examples from the manual:<br><br>"
+"front:dog<br>"
+'&nbsp;&nbsp;&nbsp;&nbsp;find notes with a field named "Front" of exactly “dog”. A field that says “a dog” will not match.<br>'
+'front:*dog*<br>'
+'&nbsp;&nbsp;&nbsp;&nbsp;find notes with a field named "Front" containing dog somewhere<br>'
+'front:<br>'
+'&nbsp;&nbsp;&nbsp;&nbsp;find notes that have an empty field named "Front"<br>'
+'front:_*<br>'
+'&nbsp;&nbsp;&nbsp;&nbsp;find notes that have a non-empty field named "Front"<br>'
+'front:*<br>'
+'&nbsp;&nbsp;&nbsp;&nbsp;find notes that have a field named "Front", empty or not<br>'
+'fr*:text<br>'
+'&nbsp;&nbsp;&nbsp;&nbsp;find notes in a field whose name is starting with “fr”<br>'
+            )
+            vals = (-6, -6, False, fieldnames(), True, infotxt, "Anki: Select field to search")
+        allowstar = False          
     if arg[-5:] == "prop:":
         if gc("modify_props"):
             infotxt = "<b>After closing the dialog you must adjust what's inserted with your numbers</b>"
