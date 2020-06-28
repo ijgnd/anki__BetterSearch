@@ -3,6 +3,8 @@
     "autoadjust FilterDialog position": true,
     "custom tag&deck string 1": "xx",
     "custom tag&deck string 2": "all:",
+    "date range dialog for added: string": "dadded:",
+    "date range dialog for rated: string": "drated:",
     "ignore upper and lower case (case insensitive search)": false,
     "modifier for override autosearch default": "Shift",
     "modifier for override add * default": "Meta",

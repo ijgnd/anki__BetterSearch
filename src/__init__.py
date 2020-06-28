@@ -214,6 +214,10 @@ def onSearchEditTextChange(parent, move_dialog_in_browser, include_filtered_in_d
     xx1 = c1 and arg[-len(c1):] == c1
     c2 = gc("custom tag&deck string 2", "")
     xx2 = c2 and arg[-len(c2):] == c2
+    da = gc("date range dialog for added: string")
+    da_match = da and arg[-len(da):] == da
+    dr = gc("date range dialog for rated: string")
+    dr_match = da and arg[-len(dr):] == dr   
     # vals = (0 remove some characters from the right of searchboxstring, 
     #         1 InsertSpaceAtPos, 
     #         2 UseFilterDialogValue: if True (use a string that describes it) is True, if list is False
@@ -224,24 +228,24 @@ def onSearchEditTextChange(parent, move_dialog_in_browser, include_filtered_in_d
     #         7 show_prepend_minus_button
     #        )
     # I deliberately use "dr" because usually you won't need a date picker dialog
-    if arg[-7:] == "drated:":
+    if dr_match:
         d = DateRangeDialog(parent, "rated")
         if d.exec():
             TriggerSearchAfter = gc("modify: window opened by search strings triggers search by default")
             lineonly, override_autosearch_default, override_add_star, negate = overrides()
             if override_autosearch_default:
                 TriggerSearchAfter ^= True
-            func_settext(func_gettext()[:-7] + "  " + d.searchtext)
+            func_settext(func_gettext()[:len(dr)] + "  " + d.searchtext)
             return (True, TriggerSearchAfter)
     # I deliberately use "da" because usually you won't need a date picker dialog 
-    if arg[-7:] == "dadded:":
+    if da_match:
         d = DateRangeDialog(parent, "added")
         if d.exec():
             TriggerSearchAfter = gc("modify: window opened by search strings triggers search by default")
             lineonly, override_autosearch_default, override_add_star, negate = overrides()
             if override_autosearch_default:
                 TriggerSearchAfter ^= True
-            func_settext(func_gettext()[:-7] + "  " + d.searchtext)
+            func_settext(func_gettext()[:-len(da)] + "  " + d.searchtext)
             return (True, override_autosearch_default)
     if arg[-6:] == "field:":
         if gc("modify_field"):
