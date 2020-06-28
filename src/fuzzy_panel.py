@@ -95,7 +95,8 @@ class FilterDialog(QDialog):
         prefill="",
         adjPos=False,
         allowstar=True,
-        infotext=""
+        infotext="",
+        show_prepend_minus_button=True,
     ):
         super().__init__(parent)
         self.parent = parent
@@ -103,6 +104,7 @@ class FilterDialog(QDialog):
         self.max_items = max_items
         self.adjustposition = adjPos
         self.allowstar = allowstar
+        self.show_prepend_minus_button = show_prepend_minus_button
         self.infotext = infotext
         self.setObjectName("FilterDialog")
         if windowtitle:
@@ -160,7 +162,8 @@ class FilterDialog(QDialog):
         button_box = QHBoxLayout()
         button_box.addStretch(1)
         button_box.addWidget(self.cb_star)
-        button_box.addWidget(self.cb_neg)
+        if self.show_prepend_minus_button:
+            button_box.addWidget(self.cb_neg)
         button_box.addWidget(self.button_ok)
         button_box.addWidget(self.button_accept_current)
         button_box.addWidget(self.button_cancel)

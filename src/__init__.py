@@ -186,23 +186,7 @@ def overrides():
     return lineonly, override_autosearch_default, override_add_star, negate
 
 
-def onSearchEditTextChange(parent, move_dialog_in_browser, include_filtered_in_deck, func_gettext, func_settext, mw, col, arg):
-    vals = False
-    c1 = gc("custom tag&deck string 1", "")
-    xx1 = c1 and arg[-len(c1):] == c1
-    c2 = gc("custom tag&deck string 2", "")
-    xx2 = c2 and arg[-len(c2):] == c2
-    # vals = (0 remove some characters from the right of searchboxstring, 
-    #         1 InsertSpaceAtPos, 
-    #         2 UseFilterDialogValue: if True (use a string that describes it) is True, if list is False
-    #         3 FilterDialogLines
-    #         4 surround search with ""
-    #         5 infotext
-    #         6 windowtitle
-    #        )
-    if arg[-6:] == "field:":
-        if gc("modify_field"):
-            infotxt = (
+field_infotext = (
 "<b>"
 "This dialog only inserts the field name to search. After closing the dialog you <br>"
 "must enter the actual search term for the field.</b><br>"
@@ -220,28 +204,47 @@ def onSearchEditTextChange(parent, move_dialog_in_browser, include_filtered_in_d
 '&nbsp;&nbsp;&nbsp;&nbsp;find notes that have a field named "Front", empty or not<br>'
 'fr*:text<br>'
 '&nbsp;&nbsp;&nbsp;&nbsp;find notes in a field whose name is starting with “fr”<br>'
-            )
-            vals = (-6, -6, False, fieldnames(), True, infotxt, "Anki: Select field to search")
+)
+
+
+def onSearchEditTextChange(parent, move_dialog_in_browser, include_filtered_in_deck, func_gettext, func_settext, mw, col, arg):
+    vals = False
+    c1 = gc("custom tag&deck string 1", "")
+    xx1 = c1 and arg[-len(c1):] == c1
+    c2 = gc("custom tag&deck string 2", "")
+    xx2 = c2 and arg[-len(c2):] == c2
+    # vals = (0 remove some characters from the right of searchboxstring, 
+    #         1 InsertSpaceAtPos, 
+    #         2 UseFilterDialogValue: if True (use a string that describes it) is True, if list is False
+    #         3 FilterDialogLines
+    #         4 surround search with ""
+    #         5 infotext
+    #         6 windowtitle
+    #         7 show_prepend_minus_button
+    #        )
+    if arg[-6:] == "field:":
+        if gc("modify_field"):
+            vals = (-6, -6, False, fieldnames(), True, field_infotext, "Anki: Select field to search", True)
         allowstar = False          
     if arg[-5:] == "prop:":
         if gc("modify_props"):
             infotxt = "<b>After closing the dialog you must adjust what's inserted with your numbers</b>"
-            vals = (False, -5, "prop", props(), False, infotxt, "Anki: Select properties to search")
+            vals = (False, -5, "prop", props(), False, infotxt, "Anki: Select properties to search", True)
         allowstar = False
     if arg[-3:] == "is:":
         if gc("modify_is"):
             if gc("modify_is__show_explanations"):
-                vals = (False, -3, "is_with_explanations", is_values_with_explanations(), False, False, "Anki: Search by Card State")
+                vals = (False, -3, "is_with_explanations", is_values_with_explanations(), False, False, "Anki: Search by Card State", True)
             else:
-                vals = (-3, -3, False, is_values(), False, False, "Anki: Search by Card State")
+                vals = (-3, -3, False, is_values(), False, False, "Anki: Search by Card State", True)
         allowstar = False
     if arg[-4:] == "tag:":
         if gc("modify_tag"):
-            vals = (False, -4, False, tags(col), False, False, "Anki: Select tag to search")
+            vals = (False, -4, False, tags(col), False, False, "Anki: Select tag to search", True)
         allowstar = True
     elif arg[-5:] == "note:":
         if gc("modify_note"):
-            vals = (False, -5, False, col.models.allNames(), True, False, "Anki: Select Note Type to search")
+            vals = (False, -5, False, col.models.allNames(), True, False, "Anki: Select Note Type to search", True)
         allowstar = False if pointVersion() < 24 else True
     elif arg[-5:] == "card:":
         if gc("modify_card"):
@@ -249,29 +252,43 @@ def onSearchEditTextChange(parent, move_dialog_in_browser, include_filtered_in_d
             for m in col.models.all():
                 for t in m['tmpls']:
                     cards.add(t['name'])
-            vals = (False, -5, False, cards, True, False, "Anki: Select Card (Type) Name to search")
+            vals = (False, -5, False, cards, True, False, "Anki: Select Card (Type) Name to search", True)
         allowstar = False if pointVersion() < 24 else True      
-    elif arg == "cfn:":  # cards from note
+    elif arg[-4:] == "cfn:":  # cards from note
         d = {}
         for m in col.models.all():
             modelname = m['name']
             for t in m['tmpls']:
-                d[t['name'] + " (" + modelname + ")"] = t['name']
-        vals = (False, -4, "cfn", d, True, False, "Anki: Select Card (Type) Name from selected Note Type")
+                d[t['name'] + " (" + modelname + ")"] = (t['name'], modelname)
+        vals = (False, -4, "cfn", d, True, False, "Anki: Select Card (Type) Name from selected Note Type", False)
+        allowstar = False
+    if arg[-4:] == "fvn:":
+        fvn_infotext = (
+"<b>"
+"Besides the note type name this dialog only inserts the field name to search. After closing <br>"
+"the dialog you must enter the actual search term for the field.<br>"
+"</b>"
+        )
+        d = {}
+        for m in col.models.all():
+            modelname = m['name']
+            for f in m['flds']:
+                d[f['name'] + " (" + modelname + ")"] = (f['name'], modelname)
+        vals = (False, -4, "fvn", d, True, fvn_infotext, "Anki: Select Field to search from selected Note Type", False)
         allowstar = False
     elif arg[-5:] == "deck:":
         if gc("modify_deck"):
-            vals = (False, -5, False, decknames(col, include_filtered_in_deck), True, False, "Anki: Select Deck to search")
+            vals = (False, -5, False, decknames(col, include_filtered_in_deck), True, False, "Anki: Select Deck to search", True)
         allowstar = True
     elif xx1:
         alltags = ["tag:" + t for t in tags(col)]
         decks = ["deck:" + d  for d in decknames(col, include_filtered_in_deck)]
-        vals = (-len(c1), 0, False, alltags + decks, True, False, "Anki: Select from decks and tags")
+        vals = (-len(c1), 0, False, alltags + decks, True, False, "Anki: Select from decks and tags", True)
         allowstar = True
     elif xx2:
         alltags = ["tag:" + t for t in tags(col)]
         decks = ["deck:" + d  for d in decknames(col, include_filtered_in_deck)]
-        vals = (-len(c2), 0, False, alltags + decks, True, False, "Anki: Select from decks and tags")
+        vals = (-len(c2), 0, False, alltags + decks, True, False, "Anki: Select from decks and tags", True)
         allowstar = True
 
     if vals:
@@ -287,6 +304,7 @@ def onSearchEditTextChange(parent, move_dialog_in_browser, include_filtered_in_d
             adjPos=adjPos,
             allowstar=allowstar,
             infotext=vals[5],
+            show_prepend_minus_button=vals[7]
         )
         if d.exec():
             # print('###############################')
@@ -322,10 +340,17 @@ def onSearchEditTextChange(parent, move_dialog_in_browser, include_filtered_in_d
             # sofar only True for cases where allowstar is always wrong: quick workaround finish here
             if vals[2]:
                 if vals[2] == "cfn":
-                    mycard = d.selvalue
-                    mynote = d.selkey.lstrip(d.selvalue)[1:-1]
+                    mycard = d.selvalue[0]
+                    mynote = d.selvalue[1]
                     mysearch = f'''("card:{mycard}" and "note:{mynote}")'''
                     already_in_line = b[:-4]  # substract cfn:
+                    func_settext(already_in_line + mysearch)
+                    return (True, override_autosearch_default)
+                if vals[2] == "fvn":
+                    field = d.selvalue[0]
+                    mynote = d.selvalue[1]
+                    mysearch = f''' "note:{mynote}" "{field}:" '''
+                    already_in_line = b[:-4]  # substract fvn:
                     func_settext(already_in_line + mysearch)
                     return (True, override_autosearch_default)
                 elif vals[2] == "is_with_explanations":
