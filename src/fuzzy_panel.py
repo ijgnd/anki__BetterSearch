@@ -82,8 +82,19 @@ class PanelInputLine(QLineEdit):
         elif mod and (key == Qt.Key_H):
             self.up_pressed.emit()
 
+
 class FilterDialog(QDialog):
-    def __init__(self, parent=None, parent_is_browser=False, values=None, windowtitle="", max_items=10000, prefill="", adjPos=False, allowstar=True):
+    def __init__(
+        self,
+        parent=None,
+        parent_is_browser=False,
+        values=None,
+        windowtitle="",
+        max_items=10000,
+        prefill="",
+        adjPos=False,
+        allowstar=True,
+    ):
         super().__init__(parent)
         self.parent = parent
         self.parent_is_browser = parent_is_browser
@@ -111,7 +122,7 @@ class FilterDialog(QDialog):
         self.input_line = PanelInputLine()
         self.list_box = QListWidget()
         for i in range(self.max_items):
-            self.list_box.insertItem(i, '')
+            self.list_box.insertItem(i, "")
         vlay.addWidget(self.input_line)
         vlay.addWidget(self.list_box)
 
@@ -170,9 +181,9 @@ class FilterDialog(QDialog):
         # line.cursor() refers to mouse position
         cursor = line.cursorPosition()
         if sbar.isVisible():
-            hori_offset = self.parent.x() + sbar.width() + 125 + int(4*cursor)
+            hori_offset = self.parent.x() + sbar.width() + 125 + int(4 * cursor)
         else:
-            hori_offset = self.parent.x() + 125 + int(4*cursor)
+            hori_offset = self.parent.x() + 125 + int(4 * cursor)
         screen = mw.app.desktop().screenGeometry()
         if hori_offset + self.width() > screen.width():
             hori_offset = screen.width() - self.width()
@@ -190,7 +201,7 @@ class FilterDialog(QDialog):
             self.addstar = self.cb_star.isChecked()
             self.neg = self.cb_neg.isChecked()
             row = self.list_box.currentRow()
-            if row > len(self.fuzzy_items)-1:  # list are zero indexed
+            if row > len(self.fuzzy_items) - 1:  # list are zero indexed
                 return  # avoid IndexError: list index out of range on the following line
             self.selkey = self.fuzzy_items[row]
             self.inputline = self.input_line.text()
@@ -200,7 +211,7 @@ class FilterDialog(QDialog):
                 self.selvalue = self.dict[self.selkey]
             QDialog.accept(self)
         else:
-            tooltip('nothing selected. Aborting ...')
+            tooltip("nothing selected. Aborting ...")
             return
 
     def accept_current(self):
@@ -225,7 +236,7 @@ class FilterDialog(QDialog):
 
     def text_changed(self):
         search_string = self.input_line.text()
-        FILTER_WITH = "slzk_mod"   # "slzk", "fuzzyfinder"
+        FILTER_WITH = "slzk_mod"  # "slzk", "fuzzyfinder"
         if FILTER_WITH == "fuzzyfinder":  # https://pypi.org/project/fuzzyfinder/
             if search_string:
                 self.fuzzy_items = list(fuzzyfinder(search_string, self.keys))[:self.max_items]   
@@ -245,7 +256,7 @@ class FilterDialog(QDialog):
     def up_pressed(self):
         row = self.list_box.currentRow()
         if row == 0:
-            self.list_box.setCurrentRow(len(self.fuzzy_items) - 1) 
+            self.list_box.setCurrentRow(len(self.fuzzy_items) - 1)
         else:
             self.list_box.setCurrentRow(row - 1)
 
@@ -293,7 +304,7 @@ def process_search_string_withStart(search_terms, keys, max):
                     break
                 elif atstart and not i.startswith(term):
                     break
-            else:   # not in
+            else:  # not in
                 if term in i:
                     break
                 elif atstart and i.startswith(term):
@@ -301,7 +312,7 @@ def process_search_string_withStart(search_terms, keys, max):
         else:
             results.append(lent)
     return results
-    
+
 
 def split_search_terms_withStart(search_string):
     """
@@ -318,11 +329,11 @@ def split_search_terms_withStart(search_string):
     pos = 0
     str_len = len(search_string)
     results = []
-    current_snippet = ''
+    current_snippet = ""
 
     literal_quote_sign = '"'
-    exclude_sign = '!'
-    startswith_sign = "_" 
+    exclude_sign = "!"
+    startswith_sign = "_"
 
     while pos < str_len:
         if search_string[pos:].startswith(literal_quote_sign):
@@ -332,21 +343,25 @@ def split_search_terms_withStart(search_string):
                 if current_snippet:
                     results.append((in_neg, at_start, current_snippet))
                 in_neg = False
-                current_snippet = ''
+                current_snippet = ""
             pos += 1
         elif search_string[pos:].startswith(exclude_sign) and not in_quotes and not current_snippet:
             in_neg = True
             pos += 1
-        elif search_string[pos:].startswith(startswith_sign) and not in_quotes and not current_snippet:
+        elif (
+            search_string[pos:].startswith(startswith_sign)
+            and not in_quotes
+            and not current_snippet
+        ):
             at_start = True
             pos += 1
-        elif search_string[pos] in (' ', '\t') and not in_quotes:
+        elif search_string[pos] in (" ", "\t") and not in_quotes:
             # push current snippet
             if current_snippet:
                 results.append((in_neg, at_start, current_snippet))
             in_neg = False
             at_start = False
-            current_snippet = ''
+            current_snippet = ""
             pos += 1
         else:
             current_snippet += search_string[pos]
@@ -387,7 +402,7 @@ def split_search_terms(search_string):
     pos = 0
     str_len = len(search_string)
     results = []
-    current_snippet = ''
+    current_snippet = ""
     while pos < str_len:
         if search_string[pos:].startswith('"'):
             in_quotes = not in_quotes
@@ -396,17 +411,17 @@ def split_search_terms(search_string):
                 if current_snippet:
                     results.append((in_neg, current_snippet))
                 in_neg = False
-                current_snippet = ''
+                current_snippet = ""
             pos += 1
-        elif search_string[pos:].startswith('!') and not in_quotes and not current_snippet:
+        elif search_string[pos:].startswith("!") and not in_quotes and not current_snippet:
             in_neg = True
             pos += 1
-        elif search_string[pos] in (' ', '\t') and not in_quotes:
+        elif search_string[pos] in (" ", "\t") and not in_quotes:
             # push current snippet
             if current_snippet:
                 results.append((in_neg, current_snippet))
             in_neg = False
-            current_snippet = ''
+            current_snippet = ""
             pos += 1
         else:
             current_snippet += search_string[pos]
