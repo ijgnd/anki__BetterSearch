@@ -21,7 +21,7 @@ from .help_dialog import MiniHelpSearch, mini_search_help_dialog_title
 from .split_string import split_to_multiline
 
 
-aqt.dialogs.register_dialog(mini_search_help_dialog_title, MiniHelpSearch, None)
+# aqt.dialogs.register_dialog(mini_search_help_dialog_title, MiniHelpSearch, None)
 
 
 searchbox_geom_name = "BSMH"
@@ -67,8 +67,8 @@ class SearchBox(QDialog):
             self.form.pb_filter.setVisible(False)
 
     def help_short(self):
-        print('in help short')
-        aqt.dialogs.open(mini_search_help_dialog_title, aqt.mw)
+        MiniHelpSearch(self)
+        #aqt.dialogs.open(mini_search_help_dialog_title, aqt.mw)
 
     def help_long(self):
         openHelp("searching")

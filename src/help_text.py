@@ -52,19 +52,10 @@ Browser quick insert add-on: words that open the filter dialog:
     return s
 
 
-
-from .help_string import help_string_for_actions_used
-
-helptext = """
-<div style="font-size: 120%;">
-<b>You can close this dialog once you've closed the multi-line search window</b>
-</div>
-<br><br>
-""" + help_string_for_actions_used() + """
-<br><br><br>
+helptext = help_string_for_actions_used() + """
+<br>
 <div style="font-size: 120%;">
 <b>About Searching in Anki</b>
 </div>
-some text
-
+Here's some text about Anki search in general.
 """
