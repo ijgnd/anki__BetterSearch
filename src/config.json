@@ -1,7 +1,7 @@
 {
     "Multiline Dialog: shortcut: open window": "Ctrl+t,s",
     "Multiline Dialog: Filter Button overwrites by default": false,
-    "Multiline Dialog: Shortcut inside: Open History": "Ctrl+H",
+    "Multiline Dialog: Shortcut inside: Open History": "Ctrl+H, h",
     "also use in create filtered deck dialog": true,
     "autoadjust FilterDialog position": true,
     "custom tag&deck string 1": "xx",
@@ -27,6 +27,7 @@
     "shortcut - focus search box and note selector dialog": "Ctrl+H, n",
     "shortcut - focus search box and tag selector dialog": "Ctrl+H, t",
     "shortcut - focus search box and tag/deck selector dialog": "Ctrl+H, m",
+    "shortcut - select entry from history in fuzzy dialog": "Ctrl+H, h",
     "shortcuts trigger search by default": true,
     "tag insertion - add '*' to matches": "all"
 } 
