@@ -47,4 +47,5 @@ def split_to_multiline(search_string):
     if current_snippet:
         results.append(current_snippet)
     results_string = "\n".join(results)
+    results_string = results_string.replace("(","(\n").replace(")","\n)").replace("\n\n","\n")
     return results_string
