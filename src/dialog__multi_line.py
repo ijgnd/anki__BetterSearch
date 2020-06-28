@@ -17,7 +17,7 @@ from aqt.utils import (
 from .config import gc
 from .filter_button import filter_button_cls
 from .forms import search_box
-from .help_dialog import MiniHelpSearch, mini_search_help_dialog_title
+from .dialog__help import MiniHelpSearch, mini_search_help_dialog_title
 from .split_string import split_to_multiline
 
 

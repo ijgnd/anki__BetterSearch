@@ -59,9 +59,9 @@ from aqt.utils import getText, showCritical
 from aqt.dyndeckconf import DeckConf
 
 from .config import conf_to_key, gc, shiftdown, ctrldown, altdown, metadown
-from .date_dialog import DateRangeDialog
+from .dialog__date import DateRangeDialog
 from .fuzzy_panel import FilterDialog
-from .multi_line_dialog import SearchBox
+from .dialog__multi_line import SearchBox
 from .toolbar import getMenu
 
 
