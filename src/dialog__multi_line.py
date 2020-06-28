@@ -3,6 +3,7 @@ from anki.utils import pointVersion
 import aqt
 from aqt.qt import (
     QDialog,
+    QKeySequence,
     QTextCursor,
     Qt,
     QVBoxLayout,
@@ -17,6 +18,7 @@ from aqt.utils import (
 from .config import gc
 from .filter_button import filter_button_cls
 from .forms import search_box
+from .fuzzy_panel import FilterDialog
 from .dialog__help import MiniHelpSearch, mini_search_help_dialog_title
 from .split_string import split_to_multiline
 
@@ -53,9 +55,14 @@ class SearchBox(QDialog):
         self.form.pb_rejected.setToolTip("Esc")
         self.form.pb_help_short.clicked.connect(self.help_short)
         self.form.pb_help_long.clicked.connect(self.help_long)
+        self.form.pb_history.clicked.connect(self.on_history)
 
-        # TODO
-        self.form.pb_history.setVisible(False)
+        history_tooltip_text = "overwrites the contents of the field"
+        cut = gc("Multiline Dialog: Shortcut inside: Open History")
+        if cut:
+            self.form.pb_history.setShortcut(QKeySequence(cut))
+            history_tooltip_text += f"(shortcut: {cut})"
+        self.form.pb_history.setToolTip(history_tooltip_text)
 
         if gc("Multiline Dialog: Filter Button overwrites by default"):
             self.cb_overwrite.setChecked(True)
@@ -63,7 +70,6 @@ class SearchBox(QDialog):
         if pointVersion() >= 26:
             self.form.pb_filter.clicked.connect(self.filter_menu)
         else:
-            # hide it
             self.form.pb_filter.setVisible(False)
 
     def help_short(self):
@@ -72,6 +78,23 @@ class SearchBox(QDialog):
 
     def help_long(self):
         openHelp("searching")
+
+    def on_history(self):
+        hist_list = self.parent.mw.pm.profile["searchHistory"]
+        processed_list = [split_to_multiline(e) for e in hist_list]
+        d = FilterDialog(
+            parent=self.parent,
+            parent_is_browser=True,
+            values=processed_list,
+            windowtitle="Filter Anki Browser Search History",
+            adjPos=False,
+            allowstar=False,
+            infotext=False,
+            show_prepend_minus_button=False,
+        )
+        if d.exec():
+            new = split_to_multiline(d.selkey)
+            self.form.pte.setPlainText(new)
 
     def filter_menu(self):
         func_gettext = self.form.pte.toPlainText
