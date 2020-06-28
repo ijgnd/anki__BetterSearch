@@ -365,8 +365,8 @@ def onSearchEditTextChange(parent, move_dialog_in_browser, include_filtered_in_d
                 d[t['name'] + " (" + modelname + ")"] = (t['name'], modelname)
         vals = (False, -4, "cfn", d, True, False, "Anki: Select Card (Type) Name from selected Note Type", False)
         allowstar = False
-    if arg[-4:] == "fvn:":
-        fvn_infotext = (
+    if arg[-4:] == "ffn:":
+        ffn_infotext = (
 "<b>"
 "Besides the note type name this dialog only inserts the field name to search. After closing <br>"
 "the dialog you must enter the actual search term for the field.<br>"
@@ -377,7 +377,7 @@ def onSearchEditTextChange(parent, move_dialog_in_browser, include_filtered_in_d
             modelname = m['name']
             for f in m['flds']:
                 d[f['name'] + " (" + modelname + ")"] = (f['name'], modelname)
-        vals = (False, -4, "fvn", d, True, fvn_infotext, "Anki: Select Field to search from selected Note Type", False)
+        vals = (False, -4, "ffn", d, True, ffn_infotext, "Anki: Select Field to search from selected Note Type", False)
         allowstar = False
     elif arg[-5:] == "deck:":
         if gc("modify_deck"):
@@ -449,11 +449,11 @@ def onSearchEditTextChange(parent, move_dialog_in_browser, include_filtered_in_d
                     already_in_line = b[:-4]  # substract cfn:
                     func_settext(already_in_line + mysearch)
                     return (True, override_autosearch_default)
-                if vals[2] == "fvn":
+                if vals[2] == "ffn":
                     field = d.selvalue[0]
                     mynote = d.selvalue[1]
                     mysearch = f''' "note:{mynote}" "{field}:" '''
-                    already_in_line = b[:-4]  # substract fvn:
+                    already_in_line = b[:-4]  # substract ffn:
                     func_settext(already_in_line + mysearch)
                     return (True, override_autosearch_default)
                 elif vals[2] == "is_with_explanations":
