@@ -183,31 +183,32 @@ def onSearchEditTextChange(parent, move_dialog_in_browser, include_filtered_in_d
     xx1 = c1 and arg[-len(c1):] == c1
     c2 = gc("custom tag&deck string 2", "")
     xx2 = c2 and arg[-len(c2):] == c2
-    # vals = (remove some characters from the right of searchboxstring, 
-    #         InsertSpaceAtPos, 
-    #         UseFilterDialogValue: if values tuple with info, if list is False
-    #         FilterDialogLines
-    #         surround search with ""
+    # vals = (0 remove some characters from the right of searchboxstring, 
+    #         1 InsertSpaceAtPos, 
+    #         2 UseFilterDialogValue: if values tuple with info, if list is False
+    #         3 FilterDialogLines
+    #         4 surround search with ""
+    #         5 infotext
     #        )
     if arg[-5:] == "prop:":
         if gc("modify_props"):
-            vals = (False, -5, "prop", props(), False)
+            infotxt = "<b>After closing the dialog you must adjust what's inserted with your numbers</b>"
+            vals = (False, -5, "prop", props(), False, infotxt)
         allowstar = False
     if arg[-3:] == "is:":
         if gc("modify_is"):
             if gc("modify_is__show_explanations"):
-                vals = (False, -3, "is_with_explanations", is_values_with_explanations(), False)
+                vals = (False, -3, "is_with_explanations", is_values_with_explanations(), False, False)
             else:
-                print('in false false')
-                vals = (-3, -3, False, is_values(), False)
+                vals = (-3, -3, False, is_values(), False, False)
         allowstar = False
     if arg[-4:] == "tag:":
         if gc("modify_tag"):
-            vals = (False, -4, False, tags(col), False)
+            vals = (False, -4, False, tags(col), False, False)
         allowstar = True
     elif arg[-5:] == "note:":
         if gc("modify_note"):
-            vals = (False, -5, False, col.models.allNames(), True)
+            vals = (False, -5, False, col.models.allNames(), True, False)
         allowstar = False if pointVersion() < 24 else True
     elif arg[-5:] == "card:":
         if gc("modify_card"):
@@ -215,7 +216,7 @@ def onSearchEditTextChange(parent, move_dialog_in_browser, include_filtered_in_d
             for m in col.models.all():
                 for t in m['tmpls']:
                     cards.add(t['name'])
-            vals = (False, -5, False, cards, True)
+            vals = (False, -5, False, cards, True, False)
         allowstar = False if pointVersion() < 24 else True      
     elif arg == "cfn:":  # cards from note
         d = {}
@@ -223,21 +224,21 @@ def onSearchEditTextChange(parent, move_dialog_in_browser, include_filtered_in_d
             modelname = m['name']
             for t in m['tmpls']:
                 d[t['name'] + " (" + modelname + ")"] = t['name']
-        vals = (False, -4, "cfn", d, True)
+        vals = (False, -4, "cfn", d, True, False)
         allowstar = False
     elif arg[-5:] == "deck:":
         if gc("modify_deck"):
-            vals = (False, -5, False, decknames(col, include_filtered_in_deck), True)
+            vals = (False, -5, False, decknames(col, include_filtered_in_deck), True, False)
         allowstar = True
     elif xx1:
         alltags = ["tag:" + t for t in tags(col)]
         decks = ["deck:" + d  for d in decknames(col, include_filtered_in_deck)]
-        vals = (-len(c1), 0, False, alltags + decks, True)
+        vals = (-len(c1), 0, False, alltags + decks, True, False)
         allowstar = True
     elif xx2:
         alltags = ["tag:" + t for t in tags(col)]
         decks = ["deck:" + d  for d in decknames(col, include_filtered_in_deck)]
-        vals = (-len(c2), 0, False, alltags + decks, True)
+        vals = (-len(c2), 0, False, alltags + decks, True, False)
         allowstar = True
 
     if vals:
@@ -245,7 +246,14 @@ def onSearchEditTextChange(parent, move_dialog_in_browser, include_filtered_in_d
             adjPos = True
         else:
             adjPos = False
-        d = FilterDialog(parent=parent, parent_is_browser=move_dialog_in_browser, values=vals[3], adjPos=adjPos, allowstar=allowstar)
+        d = FilterDialog(
+            parent=parent,
+            parent_is_browser=move_dialog_in_browser,
+            values=vals[3],
+            adjPos=adjPos,
+            allowstar=allowstar,
+            infotext=vals[5],
+        )
         if d.exec():
             # print('###############################')
             lineonly, override_autosearch_default, override_add_star, negate = overrides()

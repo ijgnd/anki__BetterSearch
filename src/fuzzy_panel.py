@@ -47,6 +47,7 @@ from aqt.qt import (
     QEvent,
     QHBoxLayout,
     QKeySequence,
+    QLabel,
     QLineEdit,
     QListWidget,
     QPushButton,
@@ -94,6 +95,7 @@ class FilterDialog(QDialog):
         prefill="",
         adjPos=False,
         allowstar=True,
+        infotext=""
     ):
         super().__init__(parent)
         self.parent = parent
@@ -101,6 +103,7 @@ class FilterDialog(QDialog):
         self.max_items = max_items
         self.adjustposition = adjPos
         self.allowstar = allowstar
+        self.infotext = infotext
         self.setObjectName("FilterDialog")
         if windowtitle:
             self.setWindowTitle(windowtitle)
@@ -120,9 +123,14 @@ class FilterDialog(QDialog):
     def initUI(self):
         vlay = QVBoxLayout()
         self.input_line = PanelInputLine()
+        if self.infotext:
+            self.info_box = QLabel()
+            self.info_box.setText(self.infotext)
         self.list_box = QListWidget()
         for i in range(self.max_items):
             self.list_box.insertItem(i, "")
+        if self.infotext:
+            vlay.addWidget(self.info_box)
         vlay.addWidget(self.input_line)
         vlay.addWidget(self.list_box)
 
