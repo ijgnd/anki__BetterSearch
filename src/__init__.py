@@ -1,6 +1,7 @@
 """
 Add-on for Anki
 Copyright (c): 2020 ijgnd
+               Ankitects Pty Ltd and contributors (filter_button.py)
                lovac42 (toolbar.py)
 
 
@@ -48,60 +49,21 @@ from aqt.browser import Browser
 from aqt.gui_hooks import (
     browser_menus_did_init,
 )
-from aqt.qt import *
+from aqt.qt import (
+    QAction,
+    QKeySequence,
+    QShortcut,
+    qconnect,
+)
 from aqt.utils import getText, showCritical
 from aqt.dyndeckconf import DeckConf
 
 from .config import conf_to_key, gc, shiftdown, ctrldown, altdown, metadown
 from .date_dialog import DateRangeDialog
 from .fuzzy_panel import FilterDialog
+from .multi_line_dialog import SearchBox
 from .toolbar import getMenu
 
-
-
-# for multiline add-on
-def help_string_for_actions_used():
-    lines = []    
-    if gc("modify_card"):
-        s = '"card:" filter for card (type) names'
-        lines.append(s)
-    if gc("modify_deck"):
-        s = '"deck:" filter by deck name'
-        lines.append(s)
-    if gc("modify_field"):
-        s = '"field:" filter by field name'
-        lines.append(s)
-    if gc("modify_is"):
-        s = '"is:" filter by card state'
-        lines.append(s)
-    if gc("modify_note"):
-        s = '"note:" filter by note type (model) name'
-        lines.append(s)
-    if gc("modify_props"):
-        s = '"prop:" filter by card properties (like due date, ease)'
-        lines.append(s)
-    if gc("modify_tag"):
-        s = '"tag:" filter by tag'
-        lines.append(s)
-    if gc("custom tag&deck string 1"):
-        s = f'"{gc("custom tag&deck string 1")}": filter by deck or tag'
-        lines.append(s)
-    if gc("custom tag&deck string 2"):
-        s = f'"{gc("custom tag&deck string 2")}": filter by deck or tag'
-        lines.append(s)
-    if gc("date range dialog for added: string"):
-        s = f'"{gc("date range dialog for added: string")}": date range dialog for date added'
-        lines.append(s)
-    if gc("date range dialog for rated: string"):
-        s = f'"{gc("date range dialog for rated: string")}": date range dialog for date rated'
-        lines.append(s)
-
-    s = "<b>Browser quick insert add-on: words that open the filter dialog:</b>"
-    s += "<ul>"
-    for l in lines:
-        s += "<li>" + l + "</li>"
-    s += "</ul>"
-    return s
 
 
 def dyn_setup_search(self):
@@ -160,7 +122,7 @@ def date_range_dialog_helper(self, term):
     d = DateRangeDialog(self, term)
     if d.exec():
         TriggerSearchAfter = gc("modify: window opened by search strings triggers search by default")
-        lineonly, override_autosearch_default, override_add_star, negate = overrides()
+        _, override_autosearch_default, _, _ = overrides()
         if override_autosearch_default:
             TriggerSearchAfter ^= True
         le = self.form.searchEdit.lineEdit()
@@ -184,6 +146,33 @@ def setupBrowserMenu(self):
     view.addAction(action)
     action.triggered.connect(lambda _, b=self, t="rated": date_range_dialog_helper(b, t))
 browser_menus_did_init.append(setupBrowserMenu)
+
+
+
+
+def open_multiline_searchwindow(browser):
+    le = browser.form.searchEdit.lineEdit()
+    sbi = SearchBox(browser, le.text(), onSearchEditTextChange)
+    if sbi.exec():
+        le.setText(sbi.newsearch)
+        le.setFocus()
+        browser.onSearchActivated()
+
+
+def setupBrowserShortcuts(self):
+    # self is browser
+    cut = gc("Multiline Dialog: shortcut: open window")
+    if cut:
+       cm = QShortcut(QKeySequence(cut), self)
+       qconnect(cm.activated, lambda b=self: open_multiline_searchwindow(b))
+    view = getMenu(self, "&View")
+    action = QAction(self)
+    action.setText("Show search string in multi-line dialog")
+    view.addAction(action)
+    action.triggered.connect(lambda _, b=self: open_multiline_searchwindow(b))
+browser_menus_did_init.append(setupBrowserShortcuts)
+
+
 
 
 

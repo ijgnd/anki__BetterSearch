@@ -1,4 +1,6 @@
 {
+    "Multiline Dialog: shortcut: open window": "Ctrl+t,s",
+    "Multiline Dialog: Filter Button overwrites by default": false,
     "also use in create filtered deck dialog": true,
     "autoadjust FilterDialog position": true,
     "custom tag&deck string 1": "xx",
