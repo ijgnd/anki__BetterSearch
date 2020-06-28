@@ -112,7 +112,7 @@ class SearchBox(QDialog):
         return text.replace("\n", "  ")
 
     def text_change_helper(self):
-        self.quick_insert_addon_filter_func(
+        out = self.quick_insert_addon_filter_func(
             parent=self.parent,
             move_dialog_in_browser=False,
             include_filtered_in_deck=True,
@@ -122,7 +122,8 @@ class SearchBox(QDialog):
             col=self.browser.col,
             arg=self.form.pte.toPlainText(),
             )
-        self.form.pte.moveCursor(QTextCursor.End)
+        if out:
+            self.form.pte.moveCursor(QTextCursor.End)
 
     def reject(self):
         saveGeom(self, searchbox_geom_name)
