@@ -8,6 +8,7 @@
     "modifier for override add * default": "Meta",
     "modifier for negate": "Alt",
     "modifier for insert current text only": "Ctrl",
+    "modify: window opened by search strings triggers search by default": true,
     "modify_card": true,
     "modify_deck": true,
     "modify_field": true,

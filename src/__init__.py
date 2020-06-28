@@ -49,6 +49,7 @@ from aqt.utils import getText, showCritical
 from aqt.dyndeckconf import DeckConf
 
 from .config import conf_to_key, gc, shiftdown, ctrldown, altdown, metadown
+from .date_dialog import DateRangeDialog
 from .fuzzy_panel import FilterDialog
 
 
@@ -222,6 +223,26 @@ def onSearchEditTextChange(parent, move_dialog_in_browser, include_filtered_in_d
     #         6 windowtitle
     #         7 show_prepend_minus_button
     #        )
+    # I deliberately use "dr" because usually you won't need a date picker dialog
+    if arg[-7:] == "drated:":
+        d = DateRangeDialog(parent, "rated")
+        if d.exec():
+            TriggerSearchAfter = gc("modify: window opened by search strings triggers search by default")
+            lineonly, override_autosearch_default, override_add_star, negate = overrides()
+            if override_autosearch_default:
+                TriggerSearchAfter ^= True
+            func_settext(func_gettext()[:-7] + "  " + d.searchtext)
+            return (True, TriggerSearchAfter)
+    # I deliberately use "da" because usually you won't need a date picker dialog 
+    if arg[-7:] == "dadded:":
+        d = DateRangeDialog(parent, "added")
+        if d.exec():
+            TriggerSearchAfter = gc("modify: window opened by search strings triggers search by default")
+            lineonly, override_autosearch_default, override_add_star, negate = overrides()
+            if override_autosearch_default:
+                TriggerSearchAfter ^= True
+            func_settext(func_gettext()[:-7] + "  " + d.searchtext)
+            return (True, override_autosearch_default)
     if arg[-6:] == "field:":
         if gc("modify_field"):
             vals = (-6, -6, False, fieldnames(), True, field_infotext, "Anki: Select field to search", True)
@@ -360,7 +381,7 @@ def onSearchEditTextChange(parent, move_dialog_in_browser, include_filtered_in_d
                 elif vals[2] == "prop":
                     already_in_line = b[:-5]  # substract prop:
                     func_settext(already_in_line + d.selvalue)
-                    return (True, override_autosearch_default)                         
+                    return (True, override_autosearch_default)
             else:
                 sel = d.selkey
             # print(f"sel is {sel}")
@@ -404,7 +425,10 @@ def onSearchEditTextChange(parent, move_dialog_in_browser, include_filtered_in_d
             if vals[4]:  # surround with ""
                 sel = '"' + sel + '"'
             func_settext(b + sel)
-            return (True, override_autosearch_default)  # shiftmod toggle default search trigger setting 
+            TriggerSearchAfter = gc("modify: window opened by search strings triggers search by default")
+            if override_autosearch_default:
+                TriggerSearchAfter ^= True
+            return (True, TriggerSearchAfter)  # shiftmod toggle default search trigger setting 
 
 
 # doesn't work: when I press cancel the dialog is opened once more and if I cancel val remains
