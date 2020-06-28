@@ -60,11 +60,12 @@ DeckConf.initialSetup = wrap(DeckConf.initialSetup, dyn_setup_search)
 
 def onDynSetupSearchEditTextChange(self, arg):
     parent = self
-    parent_is_browser = False
+    move_dialog_in_browser = False
+    include_filtered_in_deck = False
     lineedit = self.sender()  # https://stackoverflow.com/a/33981172
     mw = self.mw
     col = self.mw.col
-    onSearchEditTextChange(parent, parent_is_browser, lineedit.text, lineedit.setText, mw, col, arg)
+    onSearchEditTextChange(parent, move_dialog_in_browser, include_filtered_in_deck, lineedit.text, lineedit.setText, mw, col, arg)
 DeckConf.onDynSetupSearchEditTextChange = onDynSetupSearchEditTextChange
 
 
@@ -87,11 +88,12 @@ Browser.setupSearch = wrap(Browser.setupSearch,mysearch)
 
 def onBrowserSearchEditTextChange(self, arg):
     parent = self
-    parent_is_browser = True
+    move_dialog_in_browser = True
+    include_filtered_in_deck = True
     lineedit = self.form.searchEdit.lineEdit()
     mw = self.mw
     col = self.col
-    dialogclosed = onSearchEditTextChange(parent, parent_is_browser, lineedit.text, lineedit.setText, mw, col, arg)
+    dialogclosed = onSearchEditTextChange(parent, move_dialog_in_browser, include_filtered_in_deck, lineedit.text, lineedit.setText, mw, col, arg)
     if dialogclosed and dialogclosed[1]:
         self.onSearchActivated()
 Browser.onBrowserSearchEditTextChange = onBrowserSearchEditTextChange
@@ -164,7 +166,7 @@ def overrides():
     return lineonly, override_autosearch_default, override_add_star, negate
 
 
-def onSearchEditTextChange(parent, parent_is_browser, func_gettext, func_settext, mw, col, arg):
+def onSearchEditTextChange(parent, move_dialog_in_browser, include_filtered_in_deck, func_gettext, func_settext, mw, col, arg):
     vals = False
     c1 = gc("custom tag&deck string 1", "")
     xx1 = c1 and arg[-len(c1):] == c1
@@ -210,16 +212,16 @@ def onSearchEditTextChange(parent, parent_is_browser, func_gettext, func_settext
         allowstar = False
     elif arg[-5:] == "deck:":
         if gc("modify_deck"):
-            vals = (False, -5, False, decknames(col, parent_is_browser), True)
+            vals = (False, -5, False, decknames(col, include_filtered_in_deck), True)
         allowstar = True
     elif xx1:
         alltags = ["tag:" + t for t in tags(col)]
-        decks = ["deck:" + d  for d in decknames(col, parent_is_browser)]
+        decks = ["deck:" + d  for d in decknames(col, include_filtered_in_deck)]
         vals = (-len(c1), 0, False, alltags + decks, True)
         allowstar = True
     elif xx2:
         alltags = ["tag:" + t for t in tags(col)]
-        decks = ["deck:" + d  for d in decknames(col, parent_is_browser)]
+        decks = ["deck:" + d  for d in decknames(col, include_filtered_in_deck)]
         vals = (-len(c2), 0, False, alltags + decks, True)
         allowstar = True
 
@@ -228,7 +230,7 @@ def onSearchEditTextChange(parent, parent_is_browser, func_gettext, func_settext
             adjPos = True
         else:
             adjPos = False
-        d = FilterDialog(parent=parent, parent_is_browser=parent_is_browser, values=vals[3], adjPos=adjPos, allowstar=allowstar)
+        d = FilterDialog(parent=parent, parent_is_browser=move_dialog_in_browser, values=vals[3], adjPos=adjPos, allowstar=allowstar)
         if d.exec():
             # print('###############################')
             lineonly, override_autosearch_default, override_add_star, negate = overrides()
