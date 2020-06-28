@@ -1,4 +1,8 @@
-<h1>Before you change the config make sure to read the descriptions below</h1> 
+<h1>Before you change the config make sure to read the descriptions below</h1>
+
+<h1>Shortcuts are deprecated since 2020-05. Shortcuts that I added to this add-on still work
+but new functions like "field:", "fvn/field from note", date range dialog for added/rated 
+do not support shortcuts.</h1>
 
 &nbsp;
 
