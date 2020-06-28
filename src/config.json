@@ -13,6 +13,7 @@
     "modify_is": true,
     "modify_is__show_explanations": true,
     "modify_note": true,
+    "modify_props": true,
     "modify_tag": true,
     "shortcut - focus search box and card selector dialog": "Ctrl+H, c",
     "shortcut - focus search box and deck selector dialog": "Ctrl+H, d",

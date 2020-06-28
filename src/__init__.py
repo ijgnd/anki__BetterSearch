@@ -141,6 +141,17 @@ def is_values_with_explanations():
     }
 
 
+def props():
+    return {
+        "prop:due=-1 - cards due yesterday that haven't been answered yet": "prop:due=",
+        "prop:due=1 - cards due tomorrow": "prop:due=",
+        "prop:due>-1 prop:due<1 - cards due between yesterday and tomorrow": "prop:due> prop:due<",
+        "prop:ease!=2.5 - cards easier or harder than default": "prop:ease!=",
+        "prop:ivl>=10 - cards with interval of 10 days or more": "prop:ivl>=",
+        "prop:lapses>3 - cards that have moved into relearning more than 3 times": "prop:lapses>",
+        "prop:reps<10 - cards that have been answered less than 10 times": "prop:reps<",
+    }
+
 def overrides():
     # 4 Modifiers = 4 Overrides
     #   SHIFT: override autosearch default
@@ -178,6 +189,10 @@ def onSearchEditTextChange(parent, move_dialog_in_browser, include_filtered_in_d
     #         FilterDialogLines
     #         surround search with ""
     #        )
+    if arg[-5:] == "prop:":
+        if gc("modify_props"):
+            vals = (False, -5, "prop", props(), False)
+        allowstar = False
     if arg[-3:] == "is:":
         if gc("modify_is"):
             if gc("modify_is__show_explanations"):
@@ -274,7 +289,11 @@ def onSearchEditTextChange(parent, move_dialog_in_browser, include_filtered_in_d
                 elif vals[2] == "is_with_explanations":
                     already_in_line = b[:-3]  # substract is:
                     func_settext(already_in_line + d.selvalue)
-                    return (True, override_autosearch_default)               
+                    return (True, override_autosearch_default)
+                elif vals[2] == "prop":
+                    already_in_line = b[:-5]  # substract prop:
+                    func_settext(already_in_line + d.selvalue)
+                    return (True, override_autosearch_default)                         
             else:
                 sel = d.selkey
             # print(f"sel is {sel}")
