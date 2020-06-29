@@ -1,6 +1,7 @@
 {
     "Multiline Dialog: shortcut: open window": "Ctrl+t,s",
-    "Multiline Dialog: Filter Button overwrites by default": false,
+    "Multiline Dialog: show Filter Button": true,
+    "Multiline Dialog: show Button Bar": true,
     "Multiline Dialog: Shortcut inside: Open History": "Ctrl+H, h",
     "also use in create filtered deck dialog": true,
     "autoadjust FilterDialog position": true,

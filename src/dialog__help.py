@@ -33,9 +33,9 @@ class MiniHelpSearch(QDialog):
         self.setLayout(self.vbox)
         self.te.setText(helptext)
         self.te.setReadOnly(True)
-        self.show()
         self.resize(450, 650)
         restoreGeom(self, minihelp_geom_name)
+        self.show()
 
     def reopen(self, parent):  # dialog manager
         pass

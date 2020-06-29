@@ -16,10 +16,22 @@ from aqt.utils import (
 )
 
 from .config import gc
+from .dialog__help import MiniHelpSearch, mini_search_help_dialog_title
 from .filter_button import filter_button_cls
 from .forms import search_box
 from .fuzzy_panel import FilterDialog
-from .dialog__help import MiniHelpSearch, mini_search_help_dialog_title
+from .helpers import (
+    # this is the order in helpers.py
+    cardnames,
+    decknames,
+    tags,
+    is_values,
+    is_values_with_explanations,
+    props,
+    fieldnames,
+    overrides,
+    field_infotext,
+)
 from .split_string import split_to_multiline
 
 
@@ -34,14 +46,13 @@ class SearchBox(QDialog):
         self.searchstring = searchstring
         self.parent = browser
         self.browser = browser
+        self.quick_insert_addon_filter_func = quick_insert_addon_filter_func
         QDialog.__init__(self, self.parent, Qt.Window)
         self.form = search_box.Ui_Dialog()
         self.form.setupUi(self)
         self.setupUI()
         self.settext()
-        if quick_insert_addon_filter_func:
-            self.quick_insert_addon_filter_func = quick_insert_addon_filter_func
-            self.form.pte.textChanged.connect(self.text_change_helper)
+        self.makeConnections()
 
     def setupUI(self):
         self.setWindowTitle("Anki: Search Term Multiline Window")
@@ -64,13 +75,54 @@ class SearchBox(QDialog):
             history_tooltip_text += f"(shortcut: {cut})"
         self.form.pb_history.setToolTip(history_tooltip_text)
 
-        if gc("Multiline Dialog: Filter Button overwrites by default"):
-            self.cb_overwrite.setChecked(True)
-
-        if pointVersion() >= 26:
+        if pointVersion() >= 26 and gc("Multiline Dialog: show Filter Button"):
             self.form.pb_filter.clicked.connect(self.filter_menu)
         else:
             self.form.pb_filter.setVisible(False)
+            self.form.ql_filter.setVisible(False)
+
+        if not gc("Multiline Dialog: show Button Bar"):
+            self.form.ql_button_bar.setVisible(False)
+            self.form.pb_note_type.setVisible(False)
+            self.form.pb_card.setVisible(False)
+            self.form.pb_field.setVisible(False)
+            self.form.pb_deck.setVisible(False)
+            self.form.pb_tag.setVisible(False)
+            self.form.pb_card_props.setVisible(False)
+            self.form.pb_card_state.setVisible(False)
+            self.form.pb_date_added.setVisible(False)
+            self.form.pb_date_rated.setVisible(False)
+
+        self.form.pb_note_type.setToolTip("note:")
+        self.form.pb_card.setToolTip("card:")
+        self.form.pb_field.setToolTip("field:")
+        self.form.pb_deck.setToolTip("deck:")
+        self.form.pb_tag.setToolTip("tag:")
+        self.form.pb_card_props.setToolTip("prop:")
+        self.form.pb_card_state.setToolTip("is:")
+        st = gc("date range dialog for added: string")
+        self.form.pb_date_added.setToolTip(st)
+        st = gc("date range dialog for rated: string")
+        self.form.pb_date_rated.setToolTip(st)
+
+    def makeConnections(self):
+        pass
+
+    def filter_helper(self, vals, wintitle, allowstar, infotext, show_minus):
+        d = FilterDialog(
+            parent=self.parent,
+            parent_is_browser=True,
+            values=vals,
+            windowtitle=wintitle,
+            adjPos=False,
+            allowstar=allowstar,
+            infotext=infotext,
+            show_prepend_minus_button=show_minus,
+        )
+        if d.exec():
+            new = split_to_multiline(d.selkey)
+            self.form.pte.setPlainText(new)
+            self.form.pte.moveCursor(QTextCursor.End)
 
     def help_short(self):
         MiniHelpSearch(self)
@@ -95,11 +147,12 @@ class SearchBox(QDialog):
         if d.exec():
             new = split_to_multiline(d.selkey)
             self.form.pte.setPlainText(new)
+            self.form.pte.moveCursor(QTextCursor.End)
 
     def filter_menu(self):
         func_gettext = self.form.pte.toPlainText
         func_settext = self.form.pte.setPlainText
-        filter_button_cls(self, self.browser, func_gettext, func_settext, self.form.cb_overwrite.isChecked())
+        filter_button_cls(self, self.browser, func_gettext, func_settext, False)
 
     def settext(self):
         processed = split_to_multiline(self.searchstring)
