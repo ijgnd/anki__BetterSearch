@@ -21,7 +21,7 @@ mainly from utils.py
 """
 
 
-def remove_leading_whitespace_on_lines(arg):
+def remove_linebreaks_and_leading_whitespace_on_lines(arg):
     search_string = ""
     split = arg.split("\n")
     for l in split:
@@ -29,18 +29,13 @@ def remove_leading_whitespace_on_lines(arg):
     return search_string
 
 
-def line_list_to_indented_string_basic(list_):
+def merge_to_oneline_string(list_):
     r = "\n".join(list_)
     r = r.replace("(","(\n").replace(")","\n)").replace("\n\n","\n")
     return r
 
 
-def line_list_to_indented_string(list_):
-    pass
-    # TODO
-
-
-def to_list__quoted_on_same_line(search_string):
+def string_to_list__quoted_on_same_line(search_string):
     in_quotes = False
     pos = 0
     str_len = len(search_string)
@@ -66,12 +61,15 @@ def to_list__quoted_on_same_line(search_string):
             pos += 1
     if current_snippet:
         results.append(current_snippet)
+    # readd quotes
+    for i, val in enumerate(results):
+        if " " in val:
+            results[i] = '"' + val  + '"'
     return results
 
 
 def split_to_multiline(string_):
-    search_string = remove_leading_whitespace_on_lines(string_)
-    results = to_list__quoted_on_same_line(search_string)
-    # results_string = line_list_to_indented_string(results)
-    results_string = line_list_to_indented_string_basic(results)
+    search_string = remove_linebreaks_and_leading_whitespace_on_lines(string_)
+    results = string_to_list__quoted_on_same_line(search_string)
+    results_string = merge_to_oneline_string(results)
     return results_string

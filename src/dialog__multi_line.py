@@ -33,7 +33,9 @@ from .helpers import (
     field_infotext,
 )
 from .onTextChange import onSearchEditTextChange
-from .split_string import split_to_multiline
+from .split_string import (
+    split_to_multiline,
+)
 
 
 # aqt.dialogs.register_dialog(mini_search_help_dialog_title, MiniHelpSearch, None)
@@ -44,7 +46,10 @@ searchbox_geom_name = "BSMH"
 
 class SearchBox(QDialog):
     def __init__(self, browser, searchstring):
-        self.searchstring = searchstring
+        if searchstring == "<type here to search; hit enter to show current deck>":
+            self.searchstring = ""
+        else:
+            self.searchstring = searchstring
         self.parent = browser
         self.browser = browser
         QDialog.__init__(self, self.parent, Qt.Window)
@@ -194,7 +199,7 @@ class SearchBox(QDialog):
 
     def process_text(self):
         text = self.form.pte.toPlainText()
-        return text.replace("\n", "  ").replace("\t", " ")
+        return text.replace("\n", " ").replace("\t", " ")
 
     def text_change_helper(self):
         out = onSearchEditTextChange(
