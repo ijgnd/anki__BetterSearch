@@ -116,7 +116,7 @@ class FilterDialog(QDialog):
             self.setWindowTitle(windowtitle)
         if isinstance(values, dict):
             self.dict = values
-            self.keys = sorted(self.dict.keys()) if sort_vals else self.dict.keys()
+            self.keys = sorted(self.dict.keys()) if sort_vals else list(self.dict.keys())
         else:
             self.dict = False
             self.keys = sorted(values) if sort_vals else values
