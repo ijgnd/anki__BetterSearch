@@ -108,8 +108,7 @@ def onDynSetupSearchEditTextChange(self, arg):
         func_gettext=lineedit.text,
         func_settext=lineedit.setText,
         mw=self.mw,
-        col=self.mw.col,
-        arg=arg,
+        col=self.mw.col
     )
 DeckConf.onDynSetupSearchEditTextChange = onDynSetupSearchEditTextChange
 
@@ -145,8 +144,7 @@ def onBrowserSearchEditTextChange(self, arg):
         func_gettext=lineedit.text,
         func_settext=lineedit.setText,
         mw=self.mw,
-        col=self.col,
-        arg=arg,
+        col=self.col
     )
     if randialog and TriggerSearchAfter:
         self.onSearchActivated()

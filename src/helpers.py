@@ -11,17 +11,21 @@ def cardnames(col):
     return list(cards)
 
 
-def decknames(col, also_include_filtered):
+def decknames(col, also_include_filtered, prepend_with_deck=False):
     decks = col.decks.allNames(dyn=also_include_filtered)
     # also_include_filtered only True in the browser but not in the Create Filtered Deck dialog
     # Filtered decks can't include filtered decks so I don't want "filtered" for those.
     if also_include_filtered:  
         decks += ["filtered"]
+    if prepend_with_deck:
+        decks = ["deck:" + d  for d in decks]
     return sorted(decks)
 
 
-def tags(col):
+def tags(col, prepend_with_tag=False):
     tags = col.tags.all() + ["none"]
+    if prepend_with_tag:  # for xx1 and xx2
+        tags =  ["tag:" + t for t in tags]
     return sorted(tags)
 
 

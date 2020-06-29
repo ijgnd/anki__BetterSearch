@@ -210,7 +210,6 @@ class SearchBox(QDialog):
             func_settext=self.form.pte.setPlainText,
             mw=self.browser.mw,
             col=self.browser.col,
-            arg=self.form.pte.toPlainText(),
             )
         if out:
             self.form.pte.moveCursor(QTextCursor.End)
