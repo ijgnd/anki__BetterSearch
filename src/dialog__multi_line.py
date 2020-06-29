@@ -170,9 +170,21 @@ class SearchBox(QDialog):
 
     def filter_menu(self):
         func_gettext = self.form.pte.toPlainText
+        old = func_gettext()
         func_settext = self.form.pte.setPlainText
-        filter_button_cls(self, self.browser, func_gettext, func_settext, False)
+        d = filter_button_cls(self, self.browser, func_gettext, func_settext, False)
+        # TODO: properly format
+        oldlines = old.split("\n")
+        if oldlines[-1]:
+            old = old + "\n"
+        func_settext(old + d.txt)
         self.form.pte.setFocus()
+        self.form.pte.moveCursor(QTextCursor.End)
+
+        # TODO
+        #new = split_to_multiline(old + d.txt)
+        #self.form.pte.setPlainText(new)
+        #self.form.pte.setFocus()
 
     def settext(self):
         processed = split_to_multiline(self.searchstring)
@@ -182,7 +194,7 @@ class SearchBox(QDialog):
 
     def process_text(self):
         text = self.form.pte.toPlainText()
-        return text.replace("\n", "  ")
+        return text.replace("\n", "  ").replace("\t", " ")
 
     def text_change_helper(self):
         out = onSearchEditTextChange(

@@ -85,7 +85,9 @@ class filter_button_cls:
                 old = old + "\n"
             if self.mw.app.keyboardModifiers() & Qt.ShiftModifier and old:
                 txt = " or " + txt
-            self.func_settext(old + txt)
+            #self.func_settext(old + txt)
+            self.txt = txt
+            return txt
         # self.onSearchActivated()
 
     def _simpleFilters(self, items):
