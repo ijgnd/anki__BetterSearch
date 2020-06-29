@@ -132,6 +132,7 @@ class FilterDialog(QDialog):
         self.input_line = PanelInputLine()
         if self.infotext:
             self.info_box = QLabel()
+            self.info_box.setWordWrap(True)
             self.info_box.setText(self.infotext)
         self.list_box = QListWidget()
         for i in range(self.max_items):
