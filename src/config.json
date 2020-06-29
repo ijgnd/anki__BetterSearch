@@ -23,11 +23,6 @@
     "modify_note": true,
     "modify_props": true,
     "modify_tag": true,
-    "shortcut - focus search box and card selector dialog": "Ctrl+H, c",
-    "shortcut - focus search box and deck selector dialog": "Ctrl+H, d",
-    "shortcut - focus search box and note selector dialog": "Ctrl+H, n",
-    "shortcut - focus search box and tag selector dialog": "Ctrl+H, t",
-    "shortcut - focus search box and tag/deck selector dialog": "Ctrl+H, m",
     "shortcut - select entry from history in fuzzy dialog": "Ctrl+H, h",
     "shortcuts trigger search by default": true,
     "tag insertion - add '*' to matches": "all"

@@ -1,12 +1,5 @@
 <h1>Before you change the config make sure to read the descriptions below</h1>
 
-<h2>Shortcuts in the browser to open certain filter dialogs that you set with the config
-keys "shortcut - focus search box and ..." are deprecated since 2020-05. The existing
-shortcuts still work but new functions like "field:", "ffn/field from note", date range dialog for added/rated do not have dedicated browser shortcuts.</h2>
-
-This readme is incomplete and will be finished in a future update. But most of the missing
-keys should have self-explanatory names.
-
 &nbsp;
 
 - `Multiline Dialog: shortcut: open window` (default is "Ctrl+t,s"): This shortcut is active in 
@@ -79,20 +72,6 @@ only accept the values "Shift", "Meta", "Alt", "Ctrl" as input. On a Mac "Ctrl" 
 **You may not use "Cmd" for these four config values.**.
 
 &nbsp;
-
-&nbsp;
-
-- `shortcut - focus search box and card selector dialog` (default is "Ctrl+H, c"): shortcut to open 
-a dialog with a list of your card types. The selected entry is inserted into the search box.
-- `shortcut - focus search box and deck selector dialog` (default is "Ctrl+H, d"): shortcut to open 
-a dialog with a list of your decks. The selected entry is inserted into the search box.
-- `shortcut - focus search box and note selector dialog` (default is "Ctrl+H, n"): shortcut to open 
-a dialog with a list of your note types. The selected entry is inserted into the search box.
-- `shortcut - focus search box and tag selector dialog` (default is "Ctrl+H, t"): shortcut to open 
-a dialog with a list of your tags. The selected entry is inserted into the search box.
-- `shortcut - focus search box and tag/deck selector dialog` (default is "Ctrl+H, m"): shortcut to 
-open a dialog with a list of your tags and decks. The selected entry is inserted into the search 
-box.
 
 &nbsp;
 
