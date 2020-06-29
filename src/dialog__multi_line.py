@@ -291,7 +291,7 @@ field name you want to search.
                 value_for_all=value_for_all,
                 windowtitle="Anki: Step 2: Select Field Name to search",
                 infotext=infotext,
-                prefix="field:",
+                prefix="",
                 sort_vals=False
             )
             if not field:
@@ -299,7 +299,7 @@ field name you want to search.
 
         if model_search_string:
             model_search_string += " "
-        out = "(" + model_search_string + field_string + ")"
+        out = "(" + model_search_string + field_string + ":*)"
         self.insert_text(out)
 
     def help_short(self):
