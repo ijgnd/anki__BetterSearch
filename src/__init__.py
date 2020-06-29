@@ -80,8 +80,9 @@ from aqt.dyndeckconf import DeckConf
 
 from .config import gc
 from .dialog__date import DateRangeDialog
-from .fuzzy_panel import FilterDialog
 from .dialog__multi_line import SearchBox
+from .fuzzy_panel import FilterDialog
+from .helpers import overrides
 from .onTextChange import onSearchEditTextChange
 from .split_string import split_to_multiline
 from .toolbar import getMenu
@@ -99,13 +100,17 @@ DeckConf.initialSetup = wrap(DeckConf.initialSetup, dyn_setup_search)
 
 
 def onDynSetupSearchEditTextChange(self, arg):
-    parent = self
-    move_dialog_in_browser = False
-    include_filtered_in_deck = False
     lineedit = self.sender()  # https://stackoverflow.com/a/33981172
-    mw = self.mw
-    col = self.mw.col
-    onSearchEditTextChange(parent, move_dialog_in_browser, include_filtered_in_deck, lineedit.text, lineedit.setText, mw, col, arg)
+    onSearchEditTextChange(
+        parent=self,
+        move_dialog_in_browser=False,
+        include_filtered_in_deck=False,
+        func_gettext=lineedit.text,
+        func_settext=lineedit.setText,
+        mw=self.mw,
+        col=self.mw.col,
+        arg=arg,
+    )
 DeckConf.onDynSetupSearchEditTextChange = onDynSetupSearchEditTextChange
 
 
@@ -132,14 +137,18 @@ Browser.setupSearch = wrap(Browser.setupSearch,mysearch)
 
 
 def onBrowserSearchEditTextChange(self, arg):
-    parent = self
-    move_dialog_in_browser = True
-    include_filtered_in_deck = True
     lineedit = self.form.searchEdit.lineEdit()
-    mw = self.mw
-    col = self.col
-    dialogclosed = onSearchEditTextChange(parent, move_dialog_in_browser, include_filtered_in_deck, lineedit.text, lineedit.setText, mw, col, arg)
-    if dialogclosed and dialogclosed[1]:
+    randialog, TriggerSearchAfter = onSearchEditTextChange(
+        parent=self,
+        move_dialog_in_browser=True,
+        include_filtered_in_deck=True,
+        func_gettext=lineedit.text,
+        func_settext=lineedit.setText,
+        mw=self.mw,
+        col=self.col,
+        arg=arg,
+    )
+    if randialog and TriggerSearchAfter:
         self.onSearchActivated()
 Browser.onBrowserSearchEditTextChange = onBrowserSearchEditTextChange
 
@@ -226,4 +235,3 @@ def setupBrowserMenu(self):
     view.addAction(action)
     action.triggered.connect(lambda _, b=self, t="rated": date_range_dialog_helper(b, t))
 browser_menus_did_init.append(setupBrowserMenu)
-
