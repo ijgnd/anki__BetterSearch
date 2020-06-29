@@ -266,8 +266,12 @@ card template/type/name you want to search.
             return
 
         infotext = ("""
-After having selected the note type to search now select the
-field name you want to search.
+<span>
+After having selected the note type to search now select the field name you want 
+to search. After closing this dialog the text inserted will be "fieldname:*" 
+which shows every note where the field "fieldname" is not empty. If you want 
+to limit to a certain term you must <b>adjust</b> the search.
+<span>
 """)
         show_card_dialog = True
         if not model_search_string:
