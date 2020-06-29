@@ -32,6 +32,7 @@ from .helpers import (
     overrides,
     field_infotext,
 )
+from .onTextChange import onSearchEditTextChange
 from .split_string import split_to_multiline
 
 
@@ -42,15 +43,15 @@ searchbox_geom_name = "BSMH"
 
 
 class SearchBox(QDialog):
-    def __init__(self, browser, searchstring, quick_insert_addon_filter_func):
+    def __init__(self, browser, searchstring):
         self.searchstring = searchstring
         self.parent = browser
         self.browser = browser
-        self.quick_insert_addon_filter_func = quick_insert_addon_filter_func
         QDialog.__init__(self, self.parent, Qt.Window)
         self.form = search_box.Ui_Dialog()
         self.form.setupUi(self)
         self.setupUI()
+        self.config_pte()
         self.settext()
         self.makeConnections()
 
@@ -105,8 +106,26 @@ class SearchBox(QDialog):
         st = gc("date range dialog for rated: string")
         self.form.pb_date_rated.setToolTip(st)
 
+    def config_pte(self):
+        self.form.pte.setTabStopDistance(20)
+
     def makeConnections(self):
-        pass
+        self.form.pte.textChanged.connect(self.text_change_helper)
+        self.form.pb_note_type.clicked.connect(lambda _, action="note:": self.button_helper(action))
+        self.form.pb_card.clicked.connect(lambda _, action="card:": self.button_helper(action))
+        self.form.pb_field.clicked.connect(lambda _, action="field:": self.button_helper(action))
+        self.form.pb_deck.clicked.connect(lambda _, action="deck:": self.button_helper(action))
+        self.form.pb_tag.clicked.connect(lambda _, action="tag:": self.button_helper(action))
+        self.form.pb_card_props.clicked.connect(lambda _, action="prop:": self.button_helper(action))
+        self.form.pb_card_state.clicked.connect(lambda _, action="is:": self.button_helper(action))
+        self.form.pb_date_added.clicked.connect(lambda _, action=gc("date range dialog for added: string", "dadded"): self.button_helper(action))
+        self.form.pb_date_rated.clicked.connect(lambda _, action=gc("date range dialog for rated: string", "drated"): self.button_helper(action))
+
+    def button_helper(self, arg):
+        old = self.form.pte.toPlainText()
+        new = old + "\n" + arg
+        self.form.pte.setPlainText(new)
+        self.form.pte.setFocus()
 
     def filter_helper(self, vals, wintitle, allowstar, infotext, show_minus):
         d = FilterDialog(
@@ -153,6 +172,7 @@ class SearchBox(QDialog):
         func_gettext = self.form.pte.toPlainText
         func_settext = self.form.pte.setPlainText
         filter_button_cls(self, self.browser, func_gettext, func_settext, False)
+        self.form.pte.setFocus()
 
     def settext(self):
         processed = split_to_multiline(self.searchstring)
@@ -165,7 +185,7 @@ class SearchBox(QDialog):
         return text.replace("\n", "  ")
 
     def text_change_helper(self):
-        out = self.quick_insert_addon_filter_func(
+        out = onSearchEditTextChange(
             parent=self.parent,
             move_dialog_in_browser=False,
             include_filtered_in_deck=True,

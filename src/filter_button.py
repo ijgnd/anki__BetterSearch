@@ -68,18 +68,24 @@ class filter_button_cls:
             txt = " ".join(items)
         if self.mw.app.keyboardModifiers() & Qt.AltModifier:
             txt = "-" + txt
-        if self.mw.app.keyboardModifiers() & Qt.ControlModifier:
-            cur = self.func_gettext()  # str(self.form.searchEdit.lineEdit().text())
-            if cur and cur != self._searchPrompt:
-                txt = cur + " " + txt
-        elif self.mw.app.keyboardModifiers() & Qt.ShiftModifier:
-            cur = self.func_gettext()  # str(self.form.searchEdit.lineEdit().text())
-            if cur:
-                txt = cur + " or " + txt
+        # if self.mw.app.keyboardModifiers() & Qt.ControlModifier:
+        #     cur = self.func_gettext()  # str(self.form.searchEdit.lineEdit().text())
+        #     if cur and cur != self._searchPrompt:
+        #         txt = cur + " " + txt
+        # elif self.mw.app.keyboardModifiers() & Qt.ShiftModifier:
+        #     cur = self.func_gettext()  # str(self.form.searchEdit.lineEdit().text())
+        #     if cur:
+        #         txt = cur + " or " + txt
         if self.overwrites: 
             self.func_settext(txt)  #  self.form.searchEdit.lineEdit().setText(txt)
         else:
-            self.func_settext(self.func_gettext() + "\n" + txt)
+            old = self.func_gettext()
+            oldlines = old.split("\n")
+            if oldlines[-1]:
+                old = old + "\n"
+            if self.mw.app.keyboardModifiers() & Qt.ShiftModifier and old:
+                txt = " or " + txt
+            self.func_settext(old + txt)
         # self.onSearchActivated()
 
     def _simpleFilters(self, items):
