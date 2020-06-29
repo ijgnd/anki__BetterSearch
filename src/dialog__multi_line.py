@@ -52,6 +52,7 @@ class SearchBox(QDialog):
             self.searchstring = searchstring
         self.parent = browser
         self.browser = browser
+        self.col = browser.col
         QDialog.__init__(self, self.parent, Qt.Window)
         self.form = search_box.Ui_Dialog()
         self.form.setupUi(self)
@@ -89,9 +90,12 @@ class SearchBox(QDialog):
 
         if not gc("Multiline Dialog: show Button Bar"):
             self.form.ql_button_bar.setVisible(False)
-            self.form.pb_note_type.setVisible(False)
-            self.form.pb_card.setVisible(False)
-            self.form.pb_field.setVisible(False)
+            self.form.pb_nc.setVisible(False)
+            self.form.pb_nf.setVisible(False)
+            # I removed the following three buttons:
+            # self.form.pb_note_type.setVisible(False)
+            # self.form.pb_card.setVisible(False)
+            # self.form.pb_field.setVisible(False)
             self.form.pb_deck.setVisible(False)
             self.form.pb_tag.setVisible(False)
             self.form.pb_card_props.setVisible(False)
@@ -99,9 +103,11 @@ class SearchBox(QDialog):
             self.form.pb_date_added.setVisible(False)
             self.form.pb_date_rated.setVisible(False)
 
-        self.form.pb_note_type.setToolTip("note:")
-        self.form.pb_card.setToolTip("card:")
-        self.form.pb_field.setToolTip("field:")
+        self.form.pb_nc.setToolTip('for note type use "note:",\nfor cards use "card:"')
+        self.form.pb_nf.setToolTip('for note type use "note:",\nfor fields use "field:"')       
+        # self.form.pb_note_type.setToolTip("note:")
+        # self.form.pb_card.setToolTip("card:")
+        # self.form.pb_field.setToolTip("field:")
         self.form.pb_deck.setToolTip("deck:")
         self.form.pb_tag.setToolTip("tag:")
         self.form.pb_card_props.setToolTip("prop:")
@@ -116,9 +122,11 @@ class SearchBox(QDialog):
 
     def makeConnections(self):
         self.form.pte.textChanged.connect(self.text_change_helper)
-        self.form.pb_note_type.clicked.connect(lambda _, action="note:": self.button_helper(action))
-        self.form.pb_card.clicked.connect(lambda _, action="card:": self.button_helper(action))
-        self.form.pb_field.clicked.connect(lambda _, action="field:": self.button_helper(action))
+        self.form.pb_nc.clicked.connect(self.note__card)
+        self.form.pb_nf.clicked.connect(self.note__field)
+        # self.form.pb_note_type.clicked.connect(lambda _, action="note:": self.button_helper(action))
+        # self.form.pb_card.clicked.connect(lambda _, action="card:": self.button_helper(action))
+        # self.form.pb_field.clicked.connect(lambda _, action="field:": self.button_helper(action))
         self.form.pb_deck.clicked.connect(lambda _, action="deck:": self.button_helper(action))
         self.form.pb_tag.clicked.connect(lambda _, action="tag:": self.button_helper(action))
         self.form.pb_card_props.clicked.connect(lambda _, action="prop:": self.button_helper(action))
@@ -132,21 +140,167 @@ class SearchBox(QDialog):
         self.form.pte.setPlainText(new)
         self.form.pte.setFocus()
 
-    def filter_helper(self, vals, wintitle, allowstar, infotext, show_minus):
+    def insert_text(self, arg):
+        old = self.form.pte.toPlainText()
+        # maybe add new line
+        lines = old.split("\n")
+        if not lines[-1].strip() == "":
+            old += "\n"
+        # https://stackoverflow.com/questions/26358945/qt-find-out-if-qspinbox-was-changed-by-user
+        self.form.pte.blockSignals(True)
+        self.form.pte.setPlainText(old + arg)
+        self.form.pte.blockSignals(False)
+        self.form.pte.moveCursor(QTextCursor.End)
+        self.form.pte.setFocus()
+
+    def searchstring_from_filter_dialog(self, vals, vals_are_dict, value_for_all, windowtitle, infotext, prefix, sort_vals):
         d = FilterDialog(
             parent=self.parent,
             parent_is_browser=True,
             values=vals,
-            windowtitle=wintitle,
+            windowtitle=windowtitle,
             adjPos=False,
-            allowstar=allowstar,
+            show_star=True,
+            check_star=False,
             infotext=infotext,
-            show_prepend_minus_button=show_minus,
+            show_prepend_minus_button=True,
+            check_prepend_minus_button=False,
+            sort_vals=sort_vals
         )
-        if d.exec():
-            new = split_to_multiline(d.selkey)
-            self.form.pte.setPlainText(new)
-            self.form.pte.moveCursor(QTextCursor.End)
+        if not d.exec():
+            return None, None
+        else:
+            if d.selkey == value_for_all:
+                return d.selkey, ""
+            lineonly, _, override_add_star, negate = overrides()
+            if d.lineonly:
+                lineonly = True
+            if override_add_star:
+                d.addstar ^= True
+            out = d.selvalue if vals_are_dict else d.selkey
+            if lineonly or d.addstar:
+                out += "*"
+            if " " in out:
+                out = '"' + out + '"'
+            out = prefix + out
+            if negate or d.neg:
+                out = "-" + out
+            return d.selkey, out
+
+    def note_name_and_search_note_with_info_about_next_dialog(self, remaining_sentence):
+        infotext = (f"""
+<span>
+In a first step select the note type to search. After this you'll see a dialog to narrow 
+by {remaining_sentence}
+</span>
+""")
+        val, fmt_as_search_string = self.searchstring_from_filter_dialog(
+            vals=["--All Note Types--"] + self.col.models.allNames(),
+            vals_are_dict=False,
+            value_for_all="--All Note Types--",
+            windowtitle="Anki: Step 1: Select Note Type to search",
+            infotext=infotext,
+            prefix="note:",
+            sort_vals=True,
+        )
+        return val, fmt_as_search_string
+
+    def note__card(self):
+        remaining = "card template name if the note has multiple cards." 
+        model, model_search_string = self.note_name_and_search_note_with_info_about_next_dialog(remaining)
+        if not model:
+            return
+
+        infotext = ("""
+<span>
+After having selected the note types to search now select the
+card template/type/name you want to search.
+</span>
+""")
+        show_card_dialog = True
+        if not model_search_string:
+            # then from all notetypes
+            vals = cardnames(self.col)
+            vals_are_dict = False
+            sort_vals = True
+        else:
+            # for one note type
+            sort_vals = False
+            nt = self.col.models.byName(model)
+            card_name_to_fmt_dict = {}
+            for c, tmpl in enumerate(nt["tmpls"]):
+                # T: name is a card type name. n it's order in the list of card type.
+                name = tmpl["name"]
+                n = str(c + 1)
+                fmt = f"{n.zfill(2)}: {name}"
+                card_name_to_fmt_dict[fmt] = name
+            default_fake_dict = {"--All the Card Types--":"--All the Card Types--"}
+            vals = {**default_fake_dict, **card_name_to_fmt_dict}
+            vals_are_dict = True
+            if c == 0:  # only one card type 
+                show_card_dialog = False
+        if not show_card_dialog:
+            card_string = ""
+        else:
+            card, card_string = self.searchstring_from_filter_dialog(
+                vals=vals,
+                vals_are_dict=vals_are_dict,
+                value_for_all="--All the Card Types--",
+                windowtitle="Anki: Step 2: Select Card Type to search",
+                infotext=infotext,
+                prefix="card:",
+                sort_vals=sort_vals,
+            )
+            if not card:
+                return
+
+        if model_search_string:
+            model_search_string += " "
+        out = "(" + model_search_string + card_string + ")"
+        self.insert_text(out)
+
+    def note__field(self):
+        remaining = "field (if the note has more than one field)." 
+        model, model_search_string = self.note_name_and_search_note_with_info_about_next_dialog(remaining)
+        if not model:
+            return
+
+        infotext = ("""
+After having selected the note type to search now select the
+field name you want to search.
+""")
+        show_card_dialog = True
+        if not model_search_string:
+            # then from all notetypes
+            fnames = fieldnames()
+            value_for_all = False
+        else:
+            # for one note type
+            nt = self.col.models.byName(model)
+            fnames = [fld["name"] for fld in nt["flds"]]
+            if not len(fnames) > 1:
+                show_card_dialog = False
+            value_for_all="--All the Card Types--"
+            fnames.insert(0, value_for_all)
+        if not show_card_dialog:
+            field_string = ""
+        else:
+            field, field_string = self.searchstring_from_filter_dialog(
+                vals=fnames,
+                vals_are_dict=False,
+                value_for_all=value_for_all,
+                windowtitle="Anki: Step 2: Select Field Name to search",
+                infotext=infotext,
+                prefix="field:",
+                sort_vals=False
+            )
+            if not field:
+                return
+
+        if model_search_string:
+            model_search_string += " "
+        out = "(" + model_search_string + field_string + ")"
+        self.insert_text(out)
 
     def help_short(self):
         MiniHelpSearch(self)
@@ -164,9 +318,11 @@ class SearchBox(QDialog):
             values=processed_list,
             windowtitle="Filter Anki Browser Search History",
             adjPos=False,
-            allowstar=False,
+            show_star=False,
+            check_star=False,
             infotext=False,
             show_prepend_minus_button=False,
+            check_prepend_minus_button=False,
         )
         if d.exec():
             new = split_to_multiline(d.selkey)
@@ -178,6 +334,10 @@ class SearchBox(QDialog):
         old = func_gettext()
         func_settext = self.form.pte.setPlainText
         d = filter_button_cls(self, self.browser, func_gettext, func_settext, False)
+        # detect if closed e.g. with "Esc"
+        if not hasattr(d, "txt") or not isinstance(d.txt, str):
+            self.form.pte.setFocus()
+            return
         # TODO: properly format
         oldlines = old.split("\n")
         if oldlines[-1]:

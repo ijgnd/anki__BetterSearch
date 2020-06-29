@@ -69,7 +69,8 @@ def onSearchEditTextChange(parent,
             "infotext": False,
             "windowtitle": "Anki: Select from decks and tags",
             "show_prepend_minus_button": True,
-            "allowstar": True
+            "show_star": True,
+            "check_star": True,
         }
 
     if arg[-6:] == "field:" and gc("modify_field"):
@@ -82,7 +83,8 @@ def onSearchEditTextChange(parent,
             "infotext": field_infotext,
             "windowtitle": "Anki: Select field to search",
             "show_prepend_minus_button": True,
-            "allowstar": False, 
+            "show_star": False if pointVersion() < 24 else True,
+            "check_star": False,
         }
 
     if arg[-5:] == "prop:" and gc("modify_props"):
@@ -96,7 +98,8 @@ def onSearchEditTextChange(parent,
             "infotext": it,
             "windowtitle": "Anki: Select properties to search",
             "show_prepend_minus_button": True,
-            "allowstar": False 
+            "show_star": False,
+            "check_star": False,
         }
 
     if arg[-3:] == "is:" and gc("modify_is"):
@@ -110,7 +113,8 @@ def onSearchEditTextChange(parent,
             "infotext": False,
             "windowtitle": "Anki: Search by Card State",
             "show_prepend_minus_button": True,
-            "allowstar": False,
+            "show_star": False,
+            "check_star": False,
         }
 
     if arg[-4:] == "tag:" and gc("modify_tag"):
@@ -123,7 +127,8 @@ def onSearchEditTextChange(parent,
             "infotext": False,
             "windowtitle": "Anki: Select tag to search",
             "show_prepend_minus_button": True,
-            "allowstar": True,
+            "show_star": True,
+            "check_star": gc("tag insertion - add '*' to matches"),
         }
 
     elif arg[-5:] == "note:" and gc("modify_note"):
@@ -136,7 +141,8 @@ def onSearchEditTextChange(parent,
             "infotext": False,
             "windowtitle": "Anki: Select Note Type to search",
             "show_prepend_minus_button": True,
-            "allowstar": False,
+            "show_star": False if pointVersion() < 24 else True,
+            "check_star": True,
         }
 
     elif arg[-5:] == "card:" and gc("modify_card"):
@@ -149,7 +155,8 @@ def onSearchEditTextChange(parent,
             "infotext": False,
             "windowtitle": "Anki: Select Card (Type) Name to search",
             "show_prepend_minus_button": True,
-            "allowstar": False if pointVersion() < 24 else True,
+            "show_star": False if pointVersion() < 24 else True,
+            "check_star": False,
         }
     
     elif arg[-4:] == "cfn:":  # cards from note
@@ -169,7 +176,8 @@ def onSearchEditTextChange(parent,
             "infotext": False,
             "windowtitle": "Anki: Select Card (Type) Name from selected Note Type",
             "show_prepend_minus_button": False,
-            "allowstar": False, 
+            "show_star": False,
+            "check_star": False,
         }
 
     if arg[-4:] == "ffn:":
@@ -195,7 +203,8 @@ def onSearchEditTextChange(parent,
             "infotext": ffn_infotext,
             "windowtitle": "Anki: Select Field to search from selected Note Type",
             "show_prepend_minus_button": False,
-            "allowstar": False,
+            "show_star": False,
+            "check_star": False,
         }
 
     elif arg[-5:] == "deck:" and gc("modify_deck"):
@@ -208,7 +217,8 @@ def onSearchEditTextChange(parent,
             "infotext": False,
             "windowtitle": "Anki: Select Deck to search",
             "show_prepend_minus_button": True,
-            "allowstar": True,
+            "show_star": True,
+            "check_star": False,
         }
 
     if not vals:
@@ -220,9 +230,11 @@ def onSearchEditTextChange(parent,
         values=vals["vals"],
         windowtitle=vals["windowtitle"],
         adjPos=True if gc("autoadjust FilterDialog position", True) else False,
-        allowstar=vals["allowstar"],
+        show_star=vals["show_star"],
+        check_star=vals["check_star"],
         infotext=vals["infotext"],
-        show_prepend_minus_button=vals["show_prepend_minus_button"]
+        show_prepend_minus_button=vals["show_prepend_minus_button"],
+        check_prepend_minus_button=False,
     )
     if not d.exec():
         return False, False
@@ -289,7 +301,7 @@ def onSearchEditTextChange(parent,
                 return (True, override_autosearch_default)
 
 
-        if lineonly and vals["allowstar"]:
+        if lineonly and vals["check_star"]:
             if xx1 or xx2:
                 # I need to add tag or deck
                 if d.selkey.startswith("tag:"):
@@ -304,7 +316,7 @@ def onSearchEditTextChange(parent,
         if sel in ["none", "filtered", "tag:none", "deck:filtered"]:
             pass
         elif arg[-4:] == "tag:":
-            if vals["allowstar"] and not override_add_star:
+            if vals["check_star"] and not override_add_star:
                 if gc("tag insertion - add '*' to matches") == "all" or d.addstar:
                     sel = sel + '*'
                 elif gc("tag insertion - add '*' to matches") == "if_has_subtags" or d.addstar:
@@ -318,14 +330,14 @@ def onSearchEditTextChange(parent,
 
         # in 2.1.24 card: and note: can also use *
         elif arg[-5:] == "card:":
-            if (vals["allowstar"] and 
+            if (vals["check_star"] and 
                 (gc("tag insertion - add '*' to matches") == "all" or d.addstar) and 
                 not override_add_star
             ):
                 sel = sel + '*'
 
         elif arg[-5:] == "note:":          
-            if (vals["allowstar"] and
+            if (vals["check_star"] and
                 (gc("tag insertion - add '*' to matches") == "all" or d.addstar) and
                 not override_add_star
             ):
@@ -333,12 +345,12 @@ def onSearchEditTextChange(parent,
 
         # ugly fix for xx etc.
         elif (c1 and arg[-len(c1):] == c1) or (c2 and arg[-len(c2):] == c2):
-            if (vals["allowstar"] and 
+            if (vals["check_star"] and 
                 gc("tag insertion - add '*' to matches") == "all" and 
                 not override_add_star
             ):
                 sel = sel + '*'
-        elif vals["allowstar"] and arg[-5:] == "deck:" and gc("modify_deck"):
+        elif vals["check_star"] and arg[-5:] == "deck:" and gc("modify_deck"):
             if d.addstar and not override_add_star:
                 sel = sel + '*'
         if vals["surround_with_quotes"]:

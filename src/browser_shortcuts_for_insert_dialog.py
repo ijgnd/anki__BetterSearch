@@ -76,7 +76,14 @@ def _insert_helper(self, arg):
         adjPos = True
     else:
         adjPos = False
-    d = FilterDialog(parent=self, parent_is_browser=True, values=vals[2], adjPos=adjPos, allowstar=allowstar)
+    d = FilterDialog(
+        parent=self,
+        parent_is_browser=True,
+        values=vals[2],
+        adjPos=adjPos,
+        show_star=allowstar,
+        check_star=False,
+    )
     if d.exec():
         lineonly, override_autosearch_default, override_add_star, negate = overrides()
         if d.lineonly:

@@ -94,27 +94,32 @@ class FilterDialog(QDialog):
         max_items=10000,
         prefill="",
         adjPos=False,
-        allowstar=True,
+        show_star=False,
+        check_star=False,
         infotext="",
         show_prepend_minus_button=True,
+        check_prepend_minus_button=True,
+        sort_vals=True
     ):
         super().__init__(parent)
         self.parent = parent
         self.parent_is_browser = parent_is_browser
         self.max_items = max_items
         self.adjustposition = adjPos
-        self.allowstar = allowstar
+        self.show_star = show_star
+        self.check_star = check_star
         self.show_prepend_minus_button = show_prepend_minus_button
+        self.check_prepend_minus_button = check_prepend_minus_button
         self.infotext = infotext
         self.setObjectName("FilterDialog")
         if windowtitle:
             self.setWindowTitle(windowtitle)
         if isinstance(values, dict):
             self.dict = values
-            self.keys = sorted(self.dict.keys())
+            self.keys = sorted(self.dict.keys()) if sort_vals else self.dict.keys()
         else:
             self.dict = False
-            self.keys = sorted(values)
+            self.keys = sorted(values) if sort_vals else values
         self.fuzzy_items = self.keys[:max_items]
         self.initUI()
         if self.adjustposition:
@@ -137,11 +142,13 @@ class FilterDialog(QDialog):
         vlay.addWidget(self.list_box)
 
         self.cb_star = QCheckBox("append *")
-        if gc("tag insertion - add '*' to matches"):
+        if self.check_star:
             self.cb_star.setChecked(True)
-        if not self.allowstar:
+        if not self.show_star:
             self.cb_star.setVisible(False)
         self.cb_neg = QCheckBox("prepend search with '-'")
+        if self.check_prepend_minus_button:
+            self.cb_neg.setChecked(True)
         self.button_ok = QPushButton("&OK", self)
         self.button_ok.clicked.connect(self.accept)
         self.button_ok.setToolTip("Return")
@@ -149,7 +156,7 @@ class FilterDialog(QDialog):
         self.button_accept_current = QPushButton("O&K (only current Text)", self)
         key = gc("modifier for insert current text only")
         self.button_accept_current.setToolTip(f"{key} + Return")
-        if self.allowstar:  # shortcut only if this function makes sense
+        if self.show_star:  # shortcut only if this function makes sense
             self.button_accept_current.clicked.connect(self.accept_current)
         else:
             self.button_accept_current.setVisible(False)

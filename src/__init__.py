@@ -186,9 +186,11 @@ def search_history_helper(self):
         values=processed_list,
         windowtitle="Filter Anki Browser Search History",
         adjPos=False,
-        allowstar=False,
+        show_star=False,
+        check_star=False,
         infotext=False,
         show_prepend_minus_button=False,
+        check_prepend_minus_button=False,
     )
     if d.exec():
         new = d.selkey.replace("\n", "  ")

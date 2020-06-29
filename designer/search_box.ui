@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>969</width>
-    <height>462</height>
+    <width>997</width>
+    <height>488</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -74,6 +74,24 @@
        </item>
        <item>
         <widget class="QPushButton" name="pb_filter">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>60</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>60</height>
+          </size>
+         </property>
          <property name="text">
           <string>Filter</string>
          </property>
@@ -111,7 +129,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="ql_button_bar">
        <property name="text">
         <string>Option 2: open dialog to select filter to limit by:</string>
        </property>
@@ -120,28 +138,71 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
-        <widget class="QPushButton" name="pb_note_type">
+        <widget class="QPushButton" name="pb_nc">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>170</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>60</height>
+          </size>
+         </property>
          <property name="text">
-          <string>Note Type</string>
+          <string>Note Type
+Card</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pb_card">
-         <property name="text">
-          <string>Card</string>
+        <widget class="QPushButton" name="pb_nf">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pb_field">
+         <property name="minimumSize">
+          <size>
+           <width>170</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="text">
-          <string>Field</string>
+          <string>Note Type
+Field</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="pb_deck">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
          <property name="text">
           <string>Deck</string>
          </property>
@@ -149,6 +210,18 @@
        </item>
        <item>
         <widget class="QPushButton" name="pb_tag">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
          <property name="text">
           <string>Tag</string>
          </property>
@@ -156,29 +229,57 @@
        </item>
        <item>
         <widget class="QPushButton" name="pb_card_props">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="text">
-          <string>Card Properties</string>
+          <string>Card
+Properties</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="pb_card_state">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="text">
-          <string>Card State</string>
+          <string>Card
+State</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="pb_date_added">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="text">
-          <string>Date &amp;Added</string>
+          <string>Date
+Added</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="pb_date_rated">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="text">
-          <string>Date Rated</string>
+          <string>Date
+Rated</string>
          </property>
         </widget>
        </item>
