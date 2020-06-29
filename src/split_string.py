@@ -20,7 +20,27 @@ adapted from https://github.com/renerocksai/sublimeless_zk/tree/6738375c0e371f0c
 mainly from utils.py
 """
 
-def split_to_multiline(search_string):
+
+def remove_leading_whitespace_on_lines(arg):
+    search_string = ""
+    split = arg.split("\n")
+    for l in split:
+        search_string += l.lstrip(" ")
+    return search_string
+
+
+def line_list_to_indented_string_basic(list_):
+    r = "\n".join(list_)
+    r = r.replace("(","(\n").replace(")","\n)").replace("\n\n","\n")
+    return r
+
+
+def line_list_to_indented_string(list_):
+    pass
+    # TODO
+
+
+def to_list__quoted_on_same_line(search_string):
     in_quotes = False
     pos = 0
     str_len = len(search_string)
@@ -46,6 +66,12 @@ def split_to_multiline(search_string):
             pos += 1
     if current_snippet:
         results.append(current_snippet)
-    results_string = "\n".join(results)
-    results_string = results_string.replace("(","(\n").replace(")","\n)").replace("\n\n","\n")
+    return results
+
+
+def split_to_multiline(string_):
+    search_string = remove_leading_whitespace_on_lines(string_)
+    results = to_list__quoted_on_same_line(search_string)
+    # results_string = line_list_to_indented_string(results)
+    results_string = line_list_to_indented_string_basic(results)
     return results_string
