@@ -17,14 +17,14 @@ from .helpers import (
 )
 
 
-def range_dialog(parent, term, arg, char_to_del, func_settext):
+def range_dialog(parent, term, old, char_to_del, func_settext):
     d = DateRangeDialog(parent, term)
     if d.exec():
         TriggerSearchAfter = gc("modify: window opened by search strings triggers search by default")
         _, override_autosearch_default, _, _ = overrides()
         if override_autosearch_default:
             TriggerSearchAfter ^= True
-        func_settext(arg[:-char_to_del] + "  " + d.searchtext)
+        func_settext(old[:-char_to_del] + "  " + d.searchtext)
         return (True, override_autosearch_default)
 
 
@@ -36,34 +36,56 @@ def onSearchEditTextChange(parent,
                            mw,
                            col
                            ):
-    arg = func_gettext()
+    old = func_gettext()
     vals = {}
 
     da = gc("date range dialog for added: string")
-    da_match = da and arg[-len(da):] == da
+    da_match = da and old[-len(da):] == da
     dr = gc("date range dialog for rated: string")
-    dr_match = da and arg[-len(dr):] == dr
+    dr_match = da and old[-len(dr):] == dr
     if da_match:
         term = "added"
     if dr_match:
         term = "rated"
     if da_match or dr_match:
-        return range_dialog(parent, term, arg, len(da), func_settext)
+        return range_dialog(parent, term, old, len(da), func_settext)
 
 
     c1 = gc("custom tag&deck string 1", "")
-    xx1 = c1 and arg[-len(c1):] == c1
+    xx1 = c1 and old[-len(c1):] == c1
     c2 = gc("custom tag&deck string 2", "")
-    xx2 = c2 and arg[-len(c2):] == c2
+    xx2 = c2 and old[-len(c2):] == c2
     if xx1:
         remove_from_end=-len(c1)
     if xx2:
         remove_from_end=-len(c2)
     if xx1 or xx2:
+
+        """
         vals = {
-            "remove_from_end_of_string": remove_from_end,
-            "insert_space_at_pos": 0,
-            "dict_for_dialog": False,  # if True (use a string that describes it)
+            "remove_from_end_of_old": number of characters to delete from the text before inserting
+                                      the selection. E.g. if the user had typed in "xx" and then
+                                      "tag:hallo" will be inserted the "xx" part must be removed
+                                      beforehand
+            "insert_space_at_pos_in_old": before inserting selected additional search string 
+                                          
+            "dict_for_dialog": if True use a string that describes it: I use this string for 
+                               an if-loop after the dialog closes.
+            "vals": tags(col, True) + decknames(col, include_filtered_in_deck, True),
+            "surround_with_quotes": ,
+            "infotext": text that is shown over the filterbar
+            "windowtitle": 
+            "show_prepend_minus_button": whether the checkbox left from the ok button is SHOWN
+            "check_prepend_minus_button": whether the checkbox left from the ok button is CHECKED
+            "show_star": whether the checkbox left from the ok button is SHOWN
+            "check_star": whether the checkbox left from the ok button is CHECKED
+        }
+"""
+
+        vals = {
+            "remove_from_end_of_old": remove_from_end,
+            "insert_space_at_pos_in_old": 0,
+            "dict_for_dialog": False,
             "vals": tags(col, True) + decknames(col, include_filtered_in_deck, True),
             "surround_with_quotes": True,
             "infotext": False,
@@ -73,10 +95,10 @@ def onSearchEditTextChange(parent,
             "check_star": True,
         }
 
-    if arg[-6:] == "field:" and gc("modify_field"):
+    if old[-6:] == "field:" and gc("modify_field"):
         vals = {
-            "remove_from_end_of_string": -6,
-            "insert_space_at_pos": -6 ,
+            "remove_from_end_of_old": -6,
+            "insert_space_at_pos_in_old": -6 ,
             "dict_for_dialog": False,
             "vals": fieldnames(),
             "surround_with_quotes": True,
@@ -87,11 +109,11 @@ def onSearchEditTextChange(parent,
             "check_star": False,
         }
 
-    if arg[-5:] == "prop:" and gc("modify_props"):
+    if old[-5:] == "prop:" and gc("modify_props"):
         it = "<b>After closing the dialog you must adjust what's inserted with your numbers</b>"
         vals = {
-            "remove_from_end_of_string": False,
-            "insert_space_at_pos": -5,
+            "remove_from_end_of_old": False,
+            "insert_space_at_pos_in_old": -5,
             "dict_for_dialog": "prop",
             "vals": props(),
             "surround_with_quotes": False,
@@ -102,11 +124,11 @@ def onSearchEditTextChange(parent,
             "check_star": False,
         }
 
-    if arg[-3:] == "is:" and gc("modify_is"):
+    if old[-3:] == "is:" and gc("modify_is"):
         expl = gc("modify_is__show_explanations")
         vals = {
-            "remove_from_end_of_string": False if expl else -3,
-            "insert_space_at_pos": -3,
+            "remove_from_end_of_old": False if expl else -3,
+            "insert_space_at_pos_in_old": -3,
             "dict_for_dialog": "is_with_explanations" if expl else False,
             "vals": is_values_with_explanations() if expl else is_values(),
             "surround_with_quotes": False,
@@ -117,10 +139,10 @@ def onSearchEditTextChange(parent,
             "check_star": False,
         }
 
-    if arg[-4:] == "tag:" and gc("modify_tag"):
+    if old[-4:] == "tag:" and gc("modify_tag"):
         vals = {
-            "remove_from_end_of_string": False,
-            "insert_space_at_pos": -4,
+            "remove_from_end_of_old": False,
+            "insert_space_at_pos_in_old": -4,
             "dict_for_dialog": False,
             "vals": tags(col),
             "surround_with_quotes": False,
@@ -131,10 +153,10 @@ def onSearchEditTextChange(parent,
             "check_star": gc("tag insertion - add '*' to matches"),
         }
 
-    elif arg[-5:] == "note:" and gc("modify_note"):
+    elif old[-5:] == "note:" and gc("modify_note"):
         vals = {
-            "remove_from_end_of_string": False,
-            "insert_space_at_pos": -5,
+            "remove_from_end_of_old": False,
+            "insert_space_at_pos_in_old": -5,
             "dict_for_dialog": False,
             "vals": col.models.allNames(),
             "surround_with_quotes": True,
@@ -145,10 +167,10 @@ def onSearchEditTextChange(parent,
             "check_star": True,
         }
 
-    elif arg[-5:] == "card:" and gc("modify_card"):
+    elif old[-5:] == "card:" and gc("modify_card"):
         vals = {
-            "remove_from_end_of_string": False,
-            "insert_space_at_pos": -5,
+            "remove_from_end_of_old": False,
+            "insert_space_at_pos_in_old": -5,
             "dict_for_dialog": False,
             "vals": cardnames(col),
             "surround_with_quotes": True,
@@ -159,7 +181,7 @@ def onSearchEditTextChange(parent,
             "check_star": False,
         }
     
-    elif arg[-4:] == "cfn:":  # cards from note
+    elif old[-4:] == "cfn:":  # cards from note
         def cardnames_modelname_dict():
             d = {}
             for m in col.models.all():
@@ -168,8 +190,8 @@ def onSearchEditTextChange(parent,
                     d[t['name'] + " (" + modelname + ")"] = (t['name'], modelname)
             return d
         vals = {
-            "remove_from_end_of_string": False,
-            "insert_space_at_pos": -4,
+            "remove_from_end_of_old": False,
+            "insert_space_at_pos_in_old": -4,
             "dict_for_dialog": "cfn",
             "vals": cardnames_modelname_dict(),
             "surround_with_quotes": True,
@@ -180,7 +202,7 @@ def onSearchEditTextChange(parent,
             "check_star": False,
         }
 
-    if arg[-4:] == "ffn:":
+    if old[-4:] == "ffn:":
         ffn_infotext = (
 "<b>"
 "Besides the note type name this dialog only inserts the field name to search. After closing <br>"
@@ -195,8 +217,8 @@ def onSearchEditTextChange(parent,
                     d[f['name'] + " (" + modelname + ")"] = (f['name'], modelname)
             return d
         vals = {
-            "remove_from_end_of_string": False,
-            "insert_space_at_pos": -4,
+            "remove_from_end_of_old": False,
+            "insert_space_at_pos_in_old": -4,
             "dict_for_dialog": "ffn",
             "vals": fieldnames_modelname_dict(),
             "surround_with_quotes": True,
@@ -207,10 +229,10 @@ def onSearchEditTextChange(parent,
             "check_star": False,
         }
 
-    elif arg[-5:] == "deck:" and gc("modify_deck"):
+    elif old[-5:] == "deck:" and gc("modify_deck"):
         vals = {
-            "remove_from_end_of_string": False,
-            "insert_space_at_pos": -5,
+            "remove_from_end_of_old": False,
+            "insert_space_at_pos_in_old": -5,
             "dict_for_dialog": False,
             "vals": decknames(col, include_filtered_in_deck),
             "surround_with_quotes": True,
@@ -246,18 +268,14 @@ def onSearchEditTextChange(parent,
         # print(f"d.inputline is {d.inputline}")
         # print(f"d.selvalue is {d.selvalue}")
         # print(f"lineonly is {lineonly}")
-        # print(f"allowstar is {allowstar}")
 
 
-        if negate or d.neg:
-            neg = "-"
-        else:
-            neg = ""
-
-
-        if not vals["remove_from_end_of_string"]:
-            t = arg
-            n = vals["insert_space_at_pos"]
+        ####
+        ######### maybe modify old (before appending selection)
+        neg = "-" if (negate or d.neg) else ""
+        if not vals["remove_from_end_of_old"]:
+            t = old
+            n = vals["insert_space_at_pos_in_old"]
             # multiple runs of insert_helper are still separated by spaces and in other 
             # situations this makes the search more readable
             # make sure that "-" remains in front of terms like deck
@@ -266,7 +284,7 @@ def onSearchEditTextChange(parent,
             else:
                 b = t[:n] + "  " + neg + t[n:]  
         else:
-            b = neg + arg[:vals["remove_from_end_of_string"]]
+            b = neg + old[:vals["remove_from_end_of_old"]]
         # print(f"b is:  {b}")
 
 
@@ -274,7 +292,7 @@ def onSearchEditTextChange(parent,
         # vals["dict_for_dialog"]: UseFilterDialogValue: if values tuple with info, if list is False
         if not vals["dict_for_dialog"]:
             sel = d.selkey
-            # print(f"sel is {sel}")
+            #print(f"sel is {sel}")
         else:
             # workaround: return from function here
             if vals["dict_for_dialog"] == "cfn":
@@ -287,7 +305,7 @@ def onSearchEditTextChange(parent,
             if vals["dict_for_dialog"] == "ffn":
                 field = d.selvalue[0]
                 mynote = d.selvalue[1]
-                mysearch = f''' "note:{mynote}" "{field}:" '''
+                mysearch = f''' "note:{mynote}" "{field}:**" '''
                 already_in_line = b[:-4]  # substract ffn:
                 func_settext(already_in_line + mysearch)
                 return (True, override_autosearch_default)
@@ -301,7 +319,7 @@ def onSearchEditTextChange(parent,
                 return (True, override_autosearch_default)
 
 
-        if lineonly and vals["check_star"]:
+        if lineonly:
             if xx1 or xx2:
                 # I need to add tag or deck
                 if d.selkey.startswith("tag:"):
@@ -310,13 +328,16 @@ def onSearchEditTextChange(parent,
                     sel = "deck:" + d.inputline
             else:
                 sel = d.inputline
+        # print(f"sel is: {sel}")
 
 
-        # maybe add '*' to match other deeper nested hierarchical tags
+
+        #######
+        ############  maybe add '*' to match other deeper nested hierarchical tags
         if sel in ["none", "filtered", "tag:none", "deck:filtered"]:
             pass
-        elif arg[-4:] == "tag:":
-            if vals["check_star"] and not override_add_star:
+        elif old[-4:] == "tag:":
+            if not override_add_star:
                 if gc("tag insertion - add '*' to matches") == "all" or d.addstar:
                     sel = sel + '*'
                 elif gc("tag insertion - add '*' to matches") == "if_has_subtags" or d.addstar:
@@ -329,32 +350,40 @@ def onSearchEditTextChange(parent,
                         sel = sel + '*'
 
         # in 2.1.24 card: and note: can also use *
-        elif arg[-5:] == "card:":
-            if (vals["check_star"] and 
-                (gc("tag insertion - add '*' to matches") == "all" or d.addstar) and 
-                not override_add_star
-            ):
+        elif old[-5:] == "card:":
+            if d.addstar and not override_add_star:
                 sel = sel + '*'
 
-        elif arg[-5:] == "note:":          
-            if (vals["check_star"] and
-                (gc("tag insertion - add '*' to matches") == "all" or d.addstar) and
-                not override_add_star
-            ):
+        elif old[-5:] == "note:":          
+            if d.addstar and not override_add_star:
                 sel = sel + '*'
+
+        elif old[-6:] == "field:":
+            sel = sel + '**'
 
         # ugly fix for xx etc.
-        elif (c1 and arg[-len(c1):] == c1) or (c2 and arg[-len(c2):] == c2):
+        elif (c1 and old[-len(c1):] == c1) or (c2 and old[-len(c2):] == c2):
             if (vals["check_star"] and 
                 gc("tag insertion - add '*' to matches") == "all" and 
                 not override_add_star
             ):
                 sel = sel + '*'
-        elif vals["check_star"] and arg[-5:] == "deck:" and gc("modify_deck"):
+
+        elif vals["check_star"] and old[-5:] == "deck:" and gc("modify_deck"):
             if d.addstar and not override_add_star:
                 sel = sel + '*'
+
+
+
+
+
+
+
         if vals["surround_with_quotes"]:
             sel = '"' + sel + '"'
+
+
+
         func_settext(b + sel)
         TriggerSearchAfter = gc("modify: window opened by search strings triggers search by default")
         if override_autosearch_default:
