@@ -25,7 +25,7 @@ def remove_linebreaks_and_leading_whitespace_on_lines(arg):
     search_string = ""
     split = arg.split("\n")
     for l in split:
-        search_string += l.lstrip(" ")
+        search_string += l.strip(" ") + " "
     return search_string
 
 
