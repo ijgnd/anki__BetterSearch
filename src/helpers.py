@@ -102,22 +102,27 @@ def overrides():
     return lineonly, override_autosearch_default, override_add_star, negate
 
 
-field_infotext = (
-"<b>"
-"This dialog only inserts the field name to search. After closing the dialog you <br>"
-"must enter the actual search term for the field.</b><br>"
-"When searching fields keep in mind that searching on fields requires an 'exact match' by default.<br>"
-"Examples from the manual:<br><br>"
-"front:dog<br>"
-'&nbsp;&nbsp;&nbsp;&nbsp;find notes with a field named "Front" of exactly “dog”. A field that says “a dog” will not match.<br>'
-'front:*dog*<br>'
-'&nbsp;&nbsp;&nbsp;&nbsp;find notes with a field named "Front" containing dog somewhere<br>'
-'front:<br>'
-'&nbsp;&nbsp;&nbsp;&nbsp;find notes that have an empty field named "Front"<br>'
-'front:_*<br>'
-'&nbsp;&nbsp;&nbsp;&nbsp;find notes that have a non-empty field named "Front"<br>'
-'front:*<br>'
-'&nbsp;&nbsp;&nbsp;&nbsp;find notes that have a field named "Front", empty or not<br>'
-'fr*:text<br>'
-'&nbsp;&nbsp;&nbsp;&nbsp;find notes in a field whose name is starting with “fr”<br>'
-)
+field_infotext = """
+<b>
+This dialog inserts the field name to search. After closing the dialog you <br>
+might want to enter the actual search term for the field</b>. By default this add-on adds "**"
+which matches if the selected field is not empty.
+<br><br>
+When searching fields keep in mind that searching on fields requires an 'exact match' by default.
+<br><br>
+Examples from the manual:<br>
+<div>front:dog</div>
+<div style="margin-left:40px;">find notes with a field named "Front" of exactly “dog”. A field that says “a dog” will not match.</div>
+<div>front:*dog*</div>
+<div style="margin-left:40px;">find notes with a field named "Front" containing dog somewhere</div>
+<div>front:</div>
+<div style="margin-left:40px;">find notes that have an empty field named "Front"</div>
+<div>front:_*</div>
+<div style="margin-left:40px;">find notes that have a non-empty field named "Front"</div>
+<div>front:*</div>
+<div style="margin-left:40px;">find notes that have a field named "Front", empty or not</div>
+<div>fr*:text</div>
+<div style="margin-left:40px;">find notes in a field whose name is starting with “fr”</div>
+</div>
+"""
+
