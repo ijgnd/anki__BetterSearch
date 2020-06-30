@@ -322,8 +322,12 @@ to limit to a certain term you must <b>adjust</b> the search.
         self.insert_text(out)
 
     def help_short(self):
-        self.help_dialog = MiniHelpSearch(self)
-        self.help_dialog.show()
+        if self.help_dialog:
+            tooltip("mini help window is already open (but maybe it's below another window of yours).")
+            self.help_dialog.raise_()  # doesn't work on MacOS
+        else:
+            self.help_dialog = MiniHelpSearch(self)
+            self.help_dialog.show()
         #aqt.dialogs.open(mini_search_help_dialog_title, aqt.mw)
 
     def help_long(self):
