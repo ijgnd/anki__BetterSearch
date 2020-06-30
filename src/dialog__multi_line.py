@@ -13,6 +13,7 @@ from aqt.utils import (
     openHelp,
     restoreGeom,
     saveGeom,
+    tooltip,
 )
 
 from .config import gc
@@ -217,6 +218,7 @@ After having selected the note types to search now select the
 card template/type/name you want to search.
 </span>
 """)
+        iscloze = False
         show_card_dialog = True
         if not model_search_string:
             # then from all notetypes
@@ -227,18 +229,23 @@ card template/type/name you want to search.
             # for one note type
             sort_vals = False
             nt = self.col.models.byName(model)
-            card_name_to_fmt_dict = {}
-            for c, tmpl in enumerate(nt["tmpls"]):
-                # T: name is a card type name. n it's order in the list of card type.
-                name = tmpl["name"]
-                n = str(c + 1)
-                fmt = f"{n.zfill(2)}: {name}"
-                card_name_to_fmt_dict[fmt] = name
-            default_fake_dict = {"--All the Card Types--":"--All the Card Types--"}
-            vals = {**default_fake_dict, **card_name_to_fmt_dict}
-            vals_are_dict = True
-            if c == 0:  # only one card type 
+            if nt["type"] == 1:  # it's a cloze and for cloze it doesn't make sense to show a list
+                                 # of cards
                 show_card_dialog = False
+                iscloze = True
+            else:
+                card_name_to_fmt_dict = {}
+                for c, tmpl in enumerate(nt["tmpls"]):
+                    # T: name is a card type name. n it's order in the list of card type.
+                    name = tmpl["name"]
+                    n = str(c + 1)
+                    fmt = f"{n.zfill(2)}: {name}"
+                    card_name_to_fmt_dict[fmt] = name
+                default_fake_dict = {"--All the Card Types--":"--All the Card Types--"}
+                vals = {**default_fake_dict, **card_name_to_fmt_dict}
+                vals_are_dict = True
+                if c == 0:  # only one card type 
+                    show_card_dialog = False
         if not show_card_dialog:
             card_string = ""
         else:
@@ -258,6 +265,13 @@ card template/type/name you want to search.
             model_search_string += " "
         out = "(" + model_search_string + card_string + ")"
         self.insert_text(out)
+        if iscloze:
+            msg = ("""
+You selected a cloze note type. To match only c2 clozes type you would have to 
+add&nbsp;&nbsp;card:2&nbsp;&nbsp;
+"""
+            )
+            tooltip(msg, parent=self)  # default is period=3000
 
     def note__field(self):
         remaining = "field (if the note has more than one field)." 
