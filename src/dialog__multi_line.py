@@ -138,7 +138,10 @@ class SearchBox(QDialog):
 
     def button_helper(self, arg):
         old = self.form.pte.toPlainText()
-        new = old + "\n" + arg
+        if old == "" or old.endswith("\n"):  # if empty or on newline
+            new = old + arg
+        else:
+            new = old + "\n" + arg
         self.form.pte.setPlainText(new)
         self.form.pte.setFocus()
 
