@@ -67,6 +67,7 @@ def onSearchEditTextChange(parent,
                                       the selection. E.g. if the user had typed in "xx" and then
                                       "tag:hallo" will be inserted the "xx" part must be removed
                                       beforehand
+                                      if nothing to remove you must set it to "0".
             "insert_space_at_pos_in_old": before inserting selected additional search string 
                                           
             "dict_for_dialog": if True use a string that describes it: I use this string for 
@@ -112,7 +113,7 @@ def onSearchEditTextChange(parent,
     if old[-5:] == "prop:" and gc("modify_props"):
         it = "<b>After closing the dialog you must adjust what's inserted with your numbers</b>"
         vals = {
-            "remove_from_end_of_old": False,
+            "remove_from_end_of_old": 0,
             "insert_space_at_pos_in_old": -5,
             "dict_for_dialog": "prop",
             "vals": props(),
@@ -127,7 +128,7 @@ def onSearchEditTextChange(parent,
     if old[-3:] == "is:" and gc("modify_is"):
         expl = gc("modify_is__show_explanations")
         vals = {
-            "remove_from_end_of_old": False if expl else -3,
+            "remove_from_end_of_old": 0 if expl else -3,
             "insert_space_at_pos_in_old": -3,
             "dict_for_dialog": "is_with_explanations" if expl else False,
             "vals": is_values_with_explanations() if expl else is_values(),
@@ -141,7 +142,7 @@ def onSearchEditTextChange(parent,
 
     if old[-4:] == "tag:" and gc("modify_tag"):
         vals = {
-            "remove_from_end_of_old": False,
+            "remove_from_end_of_old": 0,
             "insert_space_at_pos_in_old": -4,
             "dict_for_dialog": False,
             "vals": tags(col),
@@ -155,7 +156,7 @@ def onSearchEditTextChange(parent,
 
     elif old[-5:] == "note:" and gc("modify_note"):
         vals = {
-            "remove_from_end_of_old": False,
+            "remove_from_end_of_old": 0,
             "insert_space_at_pos_in_old": -5,
             "dict_for_dialog": False,
             "vals": col.models.allNames(),
@@ -169,7 +170,7 @@ def onSearchEditTextChange(parent,
 
     elif old[-5:] == "card:" and gc("modify_card"):
         vals = {
-            "remove_from_end_of_old": False,
+            "remove_from_end_of_old": 0,
             "insert_space_at_pos_in_old": -5,
             "dict_for_dialog": False,
             "vals": cardnames(col),
@@ -190,7 +191,7 @@ def onSearchEditTextChange(parent,
                     d[t['name'] + " (" + modelname + ")"] = (t['name'], modelname)
             return d
         vals = {
-            "remove_from_end_of_old": False,
+            "remove_from_end_of_old": 0,
             "insert_space_at_pos_in_old": -4,
             "dict_for_dialog": "cfn",
             "vals": cardnames_modelname_dict(),
@@ -217,7 +218,7 @@ def onSearchEditTextChange(parent,
                     d[f['name'] + " (" + modelname + ")"] = (f['name'], modelname)
             return d
         vals = {
-            "remove_from_end_of_old": False,
+            "remove_from_end_of_old": 0,
             "insert_space_at_pos_in_old": -4,
             "dict_for_dialog": "ffn",
             "vals": fieldnames_modelname_dict(),
@@ -231,7 +232,7 @@ def onSearchEditTextChange(parent,
 
     elif old[-5:] == "deck:" and gc("modify_deck"):
         vals = {
-            "remove_from_end_of_old": False,
+            "remove_from_end_of_old": 0,
             "insert_space_at_pos_in_old": -5,
             "dict_for_dialog": False,
             "vals": decknames(col, include_filtered_in_deck),
@@ -274,15 +275,25 @@ def onSearchEditTextChange(parent,
         ######### maybe modify old (before appending selection)
         neg = "-" if (negate or d.neg) else ""
         if not vals["remove_from_end_of_old"]:
-            t = old
             n = vals["insert_space_at_pos_in_old"]
             # multiple runs of insert_helper are still separated by spaces and in other 
             # situations this makes the search more readable
             # make sure that "-" remains in front of terms like deck
-            if len(t[:n]) > 0 and t[:n][-1] == "-":
-                b = t[:n-1] + "  -" + t[n:]
+            
+            # if at beginning of line in multi-line dialog don't insert space
+            if "\n" in old:
+                lines = old.split("\n")
+                length_to_compare = len(lines[-1])
             else:
-                b = t[:n] + "  " + neg + t[n:]  
+                length_to_compare = len(old)
+            if length_to_compare - abs(n) == 0:
+                spacing = ""
+            else:
+                spacing = "  "
+            if len(old[:n]) > 0 and old[:n][-1] == "-":
+                b = old[:n-1] + spacing + "-" + old[n:]
+            else:
+                b = old[:n] + spacing + neg + old[n:]  
         else:
             b = neg + old[:vals["remove_from_end_of_old"]]
         # print(f"b is:  {b}")
