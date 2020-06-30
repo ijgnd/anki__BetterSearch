@@ -14,6 +14,7 @@ from .helpers import (
     fieldnames,
     overrides,
     field_infotext,
+    maybe_add_spaced_between,
 )
 
 
@@ -24,7 +25,8 @@ def range_dialog(parent, term, old, char_to_del, func_settext):
         _, override_autosearch_default, _, _ = overrides()
         if override_autosearch_default:
             TriggerSearchAfter ^= True
-        func_settext(old[:-char_to_del] + "  " + d.searchtext)
+        spaces = maybe_add_spaced_between(old, char_to_del)
+        func_settext(old[:-char_to_del] + spaces + d.searchtext)
         return (True, override_autosearch_default)
 
 
@@ -280,20 +282,11 @@ def onSearchEditTextChange(parent,
             # situations this makes the search more readable
             # make sure that "-" remains in front of terms like deck
             
-            # if at beginning of line in multi-line dialog don't insert space
-            if "\n" in old:
-                lines = old.split("\n")
-                length_to_compare = len(lines[-1])
-            else:
-                length_to_compare = len(old)
-            if length_to_compare - abs(n) == 0:
-                spacing = ""
-            else:
-                spacing = "  "
+            spaces = maybe_add_spaced_between(old, n)
             if len(old[:n]) > 0 and old[:n][-1] == "-":
-                b = old[:n-1] + spacing + "-" + old[n:]
+                b = old[:n-1] + spaces + "-" + old[n:]
             else:
-                b = old[:n] + spacing + neg + old[n:]  
+                b = old[:n] + spaces + neg + old[n:]  
         else:
             b = neg + old[:vals["remove_from_end_of_old"]]
         # print(f"b is:  {b}")

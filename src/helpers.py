@@ -126,3 +126,17 @@ Examples from the manual:<br>
 </div>
 """
 
+
+def maybe_add_spaced_between(old, insert_space_at_pos_in_old):
+    # if at beginning of line don't insert space after old
+    n = insert_space_at_pos_in_old
+    if "\n" in old:
+        lines = old.split("\n")
+        length_to_compare = len(lines[-1])
+    else:
+        length_to_compare = len(old)
+    if length_to_compare - abs(n) == 0:
+        spacing = ""
+    else:
+        spacing = "  "
+    return spacing
