@@ -155,7 +155,7 @@ class SearchBox(QDialog):
         self.form.pte.moveCursor(QTextCursor.End)
         self.form.pte.setFocus()
 
-    def searchstring_from_filter_dialog(self, vals, vals_are_dict, value_for_all, windowtitle, infotext, prefix, sort_vals):
+    def run_filter_dialog(self, vals, vals_are_dict, value_for_all, windowtitle, infotext, prefix, sort_vals):
         d = FilterDialog(
             parent=self.parent,
             parent_is_browser=True,
@@ -170,7 +170,7 @@ class SearchBox(QDialog):
             sort_vals=sort_vals
         )
         if not d.exec():
-            return None, None
+            return None, None, None
         else:
             if d.selkey == value_for_all:
                 return d.selkey, ""
@@ -182,21 +182,18 @@ class SearchBox(QDialog):
             out = d.selvalue if vals_are_dict else d.selkey
             if lineonly or d.addstar:
                 out += "*"
-            if " " in out:
-                out = '"' + out + '"'
             out = prefix + out
-            if negate or d.neg:
-                out = "-" + out
-            return d.selkey, out
+            neg = True if (negate or d.neg) else False
+            return d.selkey, out, neg
 
-    def note_name_and_search_note_with_info_about_next_dialog(self, remaining_sentence):
+    def note_filter_helper(self, remaining_sentence):
         infotext = (f"""
 <span>
 In a first step select the note type to search. After this you'll see a dialog to narrow 
 by {remaining_sentence}
 </span>
 """)
-        val, fmt_as_search_string = self.searchstring_from_filter_dialog(
+        val, fmt, neg = self.run_filter_dialog(
             vals=["--All Note Types--"] + self.col.models.allNames(),
             vals_are_dict=False,
             value_for_all="--All Note Types--",
@@ -205,11 +202,11 @@ by {remaining_sentence}
             prefix="note:",
             sort_vals=True,
         )
-        return val, fmt_as_search_string
+        return val, fmt, neg
 
     def note__card(self):
         remaining = "card template name if the note has multiple cards." 
-        model, model_search_string = self.note_name_and_search_note_with_info_about_next_dialog(remaining)
+        model, model_search_string, modelneg = self.note_filter_helper(remaining)
         if not model:
             return
 
@@ -249,8 +246,9 @@ card template/type/name you want to search.
                     show_card_dialog = False
         if not show_card_dialog:
             card_string = ""
+            cardneg = False
         else:
-            card, card_string = self.searchstring_from_filter_dialog(
+            card, card_string, cardneg = self.run_filter_dialog(
                 vals=vals,
                 vals_are_dict=vals_are_dict,
                 value_for_all="--All the Card Types--",
@@ -262,9 +260,16 @@ card template/type/name you want to search.
             if not card:
                 return
 
+
+        if " " in model_search_string:
+            model_search_string = '"' + model_search_string + '"'
         if model_search_string:
             model_search_string += " "
-        out = "(" + model_search_string + card_string + ")"
+        if " " in card_string:
+            card_string = '"' + card_string + '"'
+        out = '(' + model_search_string + card_string + ')'
+        if modelneg or cardneg:
+            out = "-" + out
         self.insert_text(out)
         if iscloze:
             msg = ("""
@@ -276,7 +281,7 @@ add&nbsp;&nbsp;card:2&nbsp;&nbsp;
 
     def note__field(self):
         remaining = "field (if the note has more than one field)." 
-        model, model_search_string = self.note_name_and_search_note_with_info_about_next_dialog(remaining)
+        model, model_search_string, modelneg = self.note_filter_helper(remaining)
         if not model:
             return
 
@@ -303,8 +308,9 @@ to limit to a certain term you must <b>adjust</b> the search.
             fnames.insert(0, value_for_all)
         if not show_card_dialog:
             field_string = ""
+            fieldneg = False
         else:
-            field, field_string = self.searchstring_from_filter_dialog(
+            field, field_string, fieldneg = self.run_filter_dialog(
                 vals=fnames,
                 vals_are_dict=False,
                 value_for_all=value_for_all,
@@ -316,9 +322,17 @@ to limit to a certain term you must <b>adjust</b> the search.
             if not field:
                 return
 
+        if " " in model_search_string:
+            model_search_string = '"' + model_search_string + '"'
         if model_search_string:
             model_search_string += " "
-        out = "(" + model_search_string + field_string + ":**)"
+        if field_string:
+            field_string += ":**"
+        if " " in field_string:
+            field_string = '"' + field_string + '"'
+        out = '(' + model_search_string + field_string + ')'
+        if modelneg or fieldneg:
+            out = "-" + out
         self.insert_text(out)
 
     def help_short(self):
