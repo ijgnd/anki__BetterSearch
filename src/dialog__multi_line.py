@@ -406,5 +406,7 @@ to limit to a certain term you must <b>adjust</b> the search.
 
     def accept(self):
         saveGeom(self, searchbox_geom_name)
+        if self.help_dialog:
+            self.help_dialog.reject()
         self.newsearch = self.process_text()
         QDialog.accept(self)
