@@ -369,6 +369,10 @@ def onSearchEditTextChange(parent,
             if d.addstar and not override_add_star:
                 sel = sel + '*'
 
+        elif old[-5:] == "deck:" and gc("modify_deck"):
+            if d.addstar and not override_add_star:
+                sel = sel + '*'
+
         elif old[-6:] == "field:":
             sel = sel + '**'
 
@@ -378,10 +382,6 @@ def onSearchEditTextChange(parent,
                 gc("tag insertion - add '*' to matches") == "all" and 
                 not override_add_star
             ):
-                sel = sel + '*'
-
-        elif vals["check_star"] and old[-5:] == "deck:" and gc("modify_deck"):
-            if d.addstar and not override_add_star:
                 sel = sel + '*'
 
 
