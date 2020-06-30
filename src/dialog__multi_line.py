@@ -303,7 +303,7 @@ to limit to a certain term you must <b>adjust</b> the search.
 
         if model_search_string:
             model_search_string += " "
-        out = "(" + model_search_string + field_string + ":*)"
+        out = "(" + model_search_string + field_string + ":**)"
         self.insert_text(out)
 
     def help_short(self):
