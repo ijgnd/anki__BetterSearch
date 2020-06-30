@@ -57,6 +57,7 @@ class SearchBox(QDialog):
         QDialog.__init__(self, self.parent, Qt.Window)
         self.form = search_box.Ui_Dialog()
         self.form.setupUi(self)
+        self.help_dialog = None
         self.setupUI()
         self.config_pte()
         self.settext()
@@ -321,7 +322,8 @@ to limit to a certain term you must <b>adjust</b> the search.
         self.insert_text(out)
 
     def help_short(self):
-        MiniHelpSearch(self)
+        self.help_dialog = MiniHelpSearch(self)
+        self.help_dialog.show()
         #aqt.dialogs.open(mini_search_help_dialog_title, aqt.mw)
 
     def help_long(self):
@@ -394,6 +396,8 @@ to limit to a certain term you must <b>adjust</b> the search.
 
     def reject(self):
         saveGeom(self, searchbox_geom_name)
+        if self.help_dialog:
+            self.help_dialog.reject()
         QDialog.reject(self)
 
     def accept(self):
