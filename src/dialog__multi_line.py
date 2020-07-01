@@ -389,18 +389,7 @@ to limit to a certain term you must <b>adjust</b> the search.
         if not hasattr(d, "txt") or not isinstance(d.txt, str):
             self.form.pte.setFocus()
             return
-        # TODO: properly format
-        oldlines = old.split("\n")
-        if oldlines[-1]:
-            old = old + "\n"
-        func_settext(old + d.txt)
-        self.form.pte.setFocus()
-        self.form.pte.moveCursor(QTextCursor.End)
-
-        # TODO
-        #new = split_to_multiline(old + d.txt)
-        #self.form.pte.setPlainText(new)
-        #self.form.pte.setFocus()
+        self.button_helper(d.txt)
 
     def settext(self):
         processed = split_to_multiline(self.searchstring)
