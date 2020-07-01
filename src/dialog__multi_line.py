@@ -168,19 +168,6 @@ class SearchBox(QDialog):
 
         self.text_change_helper()
 
-    def insert_text(self, arg):
-        old = self.form.pte.toPlainText()
-        # maybe add new line
-        lines = old.split("\n")
-        if not lines[-1].strip() == "":
-            old += "\n"
-        # https://stackoverflow.com/questions/26358945/qt-find-out-if-qspinbox-was-changed-by-user
-        self.form.pte.blockSignals(True)
-        self.form.pte.setPlainText(old + arg)
-        self.form.pte.blockSignals(False)
-        self.form.pte.moveCursor(QTextCursor.End)
-        self.form.pte.setFocus()
-
     def run_filter_dialog(self, vals, vals_are_dict, value_for_all, windowtitle, infotext, prefix, sort_vals):
         d = FilterDialog(
             parent=self.parent,
@@ -296,7 +283,7 @@ card template/type/name you want to search.
         out = '(' + model_search_string + card_string + ')'
         if modelneg or cardneg:
             out = "-" + out
-        self.insert_text(out)
+        self.button_helper(out)
         if iscloze:
             msg = ("""
 You selected a cloze note type. To match only c2 clozes type you would have to 
@@ -359,7 +346,7 @@ to limit to a certain term you must <b>adjust</b> the search.
         out = '(' + model_search_string + field_string + ')'
         if modelneg or fieldneg:
             out = "-" + out
-        self.insert_text(out)
+        self.button_helper(out)
 
     def help_short(self):
         if self.help_dialog:
