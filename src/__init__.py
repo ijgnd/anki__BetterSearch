@@ -100,13 +100,13 @@ DeckConf.initialSetup = wrap(DeckConf.initialSetup, dyn_setup_search)
 
 
 def onDynSetupSearchEditTextChange(self, arg):
-    lineedit = self.sender()  # https://stackoverflow.com/a/33981172
+    le = self.sender()  # https://stackoverflow.com/a/33981172
     onSearchEditTextChange(
         parent=self,
         move_dialog_in_browser=False,
         include_filtered_in_deck=False,
-        func_gettext=lineedit.text,
-        func_settext=lineedit.setText,
+        func_gettext=le.text,
+        func_settext=le.setText,
         mw=self.mw,
         col=self.mw.col
     )
@@ -136,13 +136,13 @@ Browser.setupSearch = wrap(Browser.setupSearch,mysearch)
 
 
 def onBrowserSearchEditTextChange(self, arg):
-    lineedit = self.form.searchEdit.lineEdit()
+    le = self.form.searchEdit.lineEdit()
     ret = onSearchEditTextChange(
         parent=self,
         move_dialog_in_browser=True,
         include_filtered_in_deck=True,
-        func_gettext=lineedit.text,
-        func_settext=lineedit.setText,
+        func_gettext=le.text,
+        func_settext=le.setText,
         mw=self.mw,
         col=self.col
     )
