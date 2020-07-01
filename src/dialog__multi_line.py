@@ -138,13 +138,35 @@ class SearchBox(QDialog):
         self.form.pb_date_rated.clicked.connect(lambda _, action=gc("date range dialog for rated: string", "drated"): self.button_helper(action))
 
     def button_helper(self, arg):
-        old = self.form.pte.toPlainText()
-        if old == "" or old.endswith("\n"):  # if empty or on newline
-            new = old + arg
-        else:
-            new = old + "\n" + arg
-        self.form.pte.setPlainText(new)
+        # https://stackoverflow.com/questions/26358945/qt-find-out-if-qspinbox-was-changed-by-user
+        self.form.pte.blockSignals(True)
+        self._button_helper(arg)
+        self.form.pte.blockSignals(False)
         self.form.pte.setFocus()
+    
+    def _button_helper(self, arg):
+        all_text = self.form.pte.toPlainText()
+        pos = self.form.pte.textCursor().position()
+        before = all_text[:pos]
+        after = all_text[pos:]
+
+        if after:
+            after = " " + after
+
+        if all_text == "" or before.endswith("\n"):  # if empty or on newline
+            spacer = ""
+        else:
+            spacer = "\n"
+
+        new = before + spacer + arg + after
+        self.form.pte.setPlainText(new)
+
+        pos += len(arg) + len(spacer)
+        cursor = self.form.pte.textCursor()
+        cursor.setPosition(pos)
+        self.form.pte.setTextCursor(cursor)
+
+        self.text_change_helper()
 
     def insert_text(self, arg):
         old = self.form.pte.toPlainText()
@@ -404,17 +426,21 @@ to limit to a certain term you must <b>adjust</b> the search.
         return text.replace("\n", " ").replace("\t", " ")
 
     def text_change_helper(self):
+        pos = self.form.pte.textCursor().position()
         out = onSearchEditTextChange(
             parent=self.parent,
             move_dialog_in_browser=False,
             include_filtered_in_deck=True,
             func_gettext=self.form.pte.toPlainText,
             func_settext=self.form.pte.setPlainText,
+            cursorpos=pos,
             mw=self.browser.mw,
             col=self.browser.col,
             )
         if out:
-            self.form.pte.moveCursor(QTextCursor.End)
+            cursor = self.form.pte.textCursor()
+            cursor.setPosition(out[0])
+            self.form.pte.setTextCursor(cursor)
 
     def reject(self):
         saveGeom(self, searchbox_geom_name)
