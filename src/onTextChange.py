@@ -49,7 +49,6 @@ def onSearchEditTextChange(parent,
         after = all_text[cursorpos:]
     if after and not after.startswith(" "):
         after = " " + after
-    old = func_gettext()
 
     vals = {}
 
