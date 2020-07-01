@@ -3,6 +3,7 @@ from anki.utils import pointVersion
 import aqt
 from aqt.qt import (
     QDialog,
+    QFont,
     QKeySequence,
     QTextCursor,
     Qt,
@@ -120,7 +121,17 @@ class SearchBox(QDialog):
         self.form.pb_date_rated.setToolTip(st)
 
     def config_pte(self):
-        self.form.pte.setTabStopDistance(20)
+        #self.form.pte.setTabStopDistance(20)
+        # as in  clayout
+        tab_width = self.fontMetrics().width(" " * 4)
+        self.form.pte.setTabStopDistance(tab_width)
+        #
+        if gc("Multiline Dialog: use bigger typewriter font"):
+            font = QFont("Monospace")
+            font.setStyleHint(QFont.TypeWriter)
+            defaultFontSize = font.pointSize()
+            font.setPointSize(int(defaultFontSize*1.1))
+            self.form.pte.setFont(font)
 
     def makeConnections(self):
         self.form.pte.textChanged.connect(self.text_change_helper)
