@@ -72,6 +72,7 @@ from aqt.gui_hooks import (
 from aqt.qt import (
     QAction,
     QKeySequence,
+    QPushButton,
     QShortcut,
     qconnect,
 )
@@ -242,3 +243,29 @@ def setupBrowserMenu(self):
     view.addAction(action)
     action.triggered.connect(lambda _, b=self, t="rated": date_range_dialog_helper(b, t))
 browser_menus_did_init.append(setupBrowserMenu)
+
+
+def add_multi_dialog_open_button(self):
+    # self is browser
+    if not gc("-Add Button to the Browser Search Bar"):
+        return
+    if gc("-Put Multiline Search Panel into Browser"):  # this takes precendence
+        return
+    but = QPushButton("SearchDialog")
+    but.clicked.connect(lambda _, browser=self: open_multiline_searchwindow(browser))
+
+    grid = self.form.gridLayout
+    elements = []
+    for i in range(grid.count()):
+        w = grid.itemAt(i).widget()
+        name = w.objectName() if hasattr(w, "objectName") else ""
+        elements.append((w,name))
+    
+    grid.addWidget(but, 0, 0, 1, 1)
+    for idx, e in enumerate(elements):
+        if e[1] == "filter":
+            grid.addWidget(e[0], 0, 1, 1, 1)
+            del elements[idx]
+    for idx, item in enumerate(elements):
+        grid.addWidget(item[0], 0, 2+idx, 1, 1)
+browser_menus_did_init.append(add_multi_dialog_open_button)
