@@ -68,7 +68,7 @@
        <item>
         <widget class="QLabel" name="ql_filter">
          <property name="text">
-          <string>Option 1: add filter from a nested menu. This is similar to the button from the top right of the browser: </string>
+          <string>Option 1: add filter from a nested menu. This is similar to the button from the top left of the browser: </string>
          </property>
         </widget>
        </item>
