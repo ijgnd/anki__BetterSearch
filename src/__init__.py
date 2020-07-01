@@ -137,7 +137,7 @@ Browser.setupSearch = wrap(Browser.setupSearch,mysearch)
 
 def onBrowserSearchEditTextChange(self, arg):
     lineedit = self.form.searchEdit.lineEdit()
-    randialog, TriggerSearchAfter = onSearchEditTextChange(
+    ret = onSearchEditTextChange(
         parent=self,
         move_dialog_in_browser=True,
         include_filtered_in_deck=True,
@@ -146,8 +146,11 @@ def onBrowserSearchEditTextChange(self, arg):
         mw=self.mw,
         col=self.col
     )
-    if randialog and TriggerSearchAfter:
-        self.onSearchActivated()
+    if not ret:
+        return
+    else:
+        if ret[0] and ret[1]:  #randialog and TriggerSearchAfter:
+            self.onSearchActivated()
 Browser.onBrowserSearchEditTextChange = onBrowserSearchEditTextChange
 
 

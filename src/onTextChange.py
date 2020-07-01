@@ -247,7 +247,7 @@ def onSearchEditTextChange(parent,
         }
 
     if not vals:
-        return False, False
+        return False
 
     d = FilterDialog(
         parent=parent,
@@ -262,7 +262,7 @@ def onSearchEditTextChange(parent,
         check_prepend_minus_button=False,
     )
     if not d.exec():
-        return False, False
+        return False
     else:
         lineonly, override_autosearch_default, override_add_star, negate = overrides()
         if d.lineonly:
