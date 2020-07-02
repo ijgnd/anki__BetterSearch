@@ -253,6 +253,9 @@ def add_multi_dialog_open_button(self):
         return
     but = QPushButton("SearchDialog")
     but.clicked.connect(lambda _, browser=self: open_multiline_searchwindow(browser))
+    cut = gc("Multiline Dialog: shortcut: open window")
+    if cut:
+        but.setToolTip(f"shortcut: {cut}")
 
     grid = self.form.gridLayout
     elements = []
