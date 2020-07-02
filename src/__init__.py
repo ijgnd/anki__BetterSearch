@@ -210,7 +210,8 @@ def search_history_helper(self):
 def setupBrowserMenu(self):
     # self is browser
     view = getMenu(self, "&View")
-
+    if not hasattr(self, "menuView"):
+        self.menuView = view
     cut = gc("Multiline Dialog: shortcut: open window")
     # if cut:
     #    cm = QShortcut(QKeySequence(cut), self)
