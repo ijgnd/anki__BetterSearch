@@ -5,27 +5,11 @@ This add-on used to be named "Browser Search Box: Quick Insert Tag, Deck, Notety
 was changed because now it offers much more than this.
 
 <h3># Important notes</h3>
-- This add-on has two main functions:
-    - You can view your current search in an extra dialog where the search terms are put into a multi
-    line dialog which makes it easier to handle long search terms.
-    - If you want to limit your search by deck, tag, note type, card state, card property, this add-on
-    opens extra dialogs where you can quickly filter and select from all available options. You 
-    can open these dialogs by typing in the search terms like "tag:", "note:", "deck:" or from the
-    browser with special shortcuts. There are about 25 configuration options on the left side
-    that allow you to exactly set which search terms should be modified or which shortcuts should
-    be used.
-- Besides these two main functions this add-on also offers e.g.
-    - ... a menu entry and custom shortcut to open your search history in a filter dialog where long
-    searches are split up into multiple lines. The setting is `shortcut - select entry from history 
-    in fuzzy dialog` (default is "Ctrl+H, h").
-    - ... custom dialogs to make it easier to narrow your searches by date. In Anki (as of version 
-2.1.28) you can limit your search by "date added" and "date rated". But you can only search 
-relative to today's date, e.g. to find cards rated on or after yesterday you would type in 
-"rated:2". This gets less useful if you e.g. want so search for notes added during the first
-week of the semester which was from April, 15th to April, 19th ... For these cases this add-on 
-has a custom dialog where you can select absolute dates (like April 15th) and the add-on will
-transform them so that Anki understands them. You can configure a custom key sequence that triggers
-these dialogs. By default I use *d*added and *d*rated. The mnemonic is "date-added/rated".
+- Besides the functions described on ankiweb this add-on has some additional features, e.g. there's
+a menu entry and custom shortcut to open your search history in a filter dialog where long searches 
+are split up into multiple lines. The setting is 
+`shortcut - select entry from history in fuzzy dialog` (default is "Ctrl+H, h").
+- When closing the multi-line dialog newlines and tabs are replaced by spaces.
 - The default shortcut to open the multi-line dialog is "Ctrl+t, s". You press "Ctrl+t", 
 then release both keys and then press "s". On MacOS instead of "Ctrl+t" you use "Cmd+t".
 - If you don't know the difference between the Anki terms *note* and *card* this add-on might be 
