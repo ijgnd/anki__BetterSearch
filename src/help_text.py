@@ -3,27 +3,31 @@ from .config import gc
 
 # for multiline add-on
 def help_string_for_actions_used():
-    lines = []    
+    lines = []
+    if gc("modify_note"):
+        s = '"note:" filter by note type (model) name'
+        lines.append(s)
     if gc("modify_card"):
         s = '"card:" filter for card (type) names'
-        lines.append(s)
-    if gc("modify_deck"):
-        s = '"deck:" filter by deck name'
         lines.append(s)
     if gc("modify_field"):
         s = '"field:" filter by field name'
         lines.append(s)
+    if gc("modify_deck"):
+        s = '"deck:" filter by deck name'
+        lines.append(s)
+    s = '"ffn:" select two filters: field from note'
+    lines.append(s)
+    s = '"cfn:" select two filters: card from note'
+    lines.append(s)
+    if gc("modify_tag"):
+        s = '"tag:" filter by tag'
+        lines.append(s)
     if gc("modify_is"):
         s = '"is:" filter by card state'
         lines.append(s)
-    if gc("modify_note"):
-        s = '"note:" filter by note type (model) name'
-        lines.append(s)
     if gc("modify_props"):
         s = '"prop:" filter by card properties (like due date, ease)'
-        lines.append(s)
-    if gc("modify_tag"):
-        s = '"tag:" filter by tag'
         lines.append(s)
     if gc("custom tag&deck string 1"):
         s = f'"{gc("custom tag&deck string 1")}": filter by deck or tag'
