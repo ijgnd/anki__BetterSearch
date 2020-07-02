@@ -41,7 +41,7 @@ def help_string_for_actions_used():
     s = """
 <div style="font-size: 120%;">
 <b>
-Browser quick insert add-on: words that open the filter dialog:
+BetterSearch Add-on: terms/keywords that open a filter dialog:
 </b>
 </div>
 """
@@ -55,7 +55,7 @@ Browser quick insert add-on: words that open the filter dialog:
 helptext = help_string_for_actions_used() + """
 <br>
 <div style="font-size: 120%;">
-<b>About Searching in Anki</b>
+<b></b>
 </div>
-Here's some text about Anki search in general.
+For info about searching in Anki go to <a href="https://docs.ankiweb.net/#/searching" rel="nofollow">https://docs.ankiweb.net/#/searching</a>
 """

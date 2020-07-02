@@ -21,7 +21,7 @@
        <item>
         <widget class="QPushButton" name="pb_help_short">
          <property name="text">
-          <string>Show Search CheatSheet</string>
+          <string>Keywords to type</string>
          </property>
         </widget>
        </item>
