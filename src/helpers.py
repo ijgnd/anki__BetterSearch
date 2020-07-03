@@ -106,7 +106,7 @@ field_infotext = """
 <b>
 This dialog inserts the field name to search. After closing the dialog you <br>
 might want to enter the actual search term for the field</b>. By default this add-on adds "**"
-which matches if the selected field is not empty.
+which doesn't limit your search. You must put your search term between the "**".
 <br><br>
 When searching fields keep in mind that searching on fields requires an 'exact match' by default.
 <br><br>

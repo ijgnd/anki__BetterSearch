@@ -301,9 +301,9 @@ add&nbsp;&nbsp;card:2&nbsp;&nbsp;
         infotext = ("""
 <span>
 After having selected the note type to search now select the field name you want 
-to search. After closing this dialog the text inserted will be "fieldname:*" 
-which shows every note where the field "fieldname" is not empty. If you want 
-to limit to a certain term you must <b>adjust</b> the search.
+to search. After closing this dialog the text inserted will be "fieldname:**" 
+which doesn't limit your search yet. You must <b>adjust</b> this search and
+ add some text to limit to a certain term.
 <span>
 """)
         show_card_dialog = True
