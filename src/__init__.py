@@ -204,10 +204,7 @@ def date_range_dialog_helper(self, term):
 def open_multiline_searchwindow(browser):
     le = browser.form.searchEdit.lineEdit()
     sbi = SearchBox(browser, le.text())
-    if sbi.exec():
-        le.setText(sbi.newsearch)
-        le.setFocus()
-        browser.onSearchActivated()
+    sbi.open()
 
 
 def search_history_helper(self):

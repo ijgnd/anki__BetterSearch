@@ -437,4 +437,10 @@ which doesn't limit your search yet. You must <b>adjust</b> this search and
         if self.help_dialog:
             self.help_dialog.reject()
         self.newsearch = self.process_text()
+
+        le = self.browser.form.searchEdit.lineEdit()
+        le.setText(self.newsearch)
+        le.setFocus()
+        self.browser.onSearchActivated()
+        
         QDialog.accept(self)
