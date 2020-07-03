@@ -8,6 +8,7 @@ from aqt.qt import (
     QTextCursor,
     Qt,
     QVBoxLayout,
+    qtminor,
 )
 
 from aqt.utils import (
@@ -116,9 +117,11 @@ class SearchBox(QDialog):
     def config_pte(self):
         #self.form.pte.setTabStopDistance(20)
         # as in  clayout
-        tab_width = self.fontMetrics().width(" " * 4)
-        self.form.pte.setTabStopDistance(tab_width)
-        #
+        if qtminor < 10:
+            self.form.pte.setTabStopWidth(30)
+        else:
+            tab_width = self.fontMetrics().width(" " * 4)
+            self.form.pte.setTabStopDistance(tab_width)
         if gc("Multiline Dialog: use bigger typewriter font"):
             font = QFont("Monospace")
             font.setStyleHint(QFont.TypeWriter)
