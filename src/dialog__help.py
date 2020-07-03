@@ -1,3 +1,5 @@
+import os
+
 import aqt
 
 from aqt.qt import (
@@ -11,6 +13,8 @@ from aqt.utils import (
     restoreGeom,
     saveGeom,
 )
+from aqt.theme import theme_manager
+from aqt.webview import AnkiWebView
 
 from .help_text import helptext
 
@@ -60,6 +64,36 @@ def move_window(left, right, newpos):
             right.setGeometry(rx, ry, rw, rh)
 
 
+addon_folder_abs_path = os.path.dirname(__file__)
+
+
+def return_file_content(filename):
+    file = os.path.join(addon_folder_abs_path, filename)
+    with open(file) as fo:
+        return fo.read()
+
+
+def get_theme():
+    if theme_manager.night_mode:
+        filename = "sakura-dark.css"
+    else:
+        filename = "sakura.css"
+    return return_file_content(filename)
+
+
+def help_as_webpage():
+    return """
+    <style>
+%(THEME)s
+    </style>
+%(HELPTEXT)s
+"""  % {
+"THEME": get_theme(),
+"HELPTEXT": helptext,
+}
+
+
+
 class MiniHelpSearch(QDialog):
     silentlyClose = True  # dialog manager
 
@@ -69,11 +103,13 @@ class MiniHelpSearch(QDialog):
         self.setWindowTitle("Anki - Search Cheatsheet")
         self.vbox = QVBoxLayout()
         self.vbox.setContentsMargins(0, 0, 0, 0)
-        self.te = QTextEdit()
+        #self.te = QTextEdit()
+        #self.te.setText(helptext)
+        #self.te.setReadOnly(True)
+        self.te = AnkiWebView()
+        self.te.setHtml(help_as_webpage())
         self.vbox.addWidget(self.te)
         self.setLayout(self.vbox)
-        self.te.setText(helptext)
-        self.te.setReadOnly(True)
         self.resize(380, 650)
         restoreGeom(self, minihelp_geom_name)
         move_window(left=self, right=parent, newpos="side-by-side")
