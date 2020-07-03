@@ -49,7 +49,7 @@ searchbox_geom_name = "BSMH"
 
 class SearchBox(QDialog):
     def __init__(self, browser, searchstring):
-        if searchstring == "<type here to search; hit enter to show current deck>":
+        if searchstring == browser._searchPrompt:
             self.searchstring = ""
         else:
             self.searchstring = searchstring
