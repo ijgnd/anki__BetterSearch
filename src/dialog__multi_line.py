@@ -161,12 +161,12 @@ class SearchBox(QDialog):
         new = before + spacer + arg + after
         self.form.pte.setPlainText(new)
 
-        pos += len(arg) + len(spacer)
+        newpos = pos + len(arg) + len(spacer)
         cursor = self.form.pte.textCursor()
-        cursor.setPosition(pos)
+        cursor.setPosition(newpos)
         self.form.pte.setTextCursor(cursor)
 
-        self.text_change_helper()
+        self.text_change_helper(before=all_text, before_pos=pos)
 
     def run_filter_dialog(self, vals, vals_are_dict, value_for_all, windowtitle, infotext, prefix, sort_vals):
         d = FilterDialog(
@@ -401,7 +401,7 @@ which doesn't limit your search yet. You must <b>adjust</b> this search and
         text = self.form.pte.toPlainText()
         return text.replace("\n", " ").replace("\t", " ")
 
-    def text_change_helper(self):
+    def text_change_helper(self, before=None, before_pos=None):
         pos = self.form.pte.textCursor().position()
         out = onSearchEditTextChange(
             parent=self.parent,
@@ -416,6 +416,11 @@ which doesn't limit your search yet. You must <b>adjust</b> this search and
         if out:
             cursor = self.form.pte.textCursor()
             cursor.setPosition(out[0])
+            self.form.pte.setTextCursor(cursor)
+        elif before is not None:
+            self.form.pte.setPlainText(before)
+            cursor = self.form.pte.textCursor()
+            cursor.setPosition(before_pos)
             self.form.pte.setTextCursor(cursor)
 
     def reject(self):
