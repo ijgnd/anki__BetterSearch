@@ -88,13 +88,16 @@ which have this copyright and permission notice:
 
 
 
-from anki.hooks import wrap, addHook
-from anki.utils import pointVersion
-
+from anki.hooks import wrap
+from anki.utils import (
+    isMac,
+    pointVersion,
+)
 import aqt
 from aqt.browser import Browser
 from aqt.gui_hooks import (
     browser_menus_did_init,
+    profile_did_open,
 )
 from aqt.qt import (
     QAction,
@@ -157,7 +160,7 @@ def check_for_advancedBrowser():
         tup = Browser
     else: 
         tup = (a, Browser)
-addHook("profileLoaded", check_for_advancedBrowser)
+profile_did_open.append(check_for_advancedBrowser)
 
 
 def mysearch(self):
@@ -204,7 +207,13 @@ def date_range_dialog_helper(self, term):
 def open_multiline_searchwindow(browser):
     le = browser.form.searchEdit.lineEdit()
     sbi = SearchBox(browser, le.text())
-    sbi.open()
+    if isMac:
+        sbi.open()
+    else:
+        if sbi.exec():
+            le.setText(sbi.newsearch)
+            le.setFocus()
+            browser.onSearchActivated()
 
 
 def search_history_helper(self):

@@ -1,4 +1,7 @@
-from anki.utils import pointVersion
+from anki.utils import (
+    isMac,
+    pointVersion,
+)
 
 import aqt
 from aqt.qt import (
@@ -147,6 +150,7 @@ class SearchBox(QDialog):
         self.form.pte.blockSignals(True)
         self._button_helper(arg, remove_on_cancel)
         self.form.pte.blockSignals(False)
+        self.raise_()
         self.form.pte.setFocus()
     
     def _button_helper(self, arg, remove_on_cancel):
@@ -443,9 +447,10 @@ which doesn't limit your search yet. You must <b>adjust</b> this search and
             self.help_dialog.reject()
         self.newsearch = self.process_text()
 
-        le = self.browser.form.searchEdit.lineEdit()
-        le.setText(self.newsearch)
-        le.setFocus()
-        self.browser.onSearchActivated()
+        if isMac:
+            le = self.browser.form.searchEdit.lineEdit()
+            le.setText(self.newsearch)
+            le.setFocus()
+            self.browser.onSearchActivated()
         
         QDialog.accept(self)
