@@ -1,6 +1,10 @@
 from anki.utils import pointVersion
 
 from .config import gc
+from .custom_fuzzy_dialogs import (
+    note__card,
+    note__field,
+)
 from .dialog__date import DateRangeDialog
 from .fuzzy_panel import FilterDialog
 from .helpers import (
@@ -31,6 +35,23 @@ def range_dialog(parent, term, before, after, char_to_del, func_settext):
         return (newpos, override_autosearch_default)
 
 
+def note__field__card__helper(parent, term, before, after, char_to_del, func_settext):
+    if term == "dnf:":
+        out = note__field(parent)
+    else:  # "dnc:"
+        out = note__card(parent)
+    if out:
+        TriggerSearchAfter = gc("modify: window opened by search strings triggers search by default")
+        _, override_autosearch_default, _, _ = overrides()
+        if override_autosearch_default:
+            TriggerSearchAfter ^= True
+        spaces = maybe_add_spaced_between(before, char_to_del)
+        new = before[:-char_to_del] + spaces + out + after
+        func_settext(new)
+        newpos = len(before[:-char_to_del] + spaces + out)
+        return (newpos, override_autosearch_default)
+
+
 def onSearchEditTextChange(parent, 
                            move_dialog_in_browser,
                            include_filtered_in_deck, 
@@ -51,6 +72,17 @@ def onSearchEditTextChange(parent,
         after = " " + after
 
     vals = {}
+
+
+    dnfmatch = before[-4:] == "dnf:"
+    dncmatch = before[-4:] == "dnc:"
+    if dnfmatch:
+        term = "dnf:"
+    if dncmatch:
+        term = "dnc:"
+    if dnfmatch or dncmatch:
+        return note__field__card__helper(parent, term, before, after, 4, func_settext)
+
 
     da = gc("date range dialog for added: string")
     da_match = da and before[-len(da):] == da
