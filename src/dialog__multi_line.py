@@ -133,21 +133,23 @@ class SearchBox(QDialog):
         self.form.pte.textChanged.connect(self.text_change_helper)
         self.form.pb_nc.clicked.connect(self.note__card)
         self.form.pb_nf.clicked.connect(self.note__field)
-        self.form.pb_deck.clicked.connect(lambda _, action="deck:": self.button_helper(action))
-        self.form.pb_tag.clicked.connect(lambda _, action="tag:": self.button_helper(action))
-        self.form.pb_card_props.clicked.connect(lambda _, action="prop:": self.button_helper(action))
-        self.form.pb_card_state.clicked.connect(lambda _, action="is:": self.button_helper(action))
-        self.form.pb_date_added.clicked.connect(lambda _, action=gc("date range dialog for added: string", "dadded"): self.button_helper(action))
-        self.form.pb_date_rated.clicked.connect(lambda _, action=gc("date range dialog for rated: string", "drated"): self.button_helper(action))
+        self.form.pb_deck.clicked.connect(lambda _, a="deck:": self.button_helper(a, True))
+        self.form.pb_tag.clicked.connect(lambda _, a="tag:": self.button_helper(a, True))
+        self.form.pb_card_props.clicked.connect(lambda _, a="prop:": self.button_helper(a, True))
+        self.form.pb_card_state.clicked.connect(lambda _, a="is:": self.button_helper(a, True))
+        da = gc("date range dialog for added: string", "dadded")
+        self.form.pb_date_added.clicked.connect(lambda _, a=da: self.button_helper(a, True))
+        dr = gc("date range dialog for rated: string", "drated")
+        self.form.pb_date_rated.clicked.connect(lambda _, a=dr: self.button_helper(a, True))
 
-    def button_helper(self, arg):
+    def button_helper(self, arg, remove_on_cancel):
         # https://stackoverflow.com/questions/26358945/qt-find-out-if-qspinbox-was-changed-by-user
         self.form.pte.blockSignals(True)
-        self._button_helper(arg)
+        self._button_helper(arg, remove_on_cancel)
         self.form.pte.blockSignals(False)
         self.form.pte.setFocus()
     
-    def _button_helper(self, arg):
+    def _button_helper(self, arg, remove_on_cancel):
         all_text = self.form.pte.toPlainText()
         pos = self.form.pte.textCursor().position()
         before = all_text[:pos]
@@ -169,6 +171,9 @@ class SearchBox(QDialog):
         cursor.setPosition(newpos)
         self.form.pte.setTextCursor(cursor)
 
+        if not remove_on_cancel:
+            all_text = new
+            pos = newpos
         self.text_change_helper(before=all_text, before_pos=pos)
 
     def run_filter_dialog(self, vals, vals_are_dict, value_for_all, windowtitle, infotext, prefix, sort_vals):
@@ -286,7 +291,7 @@ card template/type/name you want to search.
         out = '(' + model_search_string + card_string + ')'
         if modelneg or cardneg:
             out = "-" + out
-        self.button_helper(out)
+        self.button_helper(out, False)
         if iscloze:
             msg = ("""
 You selected a cloze note type. To match only c2 clozes type you would have to 
@@ -349,7 +354,7 @@ which doesn't limit your search yet. You must <b>adjust</b> this search and
         out = '(' + model_search_string + field_string + ')'
         if modelneg or fieldneg:
             out = "-" + out
-        self.button_helper(out)
+        self.button_helper(out, False)
 
     def help_short(self):
         if self.help_dialog:
@@ -392,7 +397,7 @@ which doesn't limit your search yet. You must <b>adjust</b> this search and
         if not hasattr(d, "txt") or not isinstance(d.txt, str):
             self.form.pte.setFocus()
             return
-        self.button_helper(d.txt)
+        self.button_helper(d.txt, False)
 
     def settext(self):
         processed = split_to_multiline(self.searchstring)
