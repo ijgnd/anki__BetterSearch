@@ -164,6 +164,8 @@ profile_did_open.append(check_for_advancedBrowser)
 
 
 def mysearch(self):
+    if gc("-Put Multibar into Browser (Experimental)"):
+        return
     self.form.searchEdit.editTextChanged.connect(self.onBrowserSearchEditTextChange)
 Browser.setupSearch = wrap(Browser.setupSearch,mysearch)
 
@@ -307,3 +309,129 @@ def add_multi_dialog_open_button(self):
     for idx, item in enumerate(elements):
         grid.addWidget(item[0], 0, 2+idx, 1, 1)
 browser_menus_did_init.append(add_multi_dialog_open_button)
+
+
+
+
+"""
+searchEdit occurs in browser.py in 2.1.28 in these lines:
+
+        qconnect(self.form.searchEdit.lineEdit().returnPressed, self.onSearchActivated)
+        self.form.searchEdit.setCompleter(None)
+        self.form.searchEdit.addItems(
+        self.form.searchEdit.lineEdit().setText(self._searchPrompt)
+        self.form.searchEdit.lineEdit().selectAll()
+        self.form.searchEdit.setFocus()
+        if self.form.searchEdit.lineEdit().text() == self._searchPrompt:
+            self.form.searchEdit.lineEdit().setText("deck:current ")
+        txt = self.form.searchEdit.lineEdit().text()
+        self.form.searchEdit.clear()
+        self.form.searchEdit.addItems(sh)
+            cur = str(self.form.searchEdit.lineEdit().text())
+            cur = str(self.form.searchEdit.lineEdit().text())
+        self.form.searchEdit.lineEdit().setText(txt)
+        filt = self.form.searchEdit.lineEdit().text()
+        filt = self.form.searchEdit.lineEdit().text()
+        self.form.searchEdit.lineEdit().setText(self._lastSearchTxt)
+        self.form.searchEdit.lineEdit().setText(link)
+        self.form.searchEdit.setFocus()
+        self.form.searchEdit.lineEdit().selectAll()
+
+
+so I need to modify this:
+
+signals
+    returnPressed
+
+the functions are 
+    clear()
+    
+    addItems() - addsList
+    setCompleter(None)
+    lineEdit().setText(self._searchPrompt)
+    lineEdit().text()
+
+    lineEdit().selectAll()
+    self.form.searchEdit.setFocus()
+    setFocus()
+"""
+
+from aqt.qt import (
+    QPlainTextEdit,
+    pyqtSignal,
+)
+
+class ComboReplacer(QPlainTextEdit):
+    returnPressed = pyqtSignal()
+
+    def __init__(self, parent):
+        self.parent = parent
+        self.browser = parent
+        super(ComboReplacer, self).__init__(parent)
+        self.makeConnectionsEtc()
+
+    def lineEdit(self):
+        return self
+
+    def setText(self, arg):
+        self.setPlainText(arg)
+
+    def text(self):
+        return self.toPlainText()
+
+    def setCompleter(self, arg):
+        pass
+
+    def addItems(self, list_):
+        pass
+
+    def makeConnectionsEtc(self):
+        self.textChanged.connect(self.text_change_helper)
+    
+    def clear(self):
+        # _onSearchActivated clears but I don't need this here
+        pass
+
+    def text_change_helper(self):
+        pos = self.textCursor().position()
+        out = onSearchEditTextChange(
+            parent=self,
+            move_dialog_in_browser=False,
+            include_filtered_in_deck=True,
+            func_gettext=self.toPlainText,
+            func_settext=self.setPlainText,
+            cursorpos=pos,
+            mw=self.browser.mw,
+            col=self.browser.col,
+            )
+        if out:
+            cursor = self.textCursor()
+            cursor.setPosition(out[0])
+            self.setTextCursor(cursor)
+
+
+def replace_lineedit(self):
+    # self is browser
+    if not gc("-Put Multibar into Browser (Experimental)"):
+        return
+    grid = self.form.gridLayout
+
+    for i in range(grid.count()):
+        item = grid.itemAt(i)
+        if not item:
+            continue
+        w = item.widget()
+        name = w.objectName() if hasattr(w, "objectName") else ""
+        if name == "searchEdit":
+            grid.removeWidget(w)
+    oldedit = self.form.searchEdit
+    self.form.searchEdit.lineEdit().returnPressed.disconnect()
+    oldedit.setVisible(False)
+    self.form.searchEdit = ComboReplacer(self)
+    self.form.searchEdit.setMaximumHeight(70)
+    grid.addWidget(self.form.searchEdit, 1, 0, 1, -1)
+
+
+
+    self.form.searchButton.setShortcut("Ctrl+Return")
+browser_menus_did_init.append(replace_lineedit)

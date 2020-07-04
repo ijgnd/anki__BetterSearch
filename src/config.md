@@ -7,6 +7,14 @@ This add-on used to be named <b>Browser Search Box: Quick Insert Tag, Deck, Note
 was changed because now it offers more than this.
 
 <h3># Important notes</h3>
+- This add-on has an option `-Put Multibar into Browser (Experimental)` (default is "false") that
+allows to put a multiline dialog directly into the browser. This function will stop working once
+a future Anki update changes the browser. So there's a good chance it will fail in the long run
+and maybe I'll be busy or ill when the add-on is released so that I can't push an update in time.
+Another reason for disabling this by default is that this might conflict with other add-ons that
+I don't use. E.g. Glutanimate's "Sticky Searches" modifies the same part of the browser as this 
+add-on so that it's unlikely that once a version of his add-on is available for 2.1 
+they'll work together. 
 - Besides the functions described on ankiweb this add-on has some additional features, e.g. there's
 a menu entry and custom shortcut to open your search history in a filter dialog where long searches 
 are split up into multiple lines. The setting is 
