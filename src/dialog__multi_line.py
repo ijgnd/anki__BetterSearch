@@ -55,6 +55,7 @@ class SearchBox(QDialog):
             self.searchstring = searchstring
         self.parent = browser
         self.browser = browser
+        self.mw = browser.mw
         self.col = browser.col
         QDialog.__init__(self, self.parent, Qt.Window)
         self.form = search_box.Ui_Dialog()
@@ -64,6 +65,12 @@ class SearchBox(QDialog):
         self.config_pte()
         self.settext()
         self.makeConnections()
+
+    def settext(self):
+        processed = split_to_multiline(self.searchstring)
+        self.form.pte.setPlainText(processed)
+        self.form.pte.setFocus()
+        self.form.pte.moveCursor(QTextCursor.End)
 
     def setupUI(self):
         self.setWindowTitle("Anki: Search Term Multiline Window")
@@ -174,6 +181,28 @@ class SearchBox(QDialog):
 
         self.text_change_helper(before=all_text, before_pos=pos)
 
+    def text_change_helper(self, before=None, before_pos=None):
+        pos = self.form.pte.textCursor().position()
+        out = onSearchEditTextChange(
+            parent=self.parent,
+            move_dialog_in_browser=False,
+            include_filtered_in_deck=True,
+            func_gettext=self.form.pte.toPlainText,
+            func_settext=self.form.pte.setPlainText,
+            cursorpos=pos,
+            mw=self.mw,
+            col=self.col,
+            )
+        if out:
+            cursor = self.form.pte.textCursor()
+            cursor.setPosition(out[0])
+            self.form.pte.setTextCursor(cursor)
+        elif before is not None:
+            self.form.pte.setPlainText(before)
+            cursor = self.form.pte.textCursor()
+            cursor.setPosition(before_pos)
+            self.form.pte.setTextCursor(cursor)
+
     def help_short(self):
         if self.help_dialog:
             tooltip("mini help window is already open (but maybe it's below another window of yours).")
@@ -187,7 +216,7 @@ class SearchBox(QDialog):
         openHelp("searching")
 
     def on_history(self):
-        hist_list = self.parent.mw.pm.profile["searchHistory"]
+        hist_list = self.mw.pm.profile["searchHistory"]
         processed_list = [split_to_multiline(e) for e in hist_list]
         d = FilterDialog(
             parent=self.parent,
@@ -217,37 +246,9 @@ class SearchBox(QDialog):
             return
         self.button_helper(d.txt, False)
 
-    def settext(self):
-        processed = split_to_multiline(self.searchstring)
-        self.form.pte.setPlainText(processed)
-        self.form.pte.setFocus()
-        self.form.pte.moveCursor(QTextCursor.End)
-
     def process_text(self):
         text = self.form.pte.toPlainText()
         return text.replace("\n", " ").replace("\t", " ")
-
-    def text_change_helper(self, before=None, before_pos=None):
-        pos = self.form.pte.textCursor().position()
-        out = onSearchEditTextChange(
-            parent=self.parent,
-            move_dialog_in_browser=False,
-            include_filtered_in_deck=True,
-            func_gettext=self.form.pte.toPlainText,
-            func_settext=self.form.pte.setPlainText,
-            cursorpos=pos,
-            mw=self.browser.mw,
-            col=self.browser.col,
-            )
-        if out:
-            cursor = self.form.pte.textCursor()
-            cursor.setPosition(out[0])
-            self.form.pte.setTextCursor(cursor)
-        elif before is not None:
-            self.form.pte.setPlainText(before)
-            cursor = self.form.pte.textCursor()
-            cursor.setPosition(before_pos)
-            self.form.pte.setTextCursor(cursor)
 
     def reject(self):
         saveGeom(self, searchbox_geom_name)
