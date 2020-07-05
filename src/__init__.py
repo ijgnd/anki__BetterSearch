@@ -328,8 +328,10 @@ the functions are
     setFocus()
 """
 
+from aqt import mw
 from aqt.qt import (
     QPlainTextEdit,
+    Qt,
     pyqtSignal,
 )
 
@@ -357,13 +359,38 @@ class ComboReplacer(QPlainTextEdit):
 
     def addItems(self, list_):
         pass
-
-    def makeConnectionsEtc(self):
-        self.textChanged.connect(self.text_change_helper)
     
     def clear(self):
         # _onSearchActivated clears but I don't need this here
         pass
+
+
+
+    def makeConnectionsEtc(self):
+        self.textChanged.connect(self.text_change_helper)
+
+    def keyPressEvent(self, event):
+        modshift = True if (mw.app.keyboardModifiers() & Qt.ShiftModifier) else False
+        modctrl = True if (mw.app.keyboardModifiers() & Qt.ControlModifier) else False
+        key = event.key()
+        if any ([modshift, modctrl]) and key in (Qt.Key_Return, Qt.Key_Enter):
+            # I use this complicated way for two reasons: It was very quick to make because
+            # I could reuse code I have. It was quicker than finding out how the
+            # pyqtSignal returnPressed would behave, etc.
+            self.insert_newline()
+        elif key in (Qt.Key_Return, Qt.Key_Enter):
+            self.browser.onSearchActivated()
+        else:
+            super().keyPressEvent(event)
+
+    def insert_newline(self):
+        all_text = self.toPlainText()
+        pos = self.textCursor().position()
+        new = all_text[:pos] + "\n" + all_text[pos:]
+        self.setPlainText(new)
+        cursor = self.textCursor()
+        cursor.setPosition(pos+1)
+        self.setTextCursor(cursor)
 
     def text_change_helper(self):
         pos = self.textCursor().position()
@@ -450,7 +477,7 @@ def modify_browser(self):
                 grid.removeWidget(e[0])
         self.form.searchEdit = ComboReplacer(self)
         self.form.searchEdit.setMaximumHeight(gc("-Multibar Height", 70))
-        self.form.searchButton.setShortcut("Ctrl+Return")
+        self.form.searchButton.setShortcut("Return")
         grid.addWidget(self.form.searchEdit, 1, 0, 1, -1)
         pb_hist = QPushButton("History")
         pb_hist.clicked.connect(lambda _, browser=self: search_history_helper(browser))
