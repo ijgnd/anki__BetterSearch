@@ -400,7 +400,7 @@ QMenu::item:selected {
 def fuzzy_helper(self, arg):
     if self.form.searchEdit.lineEdit().text() == self._searchPrompt:
         self.form.searchEdit.lineEdit().setText("")
-    button_helper(self, arg)
+    button_helper(self.form.searchEdit, self, self.mw, self.col, arg)
 
 
 def fuzzy_menu(self):

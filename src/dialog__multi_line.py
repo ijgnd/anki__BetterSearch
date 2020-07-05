@@ -21,6 +21,10 @@ from aqt.utils import (
     tooltip,
 )
 
+from .button_helper import (
+    button_helper,
+    text_change_helper,
+)
 from .config import gc
 from .dialog__help import MiniHelpSearch, mini_search_help_dialog_title
 from .filter_button import filter_button_cls
@@ -138,70 +142,25 @@ class SearchBox(QDialog):
 
     def makeConnections(self):
         self.form.pte.textChanged.connect(self.text_change_helper)
-        self.form.pb_nc.clicked.connect(lambda _, a="dnc:": self.button_helper(a))
-        self.form.pb_nf.clicked.connect(lambda _, a="dnf:": self.button_helper(a))
-        self.form.pb_deck.clicked.connect(lambda _, a="deck:": self.button_helper(a))
-        self.form.pb_tag.clicked.connect(lambda _, a="tag:": self.button_helper(a))
-        self.form.pb_card_props.clicked.connect(lambda _, a="prop:": self.button_helper(a))
-        self.form.pb_card_state.clicked.connect(lambda _, a="is:": self.button_helper(a))
+        self.form.pb_nc.clicked.connect(lambda _, a="dnc:": self.onButton(a))
+        self.form.pb_nf.clicked.connect(lambda _, a="dnf:": self.onButton(a))
+        self.form.pb_deck.clicked.connect(lambda _, a="deck:": self.onButton(a))
+        self.form.pb_tag.clicked.connect(lambda _, a="tag:": self.onButton(a))
+        self.form.pb_card_props.clicked.connect(lambda _, a="prop:": self.onButton(a))
+        self.form.pb_card_state.clicked.connect(lambda _, a="is:": self.onButton(a))
         da = gc("date range dialog for added: string", "dadded")
-        self.form.pb_date_added.clicked.connect(lambda _, a=da: self.button_helper(a))
+        self.form.pb_date_added.clicked.connect(lambda _, a=da: self.onButton(a))
         dr = gc("date range dialog for rated: string", "drated")
-        self.form.pb_date_rated.clicked.connect(lambda _, a=dr: self.button_helper(a))
+        self.form.pb_date_rated.clicked.connect(lambda _, a=dr: self.onButton(a))
 
-    def button_helper(self, arg):
-        # https://stackoverflow.com/questions/26358945/qt-find-out-if-qspinbox-was-changed-by-user
-        self.form.pte.blockSignals(True)
-        self._button_helper(arg)
-        self.form.pte.blockSignals(False)
+    def onButton(self, arg, remove_on_cancel=True):
+        # this will ultimately insert the arg into the QPlainTextEdit 
+        # which will trigger onSearchEditTextChange
+        button_helper(self.form.pte, self.browser, self.mw, self.col, arg, remove_on_cancel)
         self.raise_()
-        self.form.pte.setFocus()
-    
-    def _button_helper(self, arg):
-        all_text = self.form.pte.toPlainText()
-        pos = self.form.pte.textCursor().position()
-        before = all_text[:pos]
-        after = all_text[pos:]
 
-        if after:
-            after = " " + after
-
-        if all_text == "" or before.endswith("\n"):  # if empty or on newline
-            spacer = ""
-        else:
-            spacer = "\n"
-
-        new = before + spacer + arg + after
-        self.form.pte.setPlainText(new)
-
-        newpos = pos + len(arg) + len(spacer)
-        cursor = self.form.pte.textCursor()
-        cursor.setPosition(newpos)
-        self.form.pte.setTextCursor(cursor)
-
-        self.text_change_helper(before=all_text, before_pos=pos)
-
-    def text_change_helper(self, before=None, before_pos=None):
-        pos = self.form.pte.textCursor().position()
-        out = onSearchEditTextChange(
-            parent=self.parent,
-            move_dialog_in_browser=False,
-            include_filtered_in_deck=True,
-            func_gettext=self.form.pte.toPlainText,
-            func_settext=self.form.pte.setPlainText,
-            cursorpos=pos,
-            mw=self.mw,
-            col=self.col,
-            )
-        if out:
-            cursor = self.form.pte.textCursor()
-            cursor.setPosition(out[0])
-            self.form.pte.setTextCursor(cursor)
-        elif before is not None:
-            self.form.pte.setPlainText(before)
-            cursor = self.form.pte.textCursor()
-            cursor.setPosition(before_pos)
-            self.form.pte.setTextCursor(cursor)
+    def text_change_helper(self):
+        text_change_helper(self.form.pte, self.browser, self.mw, self.col)
 
     def help_short(self):
         if self.help_dialog:
@@ -237,14 +196,13 @@ class SearchBox(QDialog):
 
     def filter_menu(self):
         func_gettext = self.form.pte.toPlainText
-        old = func_gettext()
         func_settext = self.form.pte.setPlainText
         d = filter_button_cls(self, self.browser, func_gettext, func_settext, False)
         # detect if closed e.g. with "Esc"
         if not hasattr(d, "txt") or not isinstance(d.txt, str):
             self.form.pte.setFocus()
             return
-        self.button_helper(d.txt, False)
+        self.onButton(d.txt, False)
 
     def process_text(self):
         text = self.form.pte.toPlainText()
