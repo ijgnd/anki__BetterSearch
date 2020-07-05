@@ -439,7 +439,6 @@ def modify_browser(self):
         # row, column, size_cols, size_rows = grid.getItemPosition(i)
         w = grid.itemAt(i).widget()
         name = w.objectName() if hasattr(w, "objectName") else ""
-        print(w, name)
         elements.append((w, name))
 
     gridcounter = 0
@@ -453,13 +452,19 @@ def modify_browser(self):
         self.form.searchEdit.setMaximumHeight(gc("-Multibar Height", 70))
         self.form.searchButton.setShortcut("Ctrl+Return")
         grid.addWidget(self.form.searchEdit, 1, 0, 1, -1)
+        pb_hist = QPushButton("History")
+        pb_hist.clicked.connect(lambda _, browser=self: search_history_helper(browser))
+        pb_hist.setObjectName("custom_history")
+        grid.addWidget(pb_hist, 0, 0, 1, 1)
+        gridcounter += 1
+
         pb_fm = QPushButton("FF")  # fuzyy menu / fuzzy find
         pb_fm.clicked.connect(lambda _, browser=self: fuzzy_menu(browser))
         pb_fm.setObjectName("fuzzy_menu")
         cut = gc("-Shortcut for Multi-bar mode: show fuzzy menu")
         if cut:
             pb_fm.setToolTip(f"shortcut: {cut}")
-        grid.addWidget(pb_fm, 0, 0, 1, 1)
+        grid.addWidget(pb_fm, 0, gridcounter, 1, 1)
         gridcounter += 1
 
     if addbutton:
