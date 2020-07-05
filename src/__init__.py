@@ -101,7 +101,9 @@ from aqt.gui_hooks import (
 )
 from aqt.qt import (
     QAction,
+    QCursor,
     QKeySequence,
+    QMenu,
     QPushButton,
     QShortcut,
     qconnect,
@@ -109,6 +111,7 @@ from aqt.qt import (
 from aqt.utils import getText, showCritical
 from aqt.dyndeckconf import DeckConf
 
+from .button_helper import button_helper
 from .config import gc
 from .dialog__date import DateRangeDialog
 from .dialog__multi_line import SearchBox
@@ -164,7 +167,7 @@ profile_did_open.append(check_for_advancedBrowser)
 
 
 def mysearch(self):
-    if gc("-Put Multibar into Browser (Experimental)"):
+    if gc("-Add Multibar into Browser (Experimental)"):
         return
     self.form.searchEdit.editTextChanged.connect(self.onBrowserSearchEditTextChange)
 Browser.setupSearch = wrap(Browser.setupSearch,mysearch)
@@ -281,37 +284,6 @@ def setupBrowserMenu(self):
 browser_menus_did_init.append(setupBrowserMenu)
 
 
-def add_multi_dialog_open_button(self):
-    # self is browser
-    if not gc("-Add Button to the Browser Search Bar"):
-        return
-    if gc("-Put Multiline Search Panel into Browser"):  # this takes precendence
-        return
-    but = QPushButton("SearchDialog")
-    but.clicked.connect(lambda _, browser=self: open_multiline_searchwindow(browser))
-    but.setObjectName("SearchDialog")
-    cut = gc("Multiline Dialog: shortcut: open window")
-    if cut:
-        but.setToolTip(f"shortcut: {cut}")
-
-    grid = self.form.gridLayout
-    elements = []
-    for i in range(grid.count()):
-        w = grid.itemAt(i).widget()
-        name = w.objectName() if hasattr(w, "objectName") else ""
-        elements.append((w,name))
-    
-    grid.addWidget(but, 0, 0, 1, 1)
-    for idx, e in enumerate(elements):
-        if e[1] == "filter":
-            grid.addWidget(e[0], 0, 1, 1, 1)
-            del elements[idx]
-    for idx, item in enumerate(elements):
-        grid.addWidget(item[0], 0, 2+idx, 1, 1)
-browser_menus_did_init.append(add_multi_dialog_open_button)
-
-
-
 
 """
 searchEdit occurs in browser.py in 2.1.28 in these lines:
@@ -367,6 +339,7 @@ class ComboReplacer(QPlainTextEdit):
     def __init__(self, parent):
         self.parent = parent
         self.browser = parent
+        self.col = self.browser.col
         super(ComboReplacer, self).__init__(parent)
         self.makeConnectionsEtc()
 
@@ -410,28 +383,99 @@ class ComboReplacer(QPlainTextEdit):
             self.setTextCursor(cursor)
 
 
-def replace_lineedit(self):
+basic_stylesheet = """
+QMenu::item {
+    padding-top: 16px;
+    padding-bottom: 16px;
+    padding-right: 75px;
+    padding-left: 20px;
+    font-size: 15px;
+}
+QMenu::item:selected {
+    background-color: #fd4332;
+}
+"""
+
+
+def fuzzy_helper(self, arg):
+    if self.form.searchEdit.lineEdit().text() == self._searchPrompt:
+        self.form.searchEdit.lineEdit().setText("")
+    button_helper(self, arg)
+
+
+def fuzzy_menu(self):
     # self is browser
-    if not gc("-Put Multibar into Browser (Experimental)"):
-        return
+    actions = [
+        ["dnc:", "Note-Card",],
+        ["dnf:", "Note-Field",],
+        ["deck:", "Deck", ],
+        ["note:", "Note",],
+        ["card:", "Card",],
+        ["tag:", "Tag", ],
+        ["prop:", "Card Property", ],
+        ["is:", "Card State",],
+        [gc("date range dialog for added: string", "dadded"), "Date Added",],
+        [gc("date range dialog for rated: string", "drated"), "Date Range",],
+    ]
+    menu = QMenu(self)
+    menu.setStyleSheet(basic_stylesheet)
+
+    for idx, line in enumerate(actions):
+        a = QAction(line[1])
+        a.triggered.connect(lambda _, b=self, i=line[0]: fuzzy_helper(b, i))
+        menu.addAction(a)
+        actions[idx].append(a)
+    menu.exec(QCursor.pos())
+
+
+def modify_browser(self):
+    # self is browser
+    addbutton = gc("-Add Button to the Browser Search Bar")
+    multiline = gc("-Add Multibar into Browser (Experimental)")
+
     grid = self.form.gridLayout
-
+    elements = []
     for i in range(grid.count()):
-        item = grid.itemAt(i)
-        if not item:
-            continue
-        w = item.widget()
+        # row, column, size_cols, size_rows = grid.getItemPosition(i)
+        w = grid.itemAt(i).widget()
         name = w.objectName() if hasattr(w, "objectName") else ""
-        if name == "searchEdit":
-            grid.removeWidget(w)
-    oldedit = self.form.searchEdit
-    self.form.searchEdit.lineEdit().returnPressed.disconnect()
-    oldedit.setVisible(False)
-    self.form.searchEdit = ComboReplacer(self)
-    self.form.searchEdit.setMaximumHeight(70)
-    grid.addWidget(self.form.searchEdit, 1, 0, 1, -1)
+        print(w, name)
+        elements.append((w, name))
 
+    gridcounter = 0
+    if multiline:
+        self.form.searchEdit.lineEdit().returnPressed.disconnect()
+        self.form.searchEdit.setVisible(False)
+        for e in elements:
+            if e[1] == "searchEdit":
+                grid.removeWidget(e[0])
+        self.form.searchEdit = ComboReplacer(self)
+        self.form.searchEdit.setMaximumHeight(gc("-Multibar Height", 70))
+        self.form.searchButton.setShortcut("Ctrl+Return")
+        grid.addWidget(self.form.searchEdit, 1, 0, 1, -1)
+        pb_fm = QPushButton("FF")  # fuzyy menu / fuzzy find
+        pb_fm.clicked.connect(lambda _, browser=self: fuzzy_menu(browser))
+        pb_fm.setObjectName("fuzzy_menu")
+        cut = gc("-Shortcut for Multi-bar mode: show fuzzy menu")
+        if cut:
+            pb_fm.setToolTip(f"shortcut: {cut}")
+        grid.addWidget(pb_fm, 0, 0, 1, 1)
+        gridcounter += 1
 
+    if addbutton:
+        pb_sd = QPushButton("SearchDialog")
+        pb_sd.clicked.connect(lambda _, browser=self: open_multiline_searchwindow(browser))
+        pb_sd.setObjectName("SearchDialog")
+        cut = gc("Multiline Dialog: shortcut: open window")
+        if cut:
+            pb_sd.setToolTip(f"shortcut: {cut}")
+        grid.addWidget(pb_sd, 0, gridcounter, 1, 1)
+        for idx, e in enumerate(elements):
+            if e[1] == "filter":
+                grid.addWidget(e[0], 0, gridcounter+1, 1, 1)
+                del elements[idx]
+        for idx, item in enumerate(elements):
+            grid.addWidget(item[0], 0, gridcounter+2+idx, 1, 1)
 
-    self.form.searchButton.setShortcut("Ctrl+Return")
-browser_menus_did_init.append(replace_lineedit)
+browser_menus_did_init.append(modify_browser)
+# Browser.setupSearch = wrap(Browser.setupSearch, modify_browser, "after")
