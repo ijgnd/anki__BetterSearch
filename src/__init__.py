@@ -350,7 +350,7 @@ class ComboReplacer(QPlainTextEdit):
         self.setPlainText(arg)
 
     def text(self):
-        return self.toPlainText()
+        return self.toPlainText().replace("\n", " ")
 
     def setCompleter(self, arg):
         pass
