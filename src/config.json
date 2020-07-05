@@ -1,6 +1,6 @@
 {
     "-Add Button to the Browser Search Bar": true,
-    "-Add Multibar into Browser (Experimental)": true,
+    "-Add Multibar into Browser (Experimental)": false,
     "-Multibar Height": 70,
     "-Shortcut for Multi-bar mode: show fuzzy menu": "Ctrl+h, g",
     "Multiline Dialog: use bigger typewriter font": true,
