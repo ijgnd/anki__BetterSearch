@@ -167,7 +167,7 @@ profile_did_open.append(check_for_advancedBrowser)
 
 
 def mysearch(self):
-    if gc("-Add Multibar into Browser (Experimental)"):
+    if gc("-Modify Search Bar") == "multiline":
         return
     self.form.searchEdit.editTextChanged.connect(self.onBrowserSearchEditTextChange)
 Browser.setupSearch = wrap(Browser.setupSearch,mysearch)
@@ -476,7 +476,8 @@ def fuzzy_menu(self):
 def modify_browser(self):
     # self is browser
     addbutton = gc("-Add Button to the Browser Search Bar")
-    multiline = gc("-Add Multibar into Browser (Experimental)")
+    justdown = True if gc("-Modify Search Bar") == "down" else False
+    multiline = True if gc("-Modify Search Bar") == "multiline" else False
 
     grid = self.form.gridLayout
     elements = []
@@ -487,6 +488,7 @@ def modify_browser(self):
         elements.append((w, name))
 
     gridcounter = 0
+
     if multiline:
         self.form.searchEdit.lineEdit().returnPressed.disconnect()
         self.form.searchEdit.setVisible(False)
@@ -494,7 +496,7 @@ def modify_browser(self):
             if e[1] == "searchEdit":
                 grid.removeWidget(e[0])
         self.form.searchEdit = ComboReplacer(self)
-        self.form.searchEdit.setMaximumHeight(gc("-Multibar Height", 70))
+        self.form.searchEdit.setMaximumHeight(gc("-Multiline bar Height (when shown in Browser)", 70))
         self.form.searchButton.setShortcut("Return")
         grid.addWidget(self.form.searchEdit, 1, 0, 1, -1)
         pb_hist = QPushButton("History")
@@ -526,6 +528,18 @@ def modify_browser(self):
                 del elements[idx]
         for idx, item in enumerate(elements):
             grid.addWidget(item[0], 0, gridcounter+2+idx, 1, 1)
+
+    if justdown:
+        # the code for "justdown" is copied verbatim from my older "side-by-side"
+        # store lineedit and its index
+        grid = self.form.gridLayout
+        for idx in range(grid.count()):   
+            item = grid.itemAt(idx)
+            w = item.widget()
+            name = w.objectName() if hasattr(w, "objectName") else ""
+            if name == "searchEdit":
+                searchbar = w
+        self.form.gridLayout.addWidget(searchbar, 1, 0, 1, -1)
 
 browser_menus_did_init.append(modify_browser)
 # Browser.setupSearch = wrap(Browser.setupSearch, modify_browser, "after")
