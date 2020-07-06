@@ -389,7 +389,7 @@ class ComboReplacer(QPlainTextEdit):
         modctrl = True if (mw.app.keyboardModifiers() & Qt.ControlModifier) else False
         key = event.key()
         if any ([modshift, modctrl]) and key in (Qt.Key_Return, Qt.Key_Enter):
-            # self.returnPressed.emit()  # doesn't work
+            self.returnPressed.emit()  # doesn't work
             
             # I use this complicated way for two reasons: It was very quick to make because
             # I could reuse code I have. It was quicker than finding out how the
