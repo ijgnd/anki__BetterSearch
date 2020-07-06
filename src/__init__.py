@@ -337,7 +337,12 @@ from aqt.qt import (
 
 class ComboReplacer(QPlainTextEdit):
     returnPressed = pyqtSignal()
+    # add-on "symbols as you type" depends on this signal
+    # which is emited from the embeded lineEdit of a 
+    # qcombobox
+    textEdited = pyqtSignal(str)  
 
+    
     def __init__(self, parent):
         self.parent = parent
         self.browser = parent
@@ -364,6 +369,16 @@ class ComboReplacer(QPlainTextEdit):
         # _onSearchActivated clears but I don't need this here
         pass
 
+    def cursorPosition(self):
+        # needed for symbols as you type
+        return self.textCursor().position()
+
+    def setCursorPosition(self, pos):
+        # needed for symbols as you type
+        cursor = self.textCursor()
+        cursor.setPosition(pos)
+        self.setTextCursor(cursor)
+
 
 
     def makeConnectionsEtc(self):
@@ -374,6 +389,8 @@ class ComboReplacer(QPlainTextEdit):
         modctrl = True if (mw.app.keyboardModifiers() & Qt.ControlModifier) else False
         key = event.key()
         if any ([modshift, modctrl]) and key in (Qt.Key_Return, Qt.Key_Enter):
+            # self.returnPressed.emit()  # doesn't work
+            
             # I use this complicated way for two reasons: It was very quick to make because
             # I could reuse code I have. It was quicker than finding out how the
             # pyqtSignal returnPressed would behave, etc.
@@ -408,6 +425,7 @@ class ComboReplacer(QPlainTextEdit):
             cursor = self.textCursor()
             cursor.setPosition(out[0])
             self.setTextCursor(cursor)
+        self.textEdited.emit(self.toPlainText())  # needed for "Symbols as you type"
 
 
 basic_stylesheet = """
