@@ -1,7 +1,7 @@
 {
     "-Add Button to the Browser Search Bar": true,
     "-Modify Search Bar": false,
-    "-Multiline bar Height (when shown in Browser)": 70,
+    "-Multiline bar Height relative to default (when shown in Browser)": 100,
     "-Shortcut for Multi-bar mode: show fuzzy menu": "Ctrl+h, g",
     "Multiline Dialog: use bigger typewriter font": true,
     "Multiline Dialog: shortcut: open window": "Ctrl+t,s",

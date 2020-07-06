@@ -102,6 +102,7 @@ from aqt.gui_hooks import (
 from aqt.qt import (
     QAction,
     QCursor,
+    QFontMetrics,
     QKeySequence,
     QMenu,
     QPushButton,
@@ -496,7 +497,11 @@ def modify_browser(self):
             if e[1] == "searchEdit":
                 grid.removeWidget(e[0])
         self.form.searchEdit = ComboReplacer(self)
-        self.form.searchEdit.setMaximumHeight(gc("-Multiline bar Height (when shown in Browser)", 70))
+        user_height = gc("-Multiline bar Height relative to default (when shown in Browser)", 100)
+        default_height = self.fontMetrics().lineSpacing()
+        new_height = int((default_height + 2) * 2 * user_height/100)
+        self.form.searchEdit.setFixedHeight(new_height)
+        #self.form.searchEdit.setMaximumHeight(new_height)
         self.form.searchButton.setShortcut("Return")
         grid.addWidget(self.form.searchEdit, 1, 0, 1, -1)
         pb_hist = QPushButton("History")
