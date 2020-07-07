@@ -1,4 +1,6 @@
 {
     "name": "BetterSearch",
-    "package": "1052724801"
+    "package": "1052724801",
+    "min_point_version": 22,
+    "conflicts": ["594622823"]
 }
