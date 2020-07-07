@@ -508,7 +508,7 @@ def fuzzy_menu(self):
         [gc("date range dialog for rated: string", "drated"), "Date Range",],
     ]
     menu = QMenu(self)
-    menu.setStyleSheet(basic_stylesheet)
+    # menu.setStyleSheet(basic_stylesheet)
 
     for idx, line in enumerate(actions):
         a = QAction(line[1])
