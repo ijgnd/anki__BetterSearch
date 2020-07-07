@@ -137,7 +137,7 @@ DeckConf.initialSetup = wrap(DeckConf.initialSetup, dyn_setup_search)
 def onDynSetupSearchEditTextChange(self, arg):
     le = self.sender()  # https://stackoverflow.com/a/33981172
     pos = le.cursorPosition()
-    onSearchEditTextChange(
+    ret = onSearchEditTextChange(
         parent=self,
         move_dialog_in_browser=False,
         include_filtered_in_deck=False,
@@ -147,6 +147,12 @@ def onDynSetupSearchEditTextChange(self, arg):
         mw=self.mw,
         col=self.mw.col
     )
+    if not ret:
+        return
+    else:
+        newpos, triggersearch = ret
+        if newpos:
+            le.setCursorPosition(newpos)
 DeckConf.onDynSetupSearchEditTextChange = onDynSetupSearchEditTextChange
 
 
@@ -190,7 +196,10 @@ def onBrowserSearchEditTextChange(self, arg):
     if not ret:
         return
     else:
-        if ret[0] and ret[1]:  #randialog and TriggerSearchAfter:
+        newpos, triggersearch = ret
+        if newpos:
+            self.form.searchEdit.lineEdit().setCursorPosition(newpos)
+        if triggersearch:  # randialog and TriggerSearchAfter:
             self.onSearchActivated()
 Browser.onBrowserSearchEditTextChange = onBrowserSearchEditTextChange
 
@@ -423,9 +432,12 @@ class ComboReplacer(QPlainTextEdit):
             col=self.browser.col,
             )
         if out:
+            newpos, triggersearch = out
             cursor = self.textCursor()
-            cursor.setPosition(out[0])
+            cursor.setPosition(newpos)
             self.setTextCursor(cursor)
+            if triggersearch:
+                self.browser.onSearchActivated()
         self.textEdited.emit(self.toPlainText())  # needed for "Symbols as you type"
 
 
