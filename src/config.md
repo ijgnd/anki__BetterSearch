@@ -13,7 +13,7 @@ wider. If you set it to "multiline" the search bar will also have multiple lines
 browser. If you use the "multiline" option there's no drop down menu for your search history. 
 Instead you access it with the history shortcut you can configure below or with the newly 
 added "History" button . If you use the "multiline" option you can go to the next line with 
-"Shift+Space".
+"alt+return".
 The function `-Modify Search Bar` will stop working if a future Anki update changes the browser. 
 So there's a good chance it will fail in the long run. In this case I'll try to upload an 
 update in time to ankiweb.
@@ -22,7 +22,7 @@ all available other add-ons. E.g. Glutanimate's "Sticky Searches" modifies the s
 browser as this add-on so that it's unlikely that once a version of his add-on is available for 2.1 
 they'll work together.
 - `-Multiline bar Auto Search on space` (default is "true"): If true whenever you type a space (or
-shift+return/return in the multi-line bar/dialog) a search is activated. This search will **not**
+alt+return/return in the multi-line bar/dialog) a search is activated. This search will **not**
 be added to the search history. 
 - Besides the functions described on ankiweb this add-on has some additional features, e.g. there's
 a menu entry and custom shortcut to open your search history in a filter dialog where long searches 

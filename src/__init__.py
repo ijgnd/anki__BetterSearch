@@ -426,9 +426,10 @@ class ComboReplacer(QPlainTextEdit):
         key = event.key()
         if key == Qt.Key_Space and gc("-Multiline bar Auto Search on space"):
             _onSearchActivated_dont_add_to_history(self.browser)
-        modshift = True if (mw.app.keyboardModifiers() & Qt.ShiftModifier) else False
-        modctrl = True if (mw.app.keyboardModifiers() & Qt.ControlModifier) else False
-        if any ([modshift, modctrl]) and key in (Qt.Key_Return, Qt.Key_Enter):
+        # modshift = True if (mw.app.keyboardModifiers() & Qt.ShiftModifier) else False
+        # modctrl = True if (mw.app.keyboardModifiers() & Qt.ControlModifier) else False
+        modalt = True if (mw.app.keyboardModifiers() & Qt.AltModifier) else False
+        if modalt and key in (Qt.Key_Return, Qt.Key_Enter):
             self.returnPressed.emit()  # doesn't work - needed for add-ons?
             
             if gc("-Multiline bar Auto Search on space"):
