@@ -3,6 +3,39 @@
   "type": "object",
   "title": "Browser Search Box: Quick Insert Tag, Deck, Notetype",
   "properties": {
+    "-Add Button to the Browser Search Bar": {
+        "type": "boolean",
+        "default": true,
+        "description": ""
+    },
+    "-Modify Search Bar": {
+        "type": ["boolean", "string"],
+        "enum": [ false, "down", "multiline"],
+        "default": false,
+        "description": ""
+    },
+    "-Multiline bar Auto Search on space": {
+        "type": "boolean",
+        "default": true,
+        "description": ""
+    },
+    "-Multiline bar Height relative to default (when shown in Browser)": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 1000,
+        "default": 100,
+        "description": ""
+    },
+    "-Shortcut for Multi-bar mode: show fuzzy menu": {
+        "type": "string",
+        "default": false,
+        "description": "Ctrl+h, g"
+    },
+    "Multiline Dialog: use bigger typewriter font": {
+        "type": "boolean",
+        "default": true,
+        "description": ""
+    },
     "Multiline Dialog: shortcut: open window": {
         "type": "string",
         "default": "Ctrl+t,s",
