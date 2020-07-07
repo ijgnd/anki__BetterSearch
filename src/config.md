@@ -12,7 +12,8 @@ search bar in the browser. If you set it to "down" the search bar is moved down 
 wider. If you set it to "multiline" the search bar will also have multiple lines in the
 browser. If you use the "multiline" option there's no drop down menu for your search history. 
 Instead you access it with the history shortcut you can configure below or with the newly 
-added "History" button .
+added "History" button . If you use the "multiline" option you can go to the next line with 
+"Shift+Space".
 The function `-Modify Search Bar` will stop working if a future Anki update changes the browser. 
 So there's a good chance it will fail in the long run. In this case I'll try to upload an 
 update in time to ankiweb.
