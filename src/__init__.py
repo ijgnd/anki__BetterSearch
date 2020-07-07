@@ -126,6 +126,9 @@ from .toolbar import getMenu
 from . import browser_shortcuts_for_insert_dialog
 
 
+version = 2  # maybe useful when querying from other add-ons
+
+
 
 ######### Filtered Decks GUI
 def dyn_setup_search(self):
