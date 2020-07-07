@@ -173,11 +173,11 @@ def check_for_advancedBrowser():
 profile_did_open.append(check_for_advancedBrowser)
 
 
-def mysearch(self):
+def mysearch(self):   
     if gc("-Modify Search Bar") == "multiline":
         return
     self.form.searchEdit.editTextChanged.connect(self.onBrowserSearchEditTextChange)
-Browser.setupSearch = wrap(Browser.setupSearch,mysearch)
+Browser.setupSearch = wrap(Browser.setupSearch, mysearch)
 
 
 def onBrowserSearchEditTextChange(self, arg):
