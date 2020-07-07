@@ -1,196 +1,195 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "type": "object",
-  "title": "Browser Search Box: Quick Insert Tag, Deck, Notetype",
-  "properties": {
-    "-Add Button to the Browser Search Bar": {
-        "type": "boolean",
-        "default": true,
-        "description": ""
-    },
-    "-Modify Search Bar": {
-        "type": ["boolean", "string"],
-        "enum": [ false, "down", "multiline"],
-        "default": false,
-        "description": ""
-    },
-    "-Multiline bar Auto Search on space": {
-        "type": "boolean",
-        "default": true,
-        "description": ""
-    },
-    "-Multiline bar Height relative to default (when shown in Browser)": {
-        "type": "integer",
-        "minimum": 1,
-        "maximum": 1000,
-        "default": 100,
-        "description": ""
-    },
-    "-Shortcut for Multi-bar mode: show fuzzy menu": {
-        "type": "string",
-        "default": false,
-        "description": "Ctrl+h, g"
-    },
-    "Multiline Dialog: use bigger typewriter font": {
-        "type": "boolean",
-        "default": true,
-        "description": ""
-    },
-    "Multiline Dialog: shortcut: open window": {
-        "type": "string",
-        "default": "Ctrl+t,s",
-        "description": ""
-    },
-    "Multiline Dialog: Filter Button overwrites by default": {
-        "type": "boolean",
-        "default": false,
-        "description": ""
-    },
-    "Multiline Dialog: Shortcut inside: Open History": {
-        "type": "string",
-        "default": "Ctrl+H",
-        "description": ""
-    },
-    "also use in create filtered deck dialog": {
-        "type": "boolean",
-        "default": true,
-        "description": ""
-    },
-    "autoadjust FilterDialog position": {
-        "type": "boolean",
-        "default": true,
-        "description": ""
-    },
-    "custom tag&deck string 1": {
-        "type": "string",
-        "default": "xx",
-        "description": ""
-    },
-    "custom tag&deck string 2": {
-        "type": "string",
-        "default": "all:",
-        "description": ""
-    },
-    "date range dialog for added: string": {
-        "type": "string",
-        "default": "dadded:",
-        "description": ""
-    },
-    "date range dialog for rated: string": {
-        "type": "string",
-        "default": "drated:",
-        "description": ""
-    },
-    "ignore upper and lower case (case insensitive search)": {
-        "type": "boolean",
-        "default": false,
-        "description": ""
-    },
-    "modifier for override autosearch default": {
-        "type": "string",
-        "enum": [ "Shift", "Meta", "Alt", "Ctrl" ],
-        "default": "Shift"
-    },
-    "modifier for override add * default": {
-        "type": "string",
-        "enum": [ "Shift", "Meta", "Alt", "Ctrl" ],
-        "default": "Meta"
-    },
-    "modifier for negate": {
-        "type": "string",
-        "enum": [ "Shift", "Meta", "Alt", "Ctrl" ],
-        "default": "Alt"
-    },
-    "modifier for insert current text only": {
-        "type": "string",
-        "enum": [ "Shift", "Meta", "Alt", "Ctrl" ],
-        "default": "Ctrl"
-    },
-    "modify: window opened by search strings triggers search by default": {
-        "type": "boolean",
-        "default": true,
-        "description": ""
-      },
-    "modify_card": {
-        "type": "boolean",
-        "default": true,
-        "description": ""
-      },
-    "modify_deck": {
-        "type": "boolean",
-        "default": true,
-        "description": ""
-    },
-    "modify_field": {
-        "type": "boolean",
-        "default": true,
-        "description": ""
-    },
-    "modify_is": {
-        "type": "boolean",
-        "default": true,
-        "description": ""
-    },
-    "modify_is__show_explanations": {
-        "type": "boolean",
-        "default": true,
-        "description": ""
-    },
-    "modify_note": {
-        "type": "boolean",
-        "default": true,
-        "description": ""
-    },
-    "modify_props": {
-        "type": "boolean",
-        "default": true,
-        "description": ""
-    },
-    "modify_tag": {
-        "type": "boolean",
-        "default": true,
-        "description": ""
-    },    
-    "shortcut - focus search box and card selector dialog": {
-        "type": "string",
-        "default": "Ctrl+H, c",
-        "description": ""
-     },
-    "shortcut - focus search box and deck selector dialog": {
-        "type": "string",
-        "default": "Ctrl+H, d",
-        "description": ""
-    },
-    "shortcut - focus search box and note selector dialog": {
-        "type": "string",
-        "default": "Ctrl+H, n",
-        "description": ""
-    },
-    "shortcut - focus search box and tag selector dialog": {
-        "type": "string",
-        "default": "Ctrl+H, t",
-        "description": ""
-    },
-    "shortcut - focus search box and tag/deck selector dialog": {
-        "type": "string",
-        "default": "Ctrl+H, m",
-        "description": ""
-    },
-    "shortcut - select entry from history in fuzzy dialog": {
-        "type": "string",
-        "default": "Ctrl+H, h",
-        "description": ""
-    },
-    "shortcuts trigger search by default": {
-        "type": "boolean",
-        "default": true,
-        "description": ""
-    },
-    "tag insertion - add '*' to matches": {
-        "type": "string",
-        "default": "all",
-        "description": ""
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "title": "Browser Search Box: Quick Insert Tag, Deck, Notetype",
+    "properties": {
+        "-Add Button to the Browser Search Bar": {
+            "type": "boolean",
+            "default": true,
+            "description": ""
+        },
+        "-Modify Search Bar": {
+            "type": ["boolean", "string"],
+            "enum": [false, "down", "multiline"],
+            "default": false,
+            "description": ""
+        },
+        "-Multiline bar Auto Search on space": {
+            "type": "boolean",
+            "default": true,
+            "description": ""
+        },
+        "-Multiline bar Height relative to default (when shown in Browser)": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 100,
+            "description": ""
+        },
+        "-Shortcut for Multi-bar mode: show fuzzy menu": {
+            "type": "string",
+            "default": false,
+            "description": "Ctrl+h, g"
+        },
+        "Multiline Dialog: use bigger typewriter font": {
+            "type": "boolean",
+            "default": true,
+            "description": ""
+        },
+        "Multiline Dialog: shortcut: open window": {
+            "type": "string",
+            "default": "Ctrl+t,s",
+            "description": ""
+        },
+        "Multiline Dialog: Filter Button overwrites by default": {
+            "type": "boolean",
+            "default": false,
+            "description": ""
+        },
+        "Multiline Dialog: Shortcut inside: Open History": {
+            "type": "string",
+            "default": "Ctrl+H",
+            "description": ""
+        },
+        "also use in create filtered deck dialog": {
+            "type": "boolean",
+            "default": true,
+            "description": ""
+        },
+        "autoadjust FilterDialog position": {
+            "type": "boolean",
+            "default": true,
+            "description": ""
+        },
+        "custom tag&deck string 1": {
+            "type": "string",
+            "default": "xx",
+            "description": ""
+        },
+        "custom tag&deck string 2": {
+            "type": "string",
+            "default": "all:",
+            "description": ""
+        },
+        "date range dialog for added: string": {
+            "type": "string",
+            "default": "dadded:",
+            "description": ""
+        },
+        "date range dialog for rated: string": {
+            "type": "string",
+            "default": "drated:",
+            "description": ""
+        },
+        "ignore upper and lower case (case insensitive search)": {
+            "type": "boolean",
+            "default": false,
+            "description": ""
+        },
+        "modifier for override autosearch default": {
+            "type": "string",
+            "enum": ["Shift", "Meta", "Alt", "Ctrl"],
+            "default": "Shift"
+        },
+        "modifier for override add * default": {
+            "type": "string",
+            "enum": ["Shift", "Meta", "Alt", "Ctrl"],
+            "default": "Meta"
+        },
+        "modifier for negate": {
+            "type": "string",
+            "enum": ["Shift", "Meta", "Alt", "Ctrl"],
+            "default": "Alt"
+        },
+        "modifier for insert current text only": {
+            "type": "string",
+            "enum": ["Shift", "Meta", "Alt", "Ctrl"],
+            "default": "Ctrl"
+        },
+        "modify: window opened by search strings triggers search by default": {
+            "type": "boolean",
+            "default": true,
+            "description": ""
+        },
+        "modify_card": {
+            "type": "boolean",
+            "default": true,
+            "description": ""
+        },
+        "modify_deck": {
+            "type": "boolean",
+            "default": true,
+            "description": ""
+        },
+        "modify_field": {
+            "type": "boolean",
+            "default": true,
+            "description": ""
+        },
+        "modify_is": {
+            "type": "boolean",
+            "default": true,
+            "description": ""
+        },
+        "modify_is__show_explanations": {
+            "type": "boolean",
+            "default": true,
+            "description": ""
+        },
+        "modify_note": {
+            "type": "boolean",
+            "default": true,
+            "description": ""
+        },
+        "modify_props": {
+            "type": "boolean",
+            "default": true,
+            "description": ""
+        },
+        "modify_tag": {
+            "type": "boolean",
+            "default": true,
+            "description": ""
+        },
+        "shortcut - focus search box and card selector dialog": {
+            "type": "string",
+            "default": "Ctrl+H, c",
+            "description": ""
+        },
+        "shortcut - focus search box and deck selector dialog": {
+            "type": "string",
+            "default": "Ctrl+H, d",
+            "description": ""
+        },
+        "shortcut - focus search box and note selector dialog": {
+            "type": "string",
+            "default": "Ctrl+H, n",
+            "description": ""
+        },
+        "shortcut - focus search box and tag selector dialog": {
+            "type": "string",
+            "default": "Ctrl+H, t",
+            "description": ""
+        },
+        "shortcut - focus search box and tag/deck selector dialog": {
+            "type": "string",
+            "default": "Ctrl+H, m",
+            "description": ""
+        },
+        "shortcut - select entry from history in fuzzy dialog": {
+            "type": "string",
+            "default": "Ctrl+H, h",
+            "description": ""
+        },
+        "shortcuts trigger search by default": {
+            "type": "boolean",
+            "default": true,
+            "description": ""
+        },
+        "tag insertion - add '*' to matches": {
+            "type": "string",
+            "default": "all",
+            "description": ""
+        }
     }
-  }
 }
-
