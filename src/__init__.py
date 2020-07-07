@@ -499,7 +499,7 @@ def modify_browser(self):
         self.form.searchEdit = ComboReplacer(self)
         user_height = gc("-Multiline bar Height relative to default (when shown in Browser)", 100)
         default_height = self.fontMetrics().lineSpacing()
-        new_height = int((default_height + 2) * 2 * user_height/100)
+        new_height = int((default_height + 5) * 2 * user_height/100)
         self.form.searchEdit.setFixedHeight(new_height)
         #self.form.searchEdit.setMaximumHeight(new_height)
         self.form.searchButton.setShortcut("Return")
