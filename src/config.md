@@ -20,6 +20,9 @@ You might want to disable this setting to avoid conflicts with other add-ons. I 
 all available other add-ons. E.g. Glutanimate's "Sticky Searches" modifies the same part of the 
 browser as this add-on so that it's unlikely that once a version of his add-on is available for 2.1 
 they'll work together.
+- `-Multiline bar Auto Search on space` (default is "true"): If true whenever you type a space (or
+shift+return/return in the multi-line bar/dialog) a search is activated. This search will **not**
+be added to the search history. 
 - Besides the functions described on ankiweb this add-on has some additional features, e.g. there's
 a menu entry and custom shortcut to open your search history in a filter dialog where long searches 
 are split up into multiple lines. The setting is 

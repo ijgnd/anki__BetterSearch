@@ -180,6 +180,34 @@ def mysearch(self):
 Browser.setupSearch = wrap(Browser.setupSearch, mysearch)
 
 
+def _onSearchActivated_dont_add_to_history(self):
+    # self is browser
+
+    # convert guide text before we save history
+    if self.form.searchEdit.lineEdit().text() == self._searchPrompt:
+        self.form.searchEdit.lineEdit().setText("deck:current ")
+
+    # grab search text and normalize
+    txt = self.form.searchEdit.lineEdit().text()
+
+    """
+    # update history
+    sh = self.mw.pm.profile["searchHistory"]
+    if txt in sh:
+        sh.remove(txt)
+    sh.insert(0, txt)
+    sh = sh[:30]
+    self.form.searchEdit.clear()
+    self.form.searchEdit.addItems(sh)
+    self.mw.pm.profile["searchHistory"] = sh
+    """
+    
+    # keep track of search string so that we reuse identical search when
+    # refreshing, rather than whatever is currently in the search field
+    self._lastSearchTxt = txt
+    self.search()
+
+
 def onBrowserSearchEditTextChange(self, arg):
     le = self.form.searchEdit.lineEdit()
     pos = le.cursorPosition()
@@ -395,12 +423,16 @@ class ComboReplacer(QPlainTextEdit):
         self.textChanged.connect(self.text_change_helper)
 
     def keyPressEvent(self, event):
+        key = event.key()
+        if key == Qt.Key_Space and gc("-Multiline bar Auto Search on space"):
+            _onSearchActivated_dont_add_to_history(self.browser)
         modshift = True if (mw.app.keyboardModifiers() & Qt.ShiftModifier) else False
         modctrl = True if (mw.app.keyboardModifiers() & Qt.ControlModifier) else False
-        key = event.key()
         if any ([modshift, modctrl]) and key in (Qt.Key_Return, Qt.Key_Enter):
-            self.returnPressed.emit()  # doesn't work
+            self.returnPressed.emit()  # doesn't work - needed for add-ons?
             
+            if gc("-Multiline bar Auto Search on space"):
+                _onSearchActivated_dont_add_to_history(self.browser)
             # I use this complicated way for two reasons: It was very quick to make because
             # I could reuse code I have. It was quicker than finding out how the
             # pyqtSignal returnPressed would behave, etc.
