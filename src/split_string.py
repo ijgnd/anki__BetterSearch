@@ -64,7 +64,10 @@ def string_to_list__quoted_on_same_line(search_string):
     # readd quotes
     for i, val in enumerate(results):
         if " " in val:
-            results[i] = '"' + val  + '"'
+            if val.startswith("-"):
+                results[i] = '-"' + val[1:]  + '"'
+            else:
+                results[i] = '"' + val  + '"'
     return results
 
 
