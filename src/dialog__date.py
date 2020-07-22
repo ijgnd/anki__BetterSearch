@@ -11,6 +11,7 @@ from aqt.qt import (
 from aqt.utils import (
     restoreGeom,
     saveGeom,
+    tooltip,
 )
 
 from .forms import date_dialog_ui
@@ -128,6 +129,9 @@ class DateRangeDialog(QDialog):
     def get_search_text(self):
         lower = self.form.qsp_after.value()
         upper = self.form.qsp_before.value()
+        if upper > lower:  # upper/before may not be more in the past than lower/after
+            tooltip("the before date(right) may not be earlier than the after date(left)")
+            return
         # search word is either "rated" or "added" or "edited"
         s = f"{self.search_word}:{lower}"
         if upper > 1:
@@ -139,6 +143,7 @@ class DateRangeDialog(QDialog):
         QDialog.reject(self)
 
     def accept(self):
-        saveGeom(self, size_string)
         self.searchtext = self.get_search_text()
-        QDialog.accept(self)
+        if self.searchtext:
+            saveGeom(self, size_string)
+            QDialog.accept(self)
