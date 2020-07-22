@@ -124,6 +124,11 @@ class SearchBox(QDialog):
         self.form.pb_date_added.setToolTip(st)
         st = gc("date range dialog for rated: string")
         self.form.pb_date_rated.setToolTip(st)
+        st = gc("date range dialog for edited: string")
+        self.form.pb_date_edited.setToolTip(st)
+        if pointVersion() < 28:
+            self.form.pb_date_edited.setVisible(False)
+
 
     def config_pte(self):
         #self.form.pte.setTabStopDistance(20)
@@ -150,6 +155,8 @@ class SearchBox(QDialog):
         self.form.pb_card_state.clicked.connect(lambda _, a="is:": self.onButton(a))
         da = gc("date range dialog for added: string", "dadded")
         self.form.pb_date_added.clicked.connect(lambda _, a=da: self.onButton(a))
+        de = gc("date range dialog for edited: string", "dedited")
+        self.form.pb_date_edited.clicked.connect(lambda _, a=de: self.onButton(a))
         dr = gc("date range dialog for rated: string", "drated")
         self.form.pb_date_rated.clicked.connect(lambda _, a=dr: self.onButton(a))
 

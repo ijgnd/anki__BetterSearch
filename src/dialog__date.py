@@ -128,7 +128,7 @@ class DateRangeDialog(QDialog):
     def get_search_text(self):
         lower = self.form.qsp_after.value()
         upper = self.form.qsp_before.value()
-        # search word is either "rated" or "added"
+        # search word is either "rated" or "added" or "edited"
         s = f"{self.search_word}:{lower}"
         if upper > 1:
             s += f" -{self.search_word}:{upper - 1}"
