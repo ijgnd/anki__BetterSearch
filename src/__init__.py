@@ -555,6 +555,9 @@ def modify_browser(self):
         pb_hist = QPushButton("History")
         pb_hist.clicked.connect(lambda _, browser=self: search_history_helper(browser))
         pb_hist.setObjectName("custom_history")
+        cut = gc("shortcut - select entry from history in fuzzy dialog")
+        if cut:
+            pb_hist.setToolTip(f"shortcut: {cut}")
         grid.addWidget(pb_hist, 0, 0, 1, 1)
         gridcounter += 1
 
