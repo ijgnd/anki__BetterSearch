@@ -567,6 +567,7 @@ def modify_browser(self):
         cut = gc("-Shortcut for Multi-bar mode: show fuzzy menu")
         if cut:
             pb_fm.setToolTip(f"shortcut: {cut}")
+            pb_fm.setShortcut(cut)
         grid.addWidget(pb_fm, 0, gridcounter, 1, 1)
         gridcounter += 1
 
