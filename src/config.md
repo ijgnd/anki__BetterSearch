@@ -10,6 +10,16 @@ This add-on used to be named *Browser Search Box: Quick Insert Tag, Deck, Notety
 was changed because now it offers more than this.
 
 ### Important notes
+- This add-on offers about 45 different config options. Most of them can be ignored unless
+you have really strong opinions or have another add-on that uses conflicting shortcuts, etc.
+I think only **two config options are interesting for the most users**: 
+    - I like to change `"-Modify Search Bar"` to `"down"`, for details see below.
+    - If you you have mostly cloze notes (e.g. if you use the TheAnKing decks) and often search for 
+specific cloze cards with e.g. "card:2" you might want to set the config key 
+`"modify_card"` to `false`: By default when you type in "card:" this add-on will show you 
+a list of card *names*. In Anki you can also search by card type *number*. For cloze note types you 
+can only search by card type numbers. For details see TheAnkigVideo 
+[here](https://www.youtube.com/watch?v=PlcsNIsYc7k&feature=youtu.be&t=354).
 - General point about add-on config in Anki: When you adjust the config for an add-on in th
 add-on config window you actually edit a so-called "json" file. This means you must 
 adhere to the json rules or you will get weird error messages. The json format is actually pretty 
@@ -61,10 +71,6 @@ confusing. For details see the [manual](https://docs.ankiweb.net/#/), or see
 [here](https://www.reddit.com/r/Anki/comments/8w2b5e/the_fundamental_principle_of_anki_card_creation/) 
 or 
 [here](https://www.reddit.com/r/Anki/comments/9nkg7i/how_do_i_create_separate_card_types_in_different/e7n0x5n/) or [this youtube video](https://www.youtube.com/watch?v=fUKPtnx8LC0).
-- when you type in "card:" this add-on will show you a list of card *names*. In Anki you can also
-search by card type *number*. For cloze note types you can only search by card type numbers. If 
-you have mostly cloze notes (e.g. if you use the AnKing decks) and often search for specific 
-cloze cards with e.g. "card:2" you might want to set the config key `"modify_card"` to `false`.
 - When searching I regularly want to see just one card per note. So I could add "card:1" to each search. 
 Instead I use [Card browser: List only one card per note](https://ankiweb.net/shared/info/797076357) 
 by Arthur Milchior who has made many great add-ons. This add-on depends on the add-on 
