@@ -1,38 +1,52 @@
-<b>Before you change the config make sure to read the descriptions below and/or watch the 
-following [AnKingMed](https://www.ankingmed.com/) video: 
-[Anki: Better Searching Tools](https://www.youtube.com/watch?v=PlcsNIsYc7k)</b>. Also watch
-the video [Anki: How to Find Cards and Tags in the Browser](https://www.youtube.com/watch?v=NHpl-j9pULU)
+**Before you change the config make sure to read the descriptions below and/or watch the** 
+**following [AnKingMed](https://www.ankingmed.com/) video:** 
+**[Anki: Better Searching Tools](https://www.youtube.com/watch?v=PlcsNIsYc7k). Also watch**
+**the video [Anki: How to Find Cards and Tags in the Browser](https://www.youtube.com/watch?v=NHpl-j9pULU)**
 
-This add-on used to be named <b>Browser Search Box: Quick Insert Tag, Deck, Notetype</b>. The name
+You can also read this help file in the browser [here](https://github.com/ijgnd/anki__BetterSearch/blob/master/src/config.md). 
+The description on ankiweb is [here](https://ankiweb.net/shared/info/1052724801).
+
+This add-on used to be named *Browser Search Box: Quick Insert Tag, Deck, Notetype*. The name
 was changed because now it offers more than this.
 
-<h3># Important notes</h3>
-- This add-on has an option `-Modify Search Bar` (default is "down") that offers to modify the 
-search bar in the browser. If you set it to "down" the search bar is moved down so that it's just
-wider. If you set it to "multiline" the search bar will also have multiple lines in the
-browser. If you use the "multiline" option there's no drop down menu for your search history. 
+### Important notes
+- General point about add-on config in Anki: When you adjust the config for an add-on in th
+add-on config window you actually edit a so-called "json" file. This means you must 
+adhere to the json rules or you will get weird error messages. The json format is actually pretty 
+simple. Usually all settings must be surrounded with `""` (quote signs). There are some exceptions 
+like the boolean values true/false (lowercase) and numbers. For other add-ons you need
+more advanced features but these are not relevant here.
+- This add-on has an option `"-Modify Search Bar"` (default is `false`) that offers to modify the 
+search bar in the browser. If you set it to `"down"` the search bar is moved down so that it's just
+wider. If you set it to `"multiline"` the search bar will also have multiple lines in the
+browser. If you use the `"multiline"` option there's no drop down menu for your search history. 
 Instead you access it with the history shortcut you can configure below or with the newly 
-added "History" button . If you use the "multiline" option you can go to the next line with 
-"alt+return".
-The function `-Modify Search Bar` will stop working if a future Anki update changes the browser. 
-So there's a good chance it will fail in the long run. In this case I'll try to upload an 
-update in time to ankiweb.
-You might want to disable this setting to avoid conflicts with other add-ons. I can't test with
-all available other add-ons. E.g. Glutanimate's "Sticky Searches" modifies the same part of the 
-browser as this add-on so that it's unlikely that once a version of his add-on is available for 2.1 
-they'll work together.
-- `-Multiline bar Auto Search on space` (default is "true"): If true whenever you type a space (or
+added "History" button . If you use the `"multiline"` option you can go to the next line with 
+Alt+Return.
+The function `"-Modify Search Bar"` not just extends Anki but modifies a built-in feature. Add-ons
+often do this but such modifications are more brittle in the long run: If other add-ons try to 
+overwrite the same part of Anki errors might occur. E.g. Glutanimate's "Sticky Searches" modifies 
+the same part of the browser as this add-on. So most likely if you use "Sticky Searches" you
+must set `"-Modify Search Bar"` to `false` so that my add-on doesn't modify this part of the 
+browser which means there's no add-on conflict anymore. There are over 600 different add-ons. 
+I can't test all of these. So maybe there's another add-on that doesn't work with the 
+`"multiline"` or  `"down"` setting.
+Another problem with add-ons overwriting built-in Anki functions is that each Anki update might 
+break the add-on. In this case I'll try to upload an update in time to ankiweb. But maybe I'll be on
+holiday then or no longer use Anki or whatever. In this case you'd have to set
+ `"-Modify Search Bar"` to `false` to avoid the problem. 
+- `"-Multiline bar Auto Search on space"` (default is `true`): If true whenever you type a space (or
 alt+return/return in the multi-line bar/dialog) a search is activated. This search will **not**
 be added to the search history. 
 - Besides the functions described on ankiweb this add-on has some additional features, e.g. there's
 a menu entry and custom shortcut to open your search history in a filter dialog where long searches 
 are split up into multiple lines. The setting is 
-`shortcut - select entry from history in fuzzy dialog` (default is "Ctrl+H, h").
+`"shortcut - select entry from history in fuzzy dialog"` (default is "Ctrl+H, h").
 - The add-on automatically opens filter dialogs for "tag:", "note:", etc. if it detects these
 keywords right before the cursor. Sometimes this opens a dialog even if you don't want to see it.
-<b>To close such a filter dialog just press "Esc"</b>.
+**To close such a filter dialog just press "Esc"**.
 - typing "xx" opens a custom filter dialog that contains both deck names and tags, see the 
-description below for `custom tag&deck string 1` as well as 
+description below for `"custom tag&deck string 1"` as well as 
 [this part](https://www.youtube.com/watch?v=NHpl-j9pULU&feature=youtu.be&t=99) from the 
 "How to Find Cards" video.
 - When closing the multi-line dialog newlines and tabs are replaced by spaces.
@@ -50,7 +64,7 @@ or
 - when you type in "card:" this add-on will show you a list of card *names*. In Anki you can also
 search by card type *number*. For cloze note types you can only search by card type numbers. If 
 you have mostly cloze notes (e.g. if you use the AnKing decks) and often search for specific 
-cloze cards with e.g. "card:2" you might want to set the config key `modify_card` to "false".
+cloze cards with e.g. "card:2" you might want to set the config key `"modify_card"` to `false`.
 - When searching I regularly want to see just one card per note. So I could add "card:1" to each search. 
 Instead I use [Card browser: List only one card per note](https://ankiweb.net/shared/info/797076357) 
 by Arthur Milchior who has made many great add-ons. This add-on depends on the add-on 
@@ -60,65 +74,66 @@ in the [support thread in the anki support forum](https://forums.ankiweb.net/t/b
 
 &nbsp;
 
-<h3># Details</h3>
+### Details
 Most of the options should have telling names. Here are some notes about some options:
 
-- `Add Button to the Browser Search Bar` (default is "true"): whether the "SearchDialog" 
+- `"Add Button to the Browser Search Bar"` (default is `true`): whether the SearchDialog
 button is shown in the browser. In some special cases you might want to hide this button, e.g.
 if you also use the add-on
 [Browser: Table/Editor side-by-side (horizontal split)](https://ankiweb.net/shared/info/831846358)
 so that the left column can be more narrow.
-- `Multiline Dialog: use bigger typewriter font` (default is "true"): This only affects the font 
+- `"Multiline Dialog: use bigger typewriter font"` (default is `true`): This only affects the font 
 size in the text box of the extra dialog.
-- `Multiline Dialog: shortcut: open window` (default is "Ctrl+t,s"): This shortcut is 
+- `"Multiline Dialog: shortcut: open window"` (default is `"Ctrl+t,s"`): This shortcut is 
 active in the browser and opens a new multi-line window where you can edit the current 
 search term.
-- `Multiline Dialog: Filter Button overwrites by default` (default is "false"): The "Filter"
+- `"Multiline Dialog: Filter Button overwrites by default"` (default is `false`): This "Filter"
 button is similar to the "Filter" button in the browser. By default the "Filter" button in the browser
 overwrites your search with what you selected. In the Anki browser to append the selection from
 the Filter dialog you need to also press "Ctrl"/"Cmd". I often forget this so that I lose 
-my search terms. That's why there's this option for "Filter" button inside the multi-line dialog.
-- `Multiline Dialog: Shortcut inside: Open History` (default is "Ctrl+H, h"): Inside the multi-line
+my search terms. That's why there's this option for my custom "Filter" button inside the 
+multi-line dialog.
+- `"Multiline Dialog: Shortcut inside: Open History"` (default is `"Ctrl+H, h"`): Inside the multi-line
 edit dialog you can insert a prior search which overwrites what's currently in the field.
 
-- `also use in create filtered deck dialog` (default is "true"): whether to show this dialog in the 
+- `"also use in create filtered deck dialog"` (default is `true`): whether to show this dialog in the 
 filtered deck dialog. The shortcuts set in this config won't work in the create filtered deck 
 dialog. 
 The deck list won't include existing filtered decks because cards that are already in a filtered 
 deck can't be added to another filtered deck.
 
-- `autoadjust FilterDialog position` (default is "True"): refers to the positioning of the filter
+- `"autoadjust FilterDialog position"` (default is `true`): refers to the positioning of the filter
 dialog in the browser.
 
-- `custom tag&deck string 1` (default is "xx"), `custom tag&deck string 2` (default is "all:"): when 
-you type into the browser search box if the last characters match the ones set in these settings 
+- `"custom tag&deck string 1"` (default is `"xx"`), `"custom tag&deck string 2"` (default is `"all:"`): 
+when you type into the browser search box if the last characters match the ones set in these settings 
 a dialog with a list of your tags and decks is opened. The selected entry is inserted into the 
 search box.
 
-- `date range dialog for added: string` (default is "dadded:") and 
-`date range dialog for rated: string` (default is "drated:") open a dialog with a calender-widget
+- `"date range dialog for added: string"` (default is `"dadded:"`) and 
+`"date range dialog for rated: string"` (default is `"drated:"`) open a dialog with a calender-widget
 if you type "dadded"/"drated" into the browser search bar.
 
-- `ignore upper and lower case (case insensitive search)` (default is "false"): if this setting 
-is "true" the search will be case insensitive. If "false" (the default) typing only in lower case 
+- `"ignore upper and lower case (case insensitive search)"` (default is `false`): if this setting 
+is `true` the search will be case insensitive. If `false` (the default) typing only in lower case 
 means case insensitive search while one upper case character makes the search case sensitive.
 
-- `modify_card` (default is true): If true, when you type into the browser search box if and the 
+- `"modify_card"` (default is `true`): If true, when you type into the browser search box if and the 
 characters before the cursor are "card:" a dialog with a list of your card types is opened. 
 The selected entry is inserted into the search box.
-- The other `modify...` config keys work the same way: For `modify_deck` it's "deck:", for 
-`modify_note` it's "note:", for `modify_tag` it's "tag:", etc. 
+- The other `"modify ..."` config keys work the same way: For `"modify_deck"` it's `"deck:"`, for 
+`"modify_note"` it's `"note:"`, for `modify_tag` it's `"tag:"`, etc. 
 
-- `tag insertion - add '*' to matches` (default is "all"): possible values: "all", "if_has_subtags",
-"none"
+- `"tag insertion - add '*' to matches"` (default is `"all"`): possible values: `"all"`, 
+`"if_has_subtags"`, `"none"`
 
-<h3># modifier keys</h3>
+### modifier keys
 The settings
 
--  `modifier for override autosearch default`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(default is "Shift"), 
--  `modifier for override add * default`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(default is "Meta"), 
--  `modifier for negate`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(default is "Alt"),
--  `modifier for insert current text only`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(default is "Ctrl")
+-  `"modifier for override autosearch default"`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(default is "Shift"), 
+-  `"modifier for override add * default"`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(default is "Meta"), 
+-  `"modifier for negate"`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(default is "Alt"),
+-  `"modifier for insert current text only"`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(default is "Ctrl")
 
 only accept the values "Shift", "Meta", "Alt", "Ctrl" as input. On a Mac "Ctrl" means "Cmd". 
 **You may not use "Cmd" for these four config values.**.
