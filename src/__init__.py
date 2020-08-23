@@ -527,6 +527,11 @@ def modify_browser(self):
     addbutton = gc("-Add Button to the Browser Search Bar")
     justdown = True if gc("-Modify Search Bar") == "down" else False
     multiline = True if gc("-Modify Search Bar") == "multiline" else False
+    # the following is needed for my add-on side-by-side so that it still moves the
+    # search bar if it's not done here. The current function is run by the hook
+    # browser_menus_did_init which is run before the hook browser_will_show that the side-by-side 
+    # add-on uses
+    self.bettersearch_modified_searchbar_position = justdown or multiline
 
     grid = self.form.gridLayout
     elements = []
