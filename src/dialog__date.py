@@ -25,7 +25,7 @@ def today_as_datetime_adjusted_for_next_day_starts_at():
     # dayOffset - next day starts at
     # in 2.1.14 values can be between 0 and 23, no negative values
     if mw.col.schedVer() == 2:
-        dayOffset = mw.col.conf["rollover"]  # by default 4
+        dayOffset = mw.col.conf.get("rollover", 4)
     else:
         # https://github.com/ankidroid/Anki-Android/wiki/Database-Structure
         #   crt = timestamp of the creation date. It's correct up to the day. For V1 scheduler,
