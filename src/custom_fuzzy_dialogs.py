@@ -98,7 +98,7 @@ card template/type/name you want to search.
         sort_vals = False
         nt = self.col.models.byName(model)
         if nt["type"] == 1:  # it's a cloze and for cloze it doesn't make sense to show a list
-                                # of cards
+                             # of cards
             show_card_dialog = False
             iscloze = True
         else:
