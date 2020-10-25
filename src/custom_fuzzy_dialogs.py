@@ -75,7 +75,7 @@ by {remaining_sentence}
 
 def note__card(self):
     browser = get_browser_instance(self)
-    remaining = "card template name if the note has multiple cards." 
+    remaining = "card template name if the note has multiple cards."
     # e.g. model = "Basic"; model_search_string = "note:Basic"; modelneg = False
     model, model_search_string, modelneg = note_filter_helper(self, remaining)
     if not model:
