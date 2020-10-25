@@ -76,6 +76,7 @@ by {remaining_sentence}
 def note__card(self):
     browser = get_browser_instance(self)
     remaining = "card template name if the note has multiple cards." 
+    # e.g. model = "Basic"; model_search_string = "note:Basic"; modelneg = False
     model, model_search_string, modelneg = note_filter_helper(self, remaining)
     if not model:
         return
@@ -118,6 +119,7 @@ card template/type/name you want to search.
         card_string = ""
         cardneg = False
     else:
+        # e.g. card = "Card 6"; card_string = "card:Card 6"; cardneg = False
         card, card_string, cardneg = run_filter_dialog(
             browser=browser,
             vals=vals,
