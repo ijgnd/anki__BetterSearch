@@ -116,11 +116,11 @@ card template/type/name you want to search.
             if c == 0:  # only one card type 
                 show_card_dialog = False
     if not show_card_dialog:
-        card_string = ""
+        card_search_string = ""
         cardneg = False
     else:
-        # e.g. card = "Card 6"; card_string = "card:Card 6"; cardneg = False
-        card, card_string, cardneg = run_filter_dialog(
+        # e.g. card = "Card 6"; card_search_string = "card:Card 6"; cardneg = False
+        card, card_search_string, cardneg = run_filter_dialog(
             browser=browser,
             vals=vals,
             vals_are_dict=vals_are_dict,
@@ -138,9 +138,9 @@ card template/type/name you want to search.
         model_search_string = '"' + model_search_string + '"'
     if model_search_string:
         model_search_string += " "
-    if " " in card_string:
-        card_string = '"' + card_string + '"'
-    out = '(' + model_search_string + card_string + ')'
+    if " " in card_search_string:
+        card_search_string = '"' + card_search_string + '"'
+    out = '(' + model_search_string + card_search_string + ')'
     if modelneg or cardneg:
         out = "-" + out
     if iscloze:
