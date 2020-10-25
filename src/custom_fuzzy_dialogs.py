@@ -133,14 +133,17 @@ card template/type/name you want to search.
         if not card:
             return
 
-
+    # quote if needed
     if " " in model_search_string:
         model_search_string = '"' + model_search_string + '"'
-    if model_search_string:
-        model_search_string += " "
     if " " in card_search_string:
         card_search_string = '"' + card_search_string + '"'
-    out = '(' + model_search_string + card_search_string + ')'
+
+    maybe_space = " " if model_search_string and card_search_string else ""
+    out = model_search_string + maybe_space + card_search_string
+
+    if model_search_string and card_search_string:
+        out = '(' + out + ')'
     if modelneg or cardneg:
         out = "-" + out
     if iscloze:
@@ -199,15 +202,19 @@ add some text to limit to a certain term.
         if not field:
             return
 
-    if " " in model_search_string:
-        model_search_string = '"' + model_search_string + '"'
-    if model_search_string:
-        model_search_string += " "
     if field_search_string:
         field_search_string += ":**"
-    if " " in field_search_string:
-        field_search_string = '"' + field_search_string + '"'
-    out = '(' + model_search_string + field_search_string + ')'
+    # quote if needed
+    if " " in model_search_string:
+        model_search_string = '"' + model_search_string + '"'
+    # always quote field search string so that user can type in spaces
+    field_search_string = '"' + field_search_string + '"'
+
+    maybe_space = " " if model_search_string and field_search_string else ""
+    out = model_search_string + maybe_space + field_search_string
+
+    if model_search_string and field_search_string:
+        out = '(' + out + ')'
     if modelneg or fieldneg:
         out = "-" + out
     #self.button_helper(out, False)
