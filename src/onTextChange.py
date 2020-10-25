@@ -37,9 +37,9 @@ def range_dialog(parent, term, before, after, char_to_del, func_settext):
 
 def note__field__card__helper(parent, term, before, after, char_to_del, func_settext):
     if term == "dnf:":
-        out = note__field(parent)
+        out, tomove = note__field(parent)
     else:  # "dnc:"
-        out = note__card(parent)
+        out, tomove = note__card(parent)
     if out:
         TriggerSearchAfter = gc("modify: window opened by search strings triggers search by default")
         _, override_autosearch_default, _, _ = overrides()
@@ -48,7 +48,7 @@ def note__field__card__helper(parent, term, before, after, char_to_del, func_set
         spaces = maybe_add_spaced_between(before, char_to_del)
         new = before[:-char_to_del] + spaces + out + after
         func_settext(new)
-        newpos = len(before[:-char_to_del] + spaces + out)
+        newpos = len(before[:-char_to_del] + spaces + out) + tomove
         return (newpos, override_autosearch_default)
 
 

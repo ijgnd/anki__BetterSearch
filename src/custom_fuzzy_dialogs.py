@@ -79,7 +79,7 @@ def note__card(self):
     # e.g. model = "Basic"; model_search_string = "note:Basic"; modelneg = False
     model, model_search_string, modelneg = note_filter_helper(self, remaining)
     if not model:
-        return
+        return None, None
 
     infotext = ("""
 <span>
@@ -131,7 +131,7 @@ card template/type/name you want to search.
             sort_vals=sort_vals,
         )
         if not card:
-            return
+            return None, None
 
     # quote if needed
     if " " in model_search_string:
@@ -154,7 +154,7 @@ add&nbsp;&nbsp;card:2&nbsp;&nbsp;
         )
         tooltip(msg, parent=self)  # default is period=3000
     #self.button_helper(out, False)
-    return out
+    return out, 0
 
 
 def note__field(self):
@@ -162,7 +162,7 @@ def note__field(self):
     remaining = "field (if the note has more than one field)." 
     model, model_search_string, modelneg = note_filter_helper(self, remaining)
     if not model:
-        return
+        return None, None
 
     infotext = ("""
 <span>
@@ -200,10 +200,12 @@ add some text to limit to a certain term.
             sort_vals=False
         )
         if not field:
-            return
+            return None, None
 
+    posback = 0
     if field_search_string:
         field_search_string += ":**"
+        posback = -2
     # quote if needed
     if " " in model_search_string:
         model_search_string = '"' + model_search_string + '"'
@@ -215,7 +217,8 @@ add some text to limit to a certain term.
 
     if model_search_string and field_search_string:
         out = '(' + out + ')'
+        posback = -3
     if modelneg or fieldneg:
         out = "-" + out
     #self.button_helper(out, False)
-    return out
+    return out, posback
