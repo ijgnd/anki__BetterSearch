@@ -30,7 +30,7 @@ def run_filter_dialog(browser, vals, vals_are_dict, value_for_all, windowtitle, 
         return None, None, None
     else:
         if d.selkey == value_for_all:
-            return d.selkey, ""
+            return d.selkey, "", False
         lineonly, _, override_add_star, negate = overrides()
         if d.lineonly:
             lineonly = True
