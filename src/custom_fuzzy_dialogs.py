@@ -183,10 +183,10 @@ add some text to limit to a certain term.
         value_for_all="--All the Card Types--"
         fnames.insert(0, value_for_all)
     if not show_card_dialog:
-        field_string = ""
+        field_search_string = ""
         fieldneg = False
     else:
-        field, field_string, fieldneg = run_filter_dialog(
+        field, field_search_string, fieldneg = run_filter_dialog(
             browser=browser,
             vals=fnames,
             vals_are_dict=False,
@@ -203,11 +203,11 @@ add some text to limit to a certain term.
         model_search_string = '"' + model_search_string + '"'
     if model_search_string:
         model_search_string += " "
-    if field_string:
-        field_string += ":**"
-    if " " in field_string:
-        field_string = '"' + field_string + '"'
-    out = '(' + model_search_string + field_string + ')'
+    if field_search_string:
+        field_search_string += ":**"
+    if " " in field_search_string:
+        field_search_string = '"' + field_search_string + '"'
+    out = '(' + model_search_string + field_search_string + ')'
     if modelneg or fieldneg:
         out = "-" + out
     #self.button_helper(out, False)
