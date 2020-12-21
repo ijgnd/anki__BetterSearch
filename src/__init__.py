@@ -318,6 +318,12 @@ def setupBrowserMenu(self):
     view.addAction(action)
     action.triggered.connect(lambda _, b=self, t="added": date_range_dialog_helper(b, t))
 
+    if pointVersion() >= 28:
+        action = QAction(self)
+        action.setText("Show Date Range Dialog for Edited")
+        view.addAction(action)
+        action.triggered.connect(lambda _, b=self, t="edited": date_range_dialog_helper(b, t))
+
     action = QAction(self)
     action.setText("Show Date Range Dialog for Rated")
     view.addAction(action)
