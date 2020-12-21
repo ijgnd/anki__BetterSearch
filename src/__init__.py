@@ -244,7 +244,10 @@ def date_range_dialog_helper(self, term):
         if override_autosearch_default:
             TriggerSearchAfter ^= True
         le = self.form.searchEdit.lineEdit()
-        new = le.text() + "  " + d.searchtext
+        if le.text() == self._searchPrompt:
+            new = d.searchtext
+        else:
+            new = le.text() + "  " + d.searchtext
         le.setText(new)
         if TriggerSearchAfter:
             self.onSearchActivated()
