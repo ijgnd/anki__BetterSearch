@@ -110,7 +110,6 @@ from aqt.qt import (
     qconnect,
 )
 from aqt.utils import getText, showCritical
-from aqt.dyndeckconf import DeckConf
 
 from .button_helper import button_helper
 from .config import gc
@@ -122,43 +121,11 @@ from .onTextChange import onSearchEditTextChange
 from .split_string import split_to_multiline
 from .toolbar import getMenu
 
-
+from . import ui_filtered_decks_dialog  # from .ui_filtered_decks_dialog import *
 from . import browser_shortcuts_for_insert_dialog
 
 
 version = 2  # maybe useful when querying from other add-ons
-
-
-
-######### Filtered Decks GUI
-def dyn_setup_search(self):
-    self.form.search.textChanged.connect(self.onDynSetupSearchEditTextChange)
-    self.form.search_2.textChanged.connect(self.onDynSetupSearchEditTextChange)
-DeckConf.initialSetup = wrap(DeckConf.initialSetup, dyn_setup_search)
-
-
-def onDynSetupSearchEditTextChange(self, arg):
-    le = self.sender()  # https://stackoverflow.com/a/33981172
-    pos = le.cursorPosition()
-    ret = onSearchEditTextChange(
-        parent=self,
-        move_dialog_in_browser=False,
-        include_filtered_in_deck=False,
-        func_gettext=le.text,
-        func_settext=le.setText,
-        cursorpos=pos,
-        mw=self.mw,
-        col=self.mw.col
-    )
-    if not ret:
-        return
-    else:
-        newpos, triggersearch = ret
-        if newpos:
-            le.setCursorPosition(newpos)
-DeckConf.onDynSetupSearchEditTextChange = onDynSetupSearchEditTextChange
-
-
 
 
 
