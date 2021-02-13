@@ -1,4 +1,12 @@
+from anki.utils import (
+    pointVersion,
+)
 from aqt import mw
+if pointVersion() >= 41:
+    from aqt.utils import (
+        TR,
+        tr,
+    )
 
 from .config import conf_to_key, gc, shiftdown, ctrldown, altdown, metadown
 
@@ -140,3 +148,9 @@ def maybe_add_spaced_between(old, insert_space_at_pos_in_old):
     else:
         spacing = "  "
     return spacing
+
+
+def browser_searchEdit_hint_shown(searchstring, browser=None):
+    hint_shown_old = pointVersion() < 41 and searchstring == browser._searchPrompt
+    hint_shown_new = pointVersion() >= 41 and searchstring == tr(TR.BROWSING_SEARCH_BAR_HINT)
+    return hint_shown_old or hint_shown_new

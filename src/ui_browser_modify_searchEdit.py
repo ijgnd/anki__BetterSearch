@@ -14,6 +14,9 @@ from aqt.qt import (
 )
 from .button_helper import button_helper
 from .config import gc
+from .helpers import (
+    browser_searchEdit_hint_shown,
+)
 from .onTextChange import onSearchEditTextChange
 from .ui_browser import (
     search_history_helper,
@@ -75,7 +78,7 @@ QMenu::item:selected {
 
 
 def fuzzy_helper(self, arg):
-    if self.form.searchEdit.lineEdit().text() == self._searchPrompt:
+    if browser_searchEdit_hint_shown(self.form.searchEdit.lineEdit().text(), self):
         self.form.searchEdit.lineEdit().setText("")
     button_helper(self.form.searchEdit, self, self.mw, self.col, arg)
 

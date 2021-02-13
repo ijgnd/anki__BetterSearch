@@ -20,12 +20,6 @@ from aqt.utils import (
     saveGeom,
     tooltip,
 )
-if pointVersion() >= 41:
-    from aqt.utils import (
-        TR,
-        tr,
-    )
-
 from .button_helper import (
     button_helper,
     text_change_helper,
@@ -43,6 +37,7 @@ from .helpers import (
     props,
     overrides,
     field_infotext,
+    browser_searchEdit_hint_shown,
 )
 from .onTextChange import onSearchEditTextChange
 from .split_string import (
@@ -58,9 +53,7 @@ searchbox_geom_name = "BSMH"
 
 class SearchBox(QDialog):
     def __init__(self, browser, searchstring):
-        hint_shown_old = pointVersion() < 41 and searchstring == browser._searchPrompt
-        hint_shown_new = pointVersion() >= 41 and searchstring == tr(TR.BROWSING_SEARCH_BAR_HINT)
-        if hint_shown_old or hint_shown_new:
+        if browser_searchEdit_hint_shown(searchstring, browser):
             self.searchstring = ""
         else:
             self.searchstring = searchstring
