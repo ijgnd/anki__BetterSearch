@@ -141,7 +141,8 @@ def modify_browser(self):
         new_height = int((default_height + 5) * 2 * user_height/100)
         self.form.searchEdit.setFixedHeight(new_height)
         #self.form.searchEdit.setMaximumHeight(new_height)
-        self.form.searchButton.setShortcut("Return")
+        if pointVersion() < 41:
+            self.form.searchButton.setShortcut("Return")
         grid.addWidget(self.form.searchEdit, 1, 0, 1, -1)
         pb_hist = QPushButton("History")
         pb_hist.clicked.connect(lambda _, browser=self: search_history_helper(browser))
