@@ -51,6 +51,9 @@ from aqt.qt import (
 )
 
 from .config import gc
+from .helpers import (
+    browser_searchEdit_hint_shown,
+)
 from .onTextChange import onSearchEditTextChange
 
 
@@ -61,7 +64,7 @@ def _onSearchActivated_dont_add_to_history(self):
     # self is browser
 
     # convert guide text before we save history
-    if self.form.searchEdit.lineEdit().text() == self._searchPrompt:
+    if browser_searchEdit_hint_shown(self.form.searchEdit.lineEdit().text(), self):
         self.form.searchEdit.lineEdit().setText("deck:current ")
 
     # grab search text and normalize
@@ -146,7 +149,7 @@ class ComboReplacer(QPlainTextEdit):
         # modctrl = True if (mw.app.keyboardModifiers() & Qt.ControlModifier) else False
         modalt = True if (mw.app.keyboardModifiers() & Qt.AltModifier) else False
         if modalt and key in (Qt.Key_Return, Qt.Key_Enter):
-            self.returnPressed.emit()  # doesn't work - needed for add-ons?
+            #self.returnPressed.emit()  # doesn't work - needed for add-ons?
             
             if gc("-Multiline bar Auto Search on space"):
                 _onSearchActivated_dont_add_to_history(self.browser)
