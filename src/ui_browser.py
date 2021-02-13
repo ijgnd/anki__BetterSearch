@@ -32,18 +32,6 @@ from .ui_browser_ComboReplacer import ComboReplacer
 from .toolbar import getMenu
 
 
-tup = None
-def check_for_advancedBrowser():
-    global tup
-    try:
-        a = __import__("874215009").advancedbrowser.core.AdvancedBrowser
-    except:
-        tup = Browser
-    else: 
-        tup = (a, Browser)
-profile_did_open.append(check_for_advancedBrowser)
-
-
 def mysearch_before41(self):
     if gc("-Modify Search Bar") == "multiline":
         return
