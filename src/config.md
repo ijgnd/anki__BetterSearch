@@ -46,7 +46,7 @@ Another problem with add-ons overwriting built-in Anki functions is that each An
 break the add-on. In this case I'll try to upload an update in time to ankiweb. But maybe I'll be on
 holiday then or no longer use Anki or whatever. In this case you'd have to set
  `"-Modify Search Bar"` to `false` to avoid the problem. 
-- `"-Multiline bar Auto Search on space"` (default is `true`): If true whenever you type a space (or
+- `"-Multiline bar Auto Search on space (only for Anki versions <=2.1.40)"` (default is `true`): If true whenever you type a space (or
 alt+return/return in the multi-line bar/dialog) a search is activated. This search will **not**
 be added to the search history. 
 - Besides the functions described on ankiweb this add-on has some additional features, e.g. there's

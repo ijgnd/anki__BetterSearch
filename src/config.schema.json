@@ -14,7 +14,7 @@
             "default": false,
             "description": ""
         },
-        "-Multiline bar Auto Search on space": {
+        "-Multiline bar Auto Search on space (only for Anki versions <=2.1.40)": {
             "type": "boolean",
             "default": true,
             "description": ""

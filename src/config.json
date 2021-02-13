@@ -1,7 +1,7 @@
 {
     "-Add Button to the Browser Search Bar": true,
     "-Modify Search Bar": false,
-    "-Multiline bar Auto Search on space": true,
+    "-Multiline bar Auto Search on space (only for Anki versions <=2.1.40)": true,
     "-Multiline bar Height relative to default (when shown in Browser)": 100,
     "-Shortcut for Multi-bar mode: show fuzzy menu": "Ctrl+h, g",
     "Multiline Dialog: use bigger typewriter font": true,

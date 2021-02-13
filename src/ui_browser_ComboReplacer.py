@@ -41,7 +41,9 @@ the functions are
     setFocus()
 """
 
-
+from anki.utils import (
+    pointVersion
+)
 from aqt import mw
 from aqt.browser import Browser
 from aqt.qt import (
@@ -143,7 +145,7 @@ class ComboReplacer(QPlainTextEdit):
 
     def keyPressEvent(self, event):
         key = event.key()
-        if key == Qt.Key_Space and gc("-Multiline bar Auto Search on space"):
+        if key == Qt.Key_Space and gc("-Multiline bar Auto Search on space (only for Anki versions <=2.1.40)") and pointVersion() < 41:
             _onSearchActivated_dont_add_to_history(self.browser)
         # modshift = True if (mw.app.keyboardModifiers() & Qt.ShiftModifier) else False
         # modctrl = True if (mw.app.keyboardModifiers() & Qt.ControlModifier) else False
@@ -151,7 +153,7 @@ class ComboReplacer(QPlainTextEdit):
         if modalt and key in (Qt.Key_Return, Qt.Key_Enter):
             #self.returnPressed.emit()  # doesn't work - needed for add-ons?
             
-            if gc("-Multiline bar Auto Search on space"):
+            if gc("-Multiline bar Auto Search on space (only for Anki versions <=2.1.40)") and pointVersion() < 41:
                 _onSearchActivated_dont_add_to_history(self.browser)
             # I use this complicated way for two reasons: It was very quick to make because
             # I could reuse code I have. It was quicker than finding out how the
