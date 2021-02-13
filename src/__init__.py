@@ -176,11 +176,18 @@ def check_for_advancedBrowser():
 profile_did_open.append(check_for_advancedBrowser)
 
 
-def mysearch(self):   
+def mysearch_before41(self):
     if gc("-Modify Search Bar") == "multiline":
         return
     self.form.searchEdit.editTextChanged.connect(self.onBrowserSearchEditTextChange)
-Browser.setupSearch = wrap(Browser.setupSearch, mysearch)
+def mysearch_41(self, card=None, search=None):
+    if gc("-Modify Search Bar") == "multiline":
+        return
+    self.form.searchEdit.editTextChanged.connect(self.onBrowserSearchEditTextChange)
+if pointVersion() < 41:
+    Browser.setupSearch = wrap(Browser.setupSearch, mysearch_before41)
+else:
+    Browser.setupSearch = wrap(Browser.setupSearch, mysearch_41)
 
 
 def _onSearchActivated_dont_add_to_history(self):
