@@ -6,7 +6,7 @@
     "-Shortcut for Multi-bar mode: show fuzzy menu": "Ctrl+h, g",
     "Multiline Dialog: use bigger typewriter font": true,
     "Multiline Dialog: shortcut: open window": "Ctrl+t,s",
-    "Multiline Dialog: show Filter Button": true,
+    "Multiline Dialog: show Filter Button (only for Anki versions <=2.1.40)": true,
     "Multiline Dialog: show Button Bar": true,
     "Multiline Dialog: Shortcut inside: Open History": "Ctrl+H, h",
     "also use in create filtered deck dialog": true,

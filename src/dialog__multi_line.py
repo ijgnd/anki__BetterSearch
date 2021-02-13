@@ -97,7 +97,7 @@ class SearchBox(QDialog):
             history_tooltip_text += f"(shortcut: {cut})"
         self.form.pb_history.setToolTip(history_tooltip_text)
 
-        if pointVersion() >= 26 and gc("Multiline Dialog: show Filter Button"):
+        if 41 > pointVersion() >= 26 and gc("Multiline Dialog: show Filter Button (only for Anki versions <=2.1.40)"):
             self.form.pb_filter.clicked.connect(self.filter_menu)
         else:
             self.form.pb_filter.setVisible(False)
