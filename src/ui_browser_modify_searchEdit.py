@@ -157,6 +157,13 @@ def modify_browser(self):
             pb_fm.setToolTip(f"shortcut: {cut}")
             pb_fm.setShortcut(cut)
 
+        pb_sd = QPushButton("SearchDialog")
+        pb_sd.clicked.connect(lambda _, browser=self: open_multiline_searchwindow(browser))
+        pb_sd.setObjectName("SearchDialog")
+        cut = gc("Multiline Dialog: shortcut: open window")
+        if cut:
+            pb_sd.setToolTip(f"shortcut: {cut}")
+
         grid.addWidget(self.form.searchEdit, 1, 0, 1, -1)
         grid.addWidget(pb_hist, 0, 0, 1, 1)
         gridcounter += 1
@@ -167,12 +174,6 @@ def modify_browser(self):
             self.form.searchButton.setShortcut("Return")
 
     if addbutton:
-        pb_sd = QPushButton("SearchDialog")
-        pb_sd.clicked.connect(lambda _, browser=self: open_multiline_searchwindow(browser))
-        pb_sd.setObjectName("SearchDialog")
-        cut = gc("Multiline Dialog: shortcut: open window")
-        if cut:
-            pb_sd.setToolTip(f"shortcut: {cut}")
         grid.addWidget(pb_sd, 0, gridcounter, 1, 1)
         for idx, e in enumerate(elements):
             if e[1] == "filter":
