@@ -164,16 +164,15 @@ def modify_browser(self):
         if cut:
             pb_sd.setToolTip(f"shortcut: {cut}")
 
+    if multiline and pointVersion() < 41:
+        self.form.searchButton.setShortcut("Return")
         grid.addWidget(self.form.searchEdit, 1, 0, 1, -1)
         grid.addWidget(pb_hist, 0, 0, 1, 1)
         gridcounter += 1
         grid.addWidget(pb_fm, 0, gridcounter, 1, 1)
         gridcounter += 1
 
-        if pointVersion() < 41:
-            self.form.searchButton.setShortcut("Return")
-
-    if addbutton:
+    if addbutton and pointVersion() < 41:
         grid.addWidget(pb_sd, 0, gridcounter, 1, 1)
         for idx, e in enumerate(elements):
             if e[1] == "filter":
@@ -193,5 +192,10 @@ def modify_browser(self):
             if name == "searchEdit":
                 searchbar = w
         self.form.gridLayout.addWidget(searchbar, 1, 0, 1, -1)
+
+    if pointVersion() >=41 and multiline:
+        pb_hist.setMaximumWidth(45)
+        grid.addWidget(self.form.searchEdit, 0, 0, 1, 1)
+        grid.addWidget(pb_hist, 0, 1, 1, 1)
 
 browser_menus_did_init.append(modify_browser)
