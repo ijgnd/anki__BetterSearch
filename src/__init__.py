@@ -1,6 +1,6 @@
 """
 Add-on for Anki
-Copyright (c): 2020 ijgnd
+Copyright (c): 2020- ijgnd
                Ankitects Pty Ltd and contributors (filter_button.py)
                lovac42 (toolbar.py)
 
