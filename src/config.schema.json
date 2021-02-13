@@ -41,9 +41,14 @@
             "default": "Ctrl+t,s",
             "description": ""
         },
-        "Multiline Dialog: Filter Button overwrites by default": {
+        "Multiline Dialog: show Filter Button (only for Anki versions <=2.1.40)": {
             "type": "boolean",
-            "default": false,
+            "default": true,
+            "description": ""
+        },
+        "Multiline Dialog: show Button Bar": {
+            "type": "boolean",
+            "default": true,
             "description": ""
         },
         "Multiline Dialog: Shortcut inside: Open History": {
