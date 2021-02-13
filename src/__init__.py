@@ -88,7 +88,7 @@ which have this copyright and permission notice:
 
 
 from . import browser_shortcuts_for_insert_dialog
-from . import ui_filtered_decks_dialog  # from .ui_filtered_decks_dialog import *
 from . import ui_browser
+from . import ui_filtered_decks_dialog  # from .ui_filtered_decks_dialog import *
 
 version = 2  # maybe useful when querying from other add-ons
