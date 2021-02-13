@@ -181,7 +181,7 @@ def modify_browser(self):
         for idx, item in enumerate(elements):
             grid.addWidget(item[0], 0, gridcounter+2+idx, 1, 1)
 
-    if justdown:
+    if justdown:  # never True for pointVersion >= 41
         # the code for "justdown" is copied verbatim from my older "side-by-side"
         # store lineedit and its index
         grid = self.form.gridLayout
