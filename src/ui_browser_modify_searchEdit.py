@@ -111,7 +111,7 @@ def fuzzy_menu(self):
 def modify_browser(self):
     # self is browser
     addbutton = gc("-Add Button to the Browser Search Bar")
-    justdown = True if gc("-Modify Search Bar") == "down" else False
+    justdown = True if gc("-Modify Search Bar") == "down" and pointVersion() < 41  else False
     multiline = True if gc("-Modify Search Bar") == "multiline" else False
     # the following is needed for my add-on side-by-side so that it still moves the
     # search bar if it's not done here. The current function is run by the hook

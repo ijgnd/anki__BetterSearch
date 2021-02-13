@@ -12,8 +12,7 @@ was changed because now it offers more than this.
 ### Important notes
 - This add-on offers about 45 different config options. Most of them can be ignored unless
 you have really strong opinions or have another add-on that uses conflicting shortcuts, etc.
-I think only **two config options are interesting for the most users**: 
-    - I like to change `"-Modify Search Bar"` to `"down"`, for details see below.
+TheAnking thinks this one is relevant:
     - If you you have mostly cloze notes (e.g. if you use the TheAnKing decks) and often search for 
 specific cloze cards with e.g. "card:2" you might want to set the config key 
 `"modify_card"` to `false`: By default when you type in "card:" this add-on will show you 
@@ -27,7 +26,9 @@ simple. Usually all settings must be surrounded with `""` (quote signs). There a
 like the boolean values true/false (lowercase) and numbers. For other add-ons you need
 more advanced features but these are not relevant here.
 - This add-on has an option `"-Modify Search Bar"` (default is `false`) that offers to modify the 
-search bar in the browser. If you set it to `"down"` the search bar is moved down so that it's just
+search bar in the browser. For Anki versions 2.1.40 or lower (where the search bar is narrow 
+because there are buttons to "Filter", "Search", and "Preview") you can use the setting
+`"down"` to move the search bar is down so that it's just
 wider. If you set it to `"multiline"` the search bar will also have multiple lines in the
 browser. If you use the `"multiline"` option there's no drop down menu for your search history. 
 Instead you access it with the history shortcut you can configure below or with the newly 
