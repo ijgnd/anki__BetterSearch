@@ -141,17 +141,13 @@ def modify_browser(self):
         new_height = int((default_height + 5) * 2 * user_height/100)
         self.form.searchEdit.setFixedHeight(new_height)
         #self.form.searchEdit.setMaximumHeight(new_height)
-        if pointVersion() < 41:
-            self.form.searchButton.setShortcut("Return")
-        grid.addWidget(self.form.searchEdit, 1, 0, 1, -1)
+        
         pb_hist = QPushButton("History")
         pb_hist.clicked.connect(lambda _, browser=self: search_history_helper(browser))
         pb_hist.setObjectName("custom_history")
         cut = gc("shortcut - select entry from history in fuzzy dialog")
         if cut:
             pb_hist.setToolTip(f"shortcut: {cut}")
-        grid.addWidget(pb_hist, 0, 0, 1, 1)
-        gridcounter += 1
 
         pb_fm = QPushButton("FF")  # fuzyy menu / fuzzy find
         pb_fm.clicked.connect(lambda _, browser=self: fuzzy_menu(browser))
@@ -160,8 +156,15 @@ def modify_browser(self):
         if cut:
             pb_fm.setToolTip(f"shortcut: {cut}")
             pb_fm.setShortcut(cut)
+
+        grid.addWidget(self.form.searchEdit, 1, 0, 1, -1)
+        grid.addWidget(pb_hist, 0, 0, 1, 1)
+        gridcounter += 1
         grid.addWidget(pb_fm, 0, gridcounter, 1, 1)
         gridcounter += 1
+
+        if pointVersion() < 41:
+            self.form.searchButton.setShortcut("Return")
 
     if addbutton:
         pb_sd = QPushButton("SearchDialog")
