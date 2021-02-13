@@ -129,6 +129,28 @@ def modify_browser(self):
 
     gridcounter = 0
 
+    pb_hist = QPushButton("History")
+    pb_hist.clicked.connect(lambda _, browser=self: search_history_helper(browser))
+    pb_hist.setObjectName("custom_history")
+    cut = gc("shortcut - select entry from history in fuzzy dialog")
+    if cut:
+        pb_hist.setToolTip(f"shortcut: {cut}")
+
+    pb_fm = QPushButton("FF")  # fuzyy menu / fuzzy find
+    pb_fm.clicked.connect(lambda _, browser=self: fuzzy_menu(browser))
+    pb_fm.setObjectName("fuzzy_menu")
+    cut = gc("-Shortcut for Multi-bar mode: show fuzzy menu")
+    if cut:
+        pb_fm.setToolTip(f"shortcut: {cut}")
+        pb_fm.setShortcut(cut)
+
+    pb_sd = QPushButton("SearchDialog")
+    pb_sd.clicked.connect(lambda _, browser=self: open_multiline_searchwindow(browser))
+    pb_sd.setObjectName("SearchDialog")
+    cut = gc("Multiline Dialog: shortcut: open window")
+    if cut:
+        pb_sd.setToolTip(f"shortcut: {cut}")
+
     if multiline:
         self.form.searchEdit.lineEdit().returnPressed.disconnect()
         self.form.searchEdit.setVisible(False)
@@ -141,28 +163,6 @@ def modify_browser(self):
         new_height = int((default_height + 5) * 2 * user_height/100)
         self.form.searchEdit.setFixedHeight(new_height)
         #self.form.searchEdit.setMaximumHeight(new_height)
-        
-        pb_hist = QPushButton("History")
-        pb_hist.clicked.connect(lambda _, browser=self: search_history_helper(browser))
-        pb_hist.setObjectName("custom_history")
-        cut = gc("shortcut - select entry from history in fuzzy dialog")
-        if cut:
-            pb_hist.setToolTip(f"shortcut: {cut}")
-
-        pb_fm = QPushButton("FF")  # fuzyy menu / fuzzy find
-        pb_fm.clicked.connect(lambda _, browser=self: fuzzy_menu(browser))
-        pb_fm.setObjectName("fuzzy_menu")
-        cut = gc("-Shortcut for Multi-bar mode: show fuzzy menu")
-        if cut:
-            pb_fm.setToolTip(f"shortcut: {cut}")
-            pb_fm.setShortcut(cut)
-
-        pb_sd = QPushButton("SearchDialog")
-        pb_sd.clicked.connect(lambda _, browser=self: open_multiline_searchwindow(browser))
-        pb_sd.setObjectName("SearchDialog")
-        cut = gc("Multiline Dialog: shortcut: open window")
-        if cut:
-            pb_sd.setToolTip(f"shortcut: {cut}")
 
     if multiline and pointVersion() < 41:
         self.form.searchButton.setShortcut("Return")
