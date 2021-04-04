@@ -31,7 +31,9 @@ def remove_linebreaks_and_leading_whitespace_on_lines(arg):
 
 def merge_to_oneline_string(list_):
     r = "\n".join(list_)
-    r = r.replace("(","(\n").replace(")","\n)").replace("\n\n","\n")
+    r = r.replace( "(",    "(\n" )\
+         .replace( ")",    "\n)" )\
+         .replace( "\n\n", "\n"  )
     return r
 
 
