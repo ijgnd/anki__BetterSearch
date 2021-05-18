@@ -93,6 +93,12 @@ def setupBrowserMenu(self):
     view.addAction(action)
     action.triggered.connect(lambda _, b=self: open_multiline_searchwindow(b))
 
+    self.BeSeAction = QAction(self)
+    self.BeSeAction.setText("BetterSearch")
+    if cut:
+        self.BeSeAction.setToolTip(cut)
+    self.BeSeAction.triggered.connect(lambda _, b=self: open_multiline_searchwindow(b))
+
     cut = gc("shortcut - select entry from history in fuzzy dialog")
     # if cut:
     #    cm = QShortcut(QKeySequence(cut), self)
