@@ -18,26 +18,25 @@ from .dialog__multi_line import SearchBox
 from .fuzzy_panel import FilterDialog
 from .helpers import overrides
 from .split_string import split_to_multiline
-from .ui_browser_ComboReplacer import ComboReplacer
+from .ui_browser_ComboReplacer import ComboReplacer  # noqa
 from .toolbar import getMenu
-
 
 
 def date_range_dialog_helper(self, term):
     # self is browser
     d = DateRangeDialog(self, term)
     if d.exec():
-        TriggerSearchAfter = gc("modify: window opened by search strings triggers search by default")
+        trigger_search_after = gc("modify: window opened by search strings triggers search by default")
         _, override_autosearch_default, _, _ = overrides()
         if override_autosearch_default:
-            TriggerSearchAfter ^= True
+            trigger_search_after ^= True
         le = self.form.searchEdit.lineEdit()
         if le.text() == self._searchPrompt:
             new = d.searchtext
         else:
             new = le.text() + "  " + d.searchtext
         le.setText(new)
-        if TriggerSearchAfter:
+        if trigger_search_after:
             self.onSearchActivated()
 
 
@@ -77,7 +76,7 @@ def search_history_helper(self):
         self.onSearchActivated()
 
 
-def setupBrowserMenu(self):
+def setup_browser_menu(self):
     # self is browser
     view = getMenu(self, "&View")
     if not hasattr(self, "menuView"):
@@ -125,4 +124,4 @@ def setupBrowserMenu(self):
     action.setText("Show Date Range Dialog for Rated")
     view.addAction(action)
     action.triggered.connect(lambda _, b=self, t="rated": date_range_dialog_helper(b, t))
-browser_menus_did_init.append(setupBrowserMenu)
+browser_menus_did_init.append(setup_browser_menu)  # noqa
