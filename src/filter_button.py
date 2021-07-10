@@ -17,6 +17,8 @@ from aqt.qt import (
 from aqt.utils import (
     MenuList,
     SubMenu,
+    askUser,
+    getOnlyText,
     tr,
 )
 

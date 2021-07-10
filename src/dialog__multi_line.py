@@ -27,7 +27,7 @@ from .button_helper import (
 from .config import gc
 from .dialog__help import MiniHelpSearch, mini_search_help_dialog_title
 from .filter_button import filter_button_cls
-from .forms import search_box
+from .forms import search_box  # noqa
 from .fuzzy_panel import FilterDialog
 from .helpers import (
     # this is the order in helpers.py

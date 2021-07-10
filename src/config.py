@@ -16,11 +16,14 @@ def gc(arg, fail=False):
 def shiftdown():
     return mw.app.keyboardModifiers() & Qt.ShiftModifier
 
+
 def ctrldown():
     return mw.app.keyboardModifiers() & Qt.ControlModifier
 
+
 def altdown():
     return mw.app.keyboardModifiers() & Qt.AltModifier
+
 
 def metadown():
     return mw.app.keyboardModifiers() & Qt.MetaModifier

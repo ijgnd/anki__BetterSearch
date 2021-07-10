@@ -258,7 +258,7 @@ class FilterDialog(QDialog):
         FILTER_WITH = "slzk_mod"  # "slzk", "fuzzyfinder"
         if FILTER_WITH == "fuzzyfinder":  # https://pypi.org/project/fuzzyfinder/
             if search_string:
-                self.fuzzy_items = list(fuzzyfinder(search_string, self.keys))[:self.max_items]   
+                self.fuzzy_items = list(fuzzyfinder(search_string, self.keys))[:self.max_items]  # noqa
             else:
                 self.fuzzy_items = list(self.keys)[:self.max_items]
         else:

@@ -9,7 +9,7 @@ from .onTextChange import onSearchEditTextChange
 
 
 if pointVersion() <= 44:
-    from aqt.dyndeckconf import DeckConf
+    from aqt.dyndeckconf import DeckConf  # noqa
 
     def dyn_setup_search(self):
         self.form.search.textChanged.connect(self.onDynSetupSearchEditTextChange)

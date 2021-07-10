@@ -110,7 +110,7 @@ card template/type/name you want to search.
                 n = str(c + 1)
                 fmt = f"{n.zfill(2)}: {name}"
                 card_name_to_fmt_dict[fmt] = name
-            default_fake_dict = {"--All the Card Types--":"--All the Card Types--"}
+            default_fake_dict = {"--All the Card Types--": "--All the Card Types--"}
             vals = {**default_fake_dict, **card_name_to_fmt_dict}
             vals_are_dict = True
             if c == 0:  # only one card type 
@@ -151,9 +151,9 @@ card template/type/name you want to search.
 You selected a cloze note type. To match only c2 clozes type you would have to 
 add&nbsp;&nbsp;card:2&nbsp;&nbsp;
 """
-        )
+               )
         tooltip(msg, parent=self)  # default is period=3000
-    #self.button_helper(out, False)
+    # self.button_helper(out, False)
     return out, 0
 
 
@@ -183,7 +183,7 @@ add some text to limit to a certain term.
         fnames = [fld["name"] for fld in nt["flds"]]
         if not len(fnames) > 1:
             show_card_dialog = False
-        value_for_all="--All the Card Types--"
+        value_for_all = "--All the Card Types--"
         fnames.insert(0, value_for_all)
     if not show_card_dialog:
         field_search_string = ""
@@ -220,5 +220,5 @@ add some text to limit to a certain term.
         posback = -3
     if modelneg or fieldneg:
         out = "-" + out
-    #self.button_helper(out, False)
+    # self.button_helper(out, False)
     return out, posback
