@@ -11,6 +11,11 @@ from aqt.qt import (
     QShortcut,
     qconnect,
 )
+if pointVersion() >= 41:
+    from aqt.utils import (
+        TR,
+        tr,
+    )
 
 from .config import gc
 from .dialog__date import DateRangeDialog
@@ -31,7 +36,8 @@ def date_range_dialog_helper(self, term):
         if override_autosearch_default:
             trigger_search_after ^= True
         le = self.form.searchEdit.lineEdit()
-        if le.text() == self._searchPrompt:
+        prompt_for_current_version = self._searchPrompt if pointVersion() < 41 else tr(TR.BROWSING_SEARCH_BAR_HINT)
+        if le.text() == prompt_for_current_version:
             new = d.searchtext
         else:
             new = le.text() + "  " + d.searchtext
