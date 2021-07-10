@@ -278,7 +278,7 @@ class filter_button_cls:
         conf = self.col.get_config("savedFilters")
         conf[name] = filt
         self.col.set_config("savedFilters", conf)
-        self.maybeRefreshSidebar()
+        self.maybeRefreshSidebar()  # type: ignore  # noqa - I commented out calling the method _onSaveFilter
 
     def _onRemoveFilter(self):
         name = self._currentFilterIsSaved()
@@ -286,7 +286,7 @@ class filter_button_cls:
             return
         del self.col.conf["savedFilters"][name]
         self.col.setMod()
-        self.maybeRefreshSidebar()
+        self.maybeRefreshSidebar()  # noqa - I commented out calling the method _onRemoveFilter
 
     # returns name if found
     def _currentFilterIsSaved(self):

@@ -13,7 +13,7 @@ from aqt.utils import (
     tooltip,
 )
 
-from .forms import date_dialog_ui  # noqa
+from .forms import date_dialog_ui  # type: ignore  # noqa
 
 
 size_string = "Addon Browser Quick Insert Date Picker"
