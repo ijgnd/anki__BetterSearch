@@ -25,6 +25,41 @@ adhere to the json rules or you will get weird error messages. The json format i
 simple. Usually all settings must be surrounded with `""` (quote signs). There are some exceptions 
 like the boolean values true/false (lowercase) and numbers. For other add-ons you need
 more advanced features but these are not relevant here.
+- Besides the functions described on ankiweb this add-on has some additional features, e.g. there's
+a menu entry and custom shortcut to open your search history in a filter dialog where long searches 
+are split up into multiple lines. The setting is 
+`"shortcut - select entry from history in fuzzy dialog"` (default is "Ctrl+H, h").
+- The add-on automatically opens filter dialogs for "tag:", "note:", etc. if it detects these
+keywords right before the cursor. Sometimes this opens a dialog even if you don't want to see it.
+**To close such a filter dialog just press "Esc"**.
+- typing "xx" opens a custom filter dialog that contains both deck names and tags, see the 
+description below for `"custom tag&deck string 1"` as well as 
+[this part](https://www.youtube.com/watch?v=NHpl-j9pULU&feature=youtu.be&t=99) from the 
+"How to Find Cards" video.
+- When closing the multi-line dialog newlines and tabs are replaced by spaces.
+- When you open the multi-line dialog the search term from your search bar is split into multiple
+lines for better readability.
+- The default shortcut to open the multi-line dialog is "Ctrl+t, s". This is a two-step shortcut.
+You press "Ctrl+t", then release both keys and then press "s". On MacOS instead of "Ctrl+t" you 
+use "Cmd+t". It's also illustrated [here](https://www.youtube.com/watch?v=PlcsNIsYc7k&feature=youtu.be&t=305)
+in the AnKingMed explainer video.
+- If you don't know the difference between the Anki terms *note* and *card* this add-on might be 
+confusing. For details see the [manual](https://docs.ankiweb.net/#/), or see 
+[here](https://www.reddit.com/r/Anki/comments/8w2b5e/the_fundamental_principle_of_anki_card_creation/) 
+or 
+[here](https://www.reddit.com/r/Anki/comments/9nkg7i/how_do_i_create_separate_card_types_in_different/e7n0x5n/) or [this youtube video](https://www.youtube.com/watch?v=fUKPtnx8LC0).
+- When searching I regularly want to see just one card per note. In Anki 2.1.45 from 2021-08 or newer
+there's a toggle next to the search bar to show cards or notes. For older Anki versions
+you needed workarounds: e.g. you could add "card:1" to each search. Or you could use the add-on
+[Card browser: List only one card per note](https://ankiweb.net/shared/info/797076357) 
+by Arthur Milchior which depends on the add-on [Advanced Browser](https://ankiweb.net/shared/info/874215009).
+- BetterSearch contains lots of code. So you might find a bug or problem. If you do let me know
+in the [support thread in the anki support forum](https://forums.ankiweb.net/t/browser-search-box-quick-insert-tag-deck-notetype-official-thread/547) or on [github](https://github.com/ijgnd/anki__browser_search__quick_insert_tag_deck_notetype/issues").
+
+&nbsp;
+
+### For older Anki versions (2.1.40 from 2021-02 or older)
+
 - This add-on has an option `"-Modify Search Bar"` (default is `false`) that offers to modify the 
 search bar in the browser. For Anki versions 2.1.40 or lower (where the search bar is narrow 
 because there are buttons to "Filter", "Search", and "Preview") you can use the setting
@@ -49,35 +84,6 @@ holiday then or no longer use Anki or whatever. In this case you'd have to set
 - `"-Multiline bar Auto Search on space (only for Anki versions <=2.1.40)"` (default is `true`): If true whenever you type a space (or
 alt+return/return in the multi-line bar/dialog) a search is activated. This search will **not**
 be added to the search history. 
-- Besides the functions described on ankiweb this add-on has some additional features, e.g. there's
-a menu entry and custom shortcut to open your search history in a filter dialog where long searches 
-are split up into multiple lines. The setting is 
-`"shortcut - select entry from history in fuzzy dialog"` (default is "Ctrl+H, h").
-- The add-on automatically opens filter dialogs for "tag:", "note:", etc. if it detects these
-keywords right before the cursor. Sometimes this opens a dialog even if you don't want to see it.
-**To close such a filter dialog just press "Esc"**.
-- typing "xx" opens a custom filter dialog that contains both deck names and tags, see the 
-description below for `"custom tag&deck string 1"` as well as 
-[this part](https://www.youtube.com/watch?v=NHpl-j9pULU&feature=youtu.be&t=99) from the 
-"How to Find Cards" video.
-- When closing the multi-line dialog newlines and tabs are replaced by spaces.
-- When you open the multi-line dialog the search term from your search bar is split into multiple
-lines for better readability.
-- The default shortcut to open the multi-line dialog is "Ctrl+t, s". This is a two-step shortcut.
-You press "Ctrl+t", then release both keys and then press "s". On MacOS instead of "Ctrl+t" you 
-use "Cmd+t". It's also illustrated [here](https://www.youtube.com/watch?v=PlcsNIsYc7k&feature=youtu.be&t=305)
-in the AnKingMed explainer video.
-- If you don't know the difference between the Anki terms *note* and *card* this add-on might be 
-confusing. For details see the [manual](https://docs.ankiweb.net/#/), or see 
-[here](https://www.reddit.com/r/Anki/comments/8w2b5e/the_fundamental_principle_of_anki_card_creation/) 
-or 
-[here](https://www.reddit.com/r/Anki/comments/9nkg7i/how_do_i_create_separate_card_types_in_different/e7n0x5n/) or [this youtube video](https://www.youtube.com/watch?v=fUKPtnx8LC0).
-- When searching I regularly want to see just one card per note. So I could add "card:1" to each search. 
-Instead I use [Card browser: List only one card per note](https://ankiweb.net/shared/info/797076357) 
-by Arthur Milchior who has made many great add-ons. This add-on depends on the add-on 
-[Advanced Browser](https://ankiweb.net/shared/info/874215009).
-- BetterSearch contains lots of code. So you might find a bug or problem. If you do let me know
-in the [support thread in the anki support forum](https://forums.ankiweb.net/t/browser-search-box-quick-insert-tag-deck-notetype-official-thread/547) or on [github](https://github.com/ijgnd/anki__browser_search__quick_insert_tag_deck_notetype/issues").
 
 &nbsp;
 
@@ -117,9 +123,12 @@ when you type into the browser search box if the last characters match the ones 
 a dialog with a list of your tags and decks is opened. The selected entry is inserted into the 
 search box.
 
-- `"date range dialog for added: string"` (default is `"dadded:"`) and 
-`"date range dialog for rated: string"` (default is `"drated:"`) open a dialog with a calender-widget
-if you type "dadded"/"drated" into the browser search bar.
+- `"date range dialog for added: string"` (default is `"dadded:"`), 
+`"date range dialog for rated: string"` (default is `"drated:"`), 
+`"date range dialog for edited: string"` (default is `"dedited:"`) (2.1.28+ only), 
+`"date range dialog for introduced: string"` (default is `"dintroduced:"`) (2.1.45+ only) 
+open a dialog with a calender-widget if you type "dadded:"/"drated:"/"dedited:"/"dintroduced:" 
+into the browser search bar.
 
 - `"ignore upper and lower case (case insensitive search)"` (default is `false`): if this setting 
 is `true` the search will be case insensitive. If `false` (the default) typing only in lower case 
