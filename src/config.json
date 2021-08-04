@@ -15,6 +15,7 @@
     "custom tag&deck string 2": "all:",
     "date range dialog for added: string": "dadded:",
     "date range dialog for edited: string": "dedited:",
+    "date range dialog for introduced: string": "dintroduced:",
     "date range dialog for rated: string": "drated:",
     "ignore upper and lower case (case insensitive search)": false,
     "modifier for override autosearch default": "Shift",

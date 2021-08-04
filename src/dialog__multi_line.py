@@ -113,6 +113,7 @@ class SearchBox(QDialog):
             self.form.pb_card_state.setVisible(False)
             self.form.pb_date_added.setVisible(False)
             self.form.pb_date_rated.setVisible(False)
+            self.form.pb_date_introduced.setVisible(False)
 
         self.form.pb_nc.setToolTip('for note type use "note:",\nfor cards use "card:"')
         self.form.pb_nf.setToolTip('for note type use "note:",\nfor fields use "field:"')       
@@ -128,7 +129,10 @@ class SearchBox(QDialog):
         self.form.pb_date_edited.setToolTip(st)
         if pointVersion() < 28:
             self.form.pb_date_edited.setVisible(False)
-
+        st = gc("date range dialog for introduced: string")
+        self.form.pb_date_introduced.setToolTip(st)
+        if pointVersion() < 45:
+            self.form.pb_date_introduced.setVisible(False)
 
     def config_pte(self):
         #self.form.pte.setTabStopDistance(20)
@@ -159,6 +163,8 @@ class SearchBox(QDialog):
         self.form.pb_date_edited.clicked.connect(lambda _, a=de: self.onButton(a))
         dr = gc("date range dialog for rated: string", "drated")
         self.form.pb_date_rated.clicked.connect(lambda _, a=dr: self.onButton(a))
+        di = gc("date range dialog for introduced: string", "dintroduced")
+        self.form.pb_date_introduced.clicked.connect(lambda _, a=di: self.onButton(a))
 
     def onButton(self, arg, remove_on_cancel=True):
         # this will ultimately insert the arg into the QPlainTextEdit 

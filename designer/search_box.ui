@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>997</width>
+    <width>1106</width>
     <height>488</height>
    </rect>
   </property>
@@ -294,6 +294,14 @@ Rated</string>
          <property name="text">
           <string>Date
 Edited</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pb_date_introduced">
+         <property name="text">
+          <string>Date
+Introduced</string>
          </property>
         </widget>
        </item>

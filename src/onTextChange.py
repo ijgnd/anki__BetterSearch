@@ -90,6 +90,9 @@ def onSearchEditTextChange(parent,
     de_match = de and before[-len(de):] == de and pointVersion() >= 28
     dr = gc("date range dialog for rated: string")
     dr_match = dr and before[-len(dr):] == dr
+    di = gc("date range dialog for introduced: string")
+    di_match = di and before[-len(di):] == di
+
     if da_match:
         term = "added"
         length = len(da)
@@ -99,7 +102,10 @@ def onSearchEditTextChange(parent,
     if dr_match:
         term = "rated"
         length = len(dr)
-    if any([da_match, de_match, dr_match]):
+    if di_match:
+        term = "introduced"
+        length = len(di)
+    if any([da_match, de_match, dr_match, di_match]):
         return range_dialog(parent, term, before, after, length, func_settext)
 
 
