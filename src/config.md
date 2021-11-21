@@ -153,3 +153,17 @@ The settings
 
 only accept the values "Shift", "Meta", "Alt", "Ctrl" as input. On a Mac "Ctrl" means "Cmd". 
 **You may not use "Cmd" for these four config values.**.
+
+
+
+## Credits
+
+This add-on was made by ijgnd. I use some code made by other people:
+
+The filter dialog is made of source code in the files fuzzy_panel.py and split_string.py. Most of
+the code inside these files was originally made by Rene Schallner for his 
+https://github.com/renerocksai/sublimeless_zk. I made some changes to these files. For details
+see the top of the two aforementioned files. These files are licensed as GPLv3.
+
+This add-on uses the files "sakura.css" and "sakura-dark.css" from https://github.com/oxalorg/sakura
+(Copyright (c) 2016 Mitesh Shah, MIT License).
