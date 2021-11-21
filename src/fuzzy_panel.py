@@ -1,6 +1,6 @@
 """
-Copyright (c): 2018  Rene Schallner
-               2019- ijgnd
+Original work Copyright (c): 2018  Rene Schallner
+Modified work Copyright (c): 2019- ijgnd
     
 This file (fuzzy_panel.py) is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

@@ -1,6 +1,6 @@
 """
-Copyright (c): 2018  Rene Schallner
-               2020- ijgnd
+Original work Copyright (c): 2018  Rene Schallner
+Modified work Copyright (c): 2020- ijgnd
 
 This file (split_string.py) is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
