@@ -7,7 +7,7 @@ from aqt.qt import (
     Qt,
     QVBoxLayout,
     QTextEdit,
-    PYQT_VERSION_STR,
+    qtmajor,
 )
 
 from aqt.utils import (
@@ -27,7 +27,7 @@ mini_search_help_dialog_title = "search_cheat_sheet"  # dialog manager
 
 # adjusted from my half-baked ir add-on
 def move_window(left, right, newpos):
-    if PYQT_VERSION_STR.startswith('5'):
+    if qtmajor == 5:
         screen = aqt.mw.app.desktop().screenGeometry()
     else:
         screen = aqt.mw.screen().availableGeometry()
