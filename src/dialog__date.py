@@ -5,6 +5,7 @@ from aqt.qt import (
     QDate,
     QDialog,
     Qt,
+    qtmajor,
 )
 
 from aqt.utils import (
@@ -13,8 +14,10 @@ from aqt.utils import (
     tooltip,
 )
 
-from .forms import date_dialog_ui  # type: ignore  # noqa
-
+if qtmajor == 5:
+    from .forms5 import date_dialog_ui  # type: ignore  # noqa
+else:
+    from .forms6 import date_dialog_ui  # type: ignore  # noqa
 
 size_string = "Addon Browser Quick Insert Date Picker"
 
