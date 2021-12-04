@@ -54,8 +54,8 @@ from aqt.qt import (
     Qt,
     QVBoxLayout,
     QWidget,
-    PYQT_VERSION_STR,
     pyqtSignal,
+    qtmajor,
 )
 from aqt.utils import tooltip, restoreGeom, saveGeom
 
@@ -204,7 +204,7 @@ class FilterDialog(QDialog):
             hori_offset = self.parent.x() + sbar.width() + 125 + int(4 * cursor)
         else:
             hori_offset = self.parent.x() + 125 + int(4 * cursor)
-        if PYQT_VERSION_STR.startswith('5'):
+        if qtmajor == 5:
             screen = aqt.mw.app.desktop().screenGeometry()
         else:
             screen = aqt.mw.screen().availableGeometry()

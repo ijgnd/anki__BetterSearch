@@ -11,7 +11,7 @@ from aqt.qt import (
     QTextCursor,
     Qt,
     QVBoxLayout,
-    PYQT_VERSION_STR,
+    qtmajor,
     qtminor,
 )
 
@@ -138,10 +138,10 @@ class SearchBox(QDialog):
     def config_pte(self):
         #self.form.pte.setTabStopDistance(20)
         # as in  clayout
-        if PYQT_VERSION_STR.startswith('5') and qtminor < 10:
+        if qtmajor == 5 and qtminor < 10:
             self.form.pte.setTabStopWidth(30)
         else:
-            if PYQT_VERSION_STR.startswith('5'):
+            if qtmajor == 5:
                 tab_width = self.fontMetrics().width(" " * 4)
             else:
                 tab_width = self.fontMetrics().horizontalAdvance(" " * 4)
