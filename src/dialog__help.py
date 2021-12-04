@@ -7,6 +7,7 @@ from aqt.qt import (
     Qt,
     QVBoxLayout,
     QTextEdit,
+    PYQT_VERSION_STR,
 )
 
 from aqt.utils import (
@@ -26,7 +27,10 @@ mini_search_help_dialog_title = "search_cheat_sheet"  # dialog manager
 
 # adjusted from my half-baked ir add-on
 def move_window(left, right, newpos):
-    screen = aqt.mw.app.desktop().screenGeometry()
+    if PYQT_VERSION_STR.startswith('5'):
+        screen = aqt.mw.app.desktop().screenGeometry()
+    else:
+        screen = aqt.mw.screen().availableGeometry()
     width = screen.width()
     height = screen.height()
     rx = right.x()
@@ -98,7 +102,7 @@ class MiniHelpSearch(QDialog):
     silentlyClose = True  # dialog manager
 
     def __init__(self, parent):
-        QDialog.__init__(self, parent, Qt.Window)
+        QDialog.__init__(self, parent, Qt.WindowType.Window)
         self.parent = parent
         self.setWindowTitle("Anki - Search Cheatsheet")
         self.vbox = QVBoxLayout()

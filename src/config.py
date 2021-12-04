@@ -14,19 +14,19 @@ def gc(arg, fail=False):
 
 
 def shiftdown():
-    return mw.app.keyboardModifiers() & Qt.ShiftModifier
+    return mw.app.keyboardModifiers() & Qt.KeyboardModifier.ShiftModifier
 
 
 def ctrldown():
-    return mw.app.keyboardModifiers() & Qt.ControlModifier
+    return mw.app.keyboardModifiers() & Qt.KeyboardModifier.ControlModifier
 
 
 def altdown():
-    return mw.app.keyboardModifiers() & Qt.AltModifier
+    return mw.app.keyboardModifiers() & Qt.KeyboardModifier.AltModifier
 
 
 def metadown():
-    return mw.app.keyboardModifiers() & Qt.MetaModifier
+    return mw.app.keyboardModifiers() & Qt.KeyboardModifier.MetaModifier
 
 
 conf_to_key = {

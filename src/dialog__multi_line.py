@@ -11,6 +11,7 @@ from aqt.qt import (
     QTextCursor,
     Qt,
     QVBoxLayout,
+    PYQT_VERSION_STR,
     qtminor,
 )
 
@@ -61,7 +62,7 @@ class SearchBox(QDialog):
         self.browser = browser
         self.mw = browser.mw
         self.col = browser.col
-        QDialog.__init__(self, self.parent, Qt.Window)
+        QDialog.__init__(self, self.parent, Qt.WindowType.Window)
         self.form = search_box.Ui_Dialog()
         self.form.setupUi(self)
         self.help_dialog = None
@@ -74,7 +75,7 @@ class SearchBox(QDialog):
         processed = split_to_multiline(self.searchstring)
         self.form.pte.setPlainText(processed)
         self.form.pte.setFocus()
-        self.form.pte.moveCursor(QTextCursor.End)
+        self.form.pte.moveCursor(QTextCursor.MoveOperation.End)
 
     def setupUI(self):
         self.setWindowTitle("Anki: Search Term Multiline Window")
@@ -137,14 +138,17 @@ class SearchBox(QDialog):
     def config_pte(self):
         #self.form.pte.setTabStopDistance(20)
         # as in  clayout
-        if qtminor < 10:
+        if PYQT_VERSION_STR.startswith('5') and qtminor < 10:
             self.form.pte.setTabStopWidth(30)
         else:
-            tab_width = self.fontMetrics().width(" " * 4)
+            if PYQT_VERSION_STR.startswith('5'):
+                tab_width = self.fontMetrics().width(" " * 4)
+            else:
+                tab_width = self.fontMetrics().horizontalAdvance(" " * 4)
             self.form.pte.setTabStopDistance(tab_width)
         if gc("Multiline Dialog: use bigger typewriter font"):
             font = QFont("Monospace")
-            font.setStyleHint(QFont.TypeWriter)
+            font.setStyleHint(QFont.StyleHint.TypeWriter)
             defaultFontSize = font.pointSize()
             font.setPointSize(int(defaultFontSize*1.1))
             self.form.pte.setFont(font)

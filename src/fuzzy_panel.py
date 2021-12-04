@@ -40,7 +40,7 @@ syntax for the default search method:
 
 """
 
-from aqt import mw
+import aqt
 from aqt.qt import (
     QCheckBox,
     QDialog,
@@ -54,6 +54,7 @@ from aqt.qt import (
     Qt,
     QVBoxLayout,
     QWidget,
+    PYQT_VERSION_STR,
     pyqtSignal,
 )
 from aqt.utils import tooltip, restoreGeom, saveGeom
@@ -70,17 +71,17 @@ class PanelInputLine(QLineEdit):
 
     def keyPressEvent(self, event):
         super().keyPressEvent(event)
-        mod = mw.app.keyboardModifiers() & Qt.ControlModifier
+        mod = aqt.mw.app.keyboardModifiers() & Qt.KeyboardModifier.ControlModifier
         key = event.key()
-        if key == Qt.Key_Down:
+        if key == Qt.Key.Key_Down:
             self.down_pressed.emit()
-        elif key == Qt.Key_Up:
+        elif key == Qt.Key.Key_Up:
             self.up_pressed.emit()
-        elif mod and (key == Qt.Key_N):
+        elif mod and (key == Qt.Key.Key_N):
             self.down_pressed.emit()
-        elif mod and (key == Qt.Key_P):
+        elif mod and (key == Qt.Key.Key_P):
             self.up_pressed.emit()
-        elif mod and (key == Qt.Key_H):
+        elif mod and (key == Qt.Key.Key_H):
             self.up_pressed.emit()
 
 
@@ -203,7 +204,10 @@ class FilterDialog(QDialog):
             hori_offset = self.parent.x() + sbar.width() + 125 + int(4 * cursor)
         else:
             hori_offset = self.parent.x() + 125 + int(4 * cursor)
-        screen = mw.app.desktop().screenGeometry()
+        if PYQT_VERSION_STR.startswith('5'):
+            screen = aqt.mw.app.desktop().screenGeometry()
+        else:
+            screen = aqt.mw.screen().availableGeometry()
         if hori_offset + self.width() > screen.width():
             hori_offset = screen.width() - self.width()
         vert_offset = self.parent.y() + 15
@@ -293,7 +297,7 @@ class FilterDialog(QDialog):
         self.accept()
 
     def eventFilter(self, watched, event):
-        if event.type() == QEvent.KeyPress and event.matches(QKeySequence.InsertParagraphSeparator):
+        if event.type() == QEvent.Type.KeyPress and event.matches(QKeySequence.InsertParagraphSeparator):
             self.return_pressed()
             return True
         else:

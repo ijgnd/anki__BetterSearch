@@ -59,7 +59,7 @@ class DateRangeDialog(QDialog):
     def __init__(self, parent, search_word):
         self.search_word = search_word
         self.parent = parent
-        QDialog.__init__(self, self.parent, Qt.Window)
+        QDialog.__init__(self, self.parent, Qt.WindowType.Window)
         self.form = date_dialog_ui.Ui_Dialog()
         self.form.setupUi(self)
         self.today_in_dt = today_as_datetime_adjusted_for_next_day_starts_at()

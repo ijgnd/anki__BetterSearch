@@ -68,13 +68,13 @@ class filter_button_cls:
                     items.append(txt)
                     txt = ""
             txt = " ".join(items)
-        if self.mw.app.keyboardModifiers() & Qt.AltModifier:
+        if self.mw.app.keyboardModifiers() & Qt.KeyboardModifier.AltModifier:
             txt = "-" + txt
-        # if self.mw.app.keyboardModifiers() & Qt.ControlModifier:
+        # if self.mw.app.keyboardModifiers() & Qt.KeyboardModifier.ControlModifier:
         #     cur = self.func_gettext()  # str(self.form.searchEdit.lineEdit().text())
         #     if cur and cur != self._searchPrompt:
         #         txt = cur + " " + txt
-        # elif self.mw.app.keyboardModifiers() & Qt.ShiftModifier:
+        # elif self.mw.app.keyboardModifiers() & Qt.KeyboardModifier.ShiftModifier:
         #     cur = self.func_gettext()  # str(self.form.searchEdit.lineEdit().text())
         #     if cur:
         #         txt = cur + " or " + txt
@@ -85,7 +85,7 @@ class filter_button_cls:
             oldlines = old.split("\n")
             if oldlines[-1]:
                 old = old + "\n"
-            if self.mw.app.keyboardModifiers() & Qt.ShiftModifier and old:
+            if self.mw.app.keyboardModifiers() & Qt.KeyboardModifier.ShiftModifier and old:
                 txt = " or " + txt
             #self.func_settext(old + txt)
             self.txt = txt
