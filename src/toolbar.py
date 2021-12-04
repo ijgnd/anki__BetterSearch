@@ -6,13 +6,13 @@
 from aqt import QMenu
 
 
-def getMenu(parent, menuName):
+def getMenu(parent, menu_name):
     menubar = parent.form.menubar
-    for a in menubar.actions():
-        if menuName == a.text():
-            return a.menu()
-    else:
-        return menubar.addMenu(menuName)
+    submenus = menubar.findChildren(QMenu)
+    for s in submenus:
+        if s.title() == menu_name:
+            return s
+    return menubar.addMenu(menu_name)
 
 
 def getAction(parent, actionName):
