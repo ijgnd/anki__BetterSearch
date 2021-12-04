@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
-# Copyright (c) 2020 Lovac42
+# Copyright (c) 2020  Lovac42
+#           (c) 2021- ijgnd
 # License: GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
 
 
