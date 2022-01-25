@@ -8,11 +8,11 @@ from aqt import QMenu
 
 def getMenu(parent, menu_name):
     menubar = parent.form.menubar
-    submenus = menubar.findChildren(QMenu)
-    for s in submenus:
-        if s.title() == menu_name:
-            return s
-    return menubar.addMenu(menu_name)
+    for a in menubar.actions():
+        if menu_name == a.text():
+            return a.parent()
+    else:
+        return menubar.addMenu(menu_name)
 
 
 def getAction(parent, actionName):
