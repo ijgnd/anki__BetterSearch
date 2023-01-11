@@ -198,6 +198,28 @@ def onSearchEditTextChange(parent,
             "check_star": False,
         }
 
+    if before[-5:] == "flag:" and gc("modify_flag"):
+        vals = {
+            "remove_from_end_of_before": 0,
+            "insert_space_at_pos_in_before": -5,
+            "dict_for_dialog": "flags",
+            "vals": {
+                "red": "1",
+                "orange": "2",
+                "green": "3",
+                "blue": "4",
+                "pink": "5",
+                "turquoise": "6",
+                "purple": "7",
+            },
+            "surround_with_quotes": False,
+            "infotext": False,
+            "windowtitle": "Anki: Search by Flag",
+            "show_prepend_minus_button": True,
+            "show_star": False,
+            "check_star": False,
+        }
+
     if before[-4:] == "tag:" and gc("modify_tag"):
         vals = {
             "remove_from_end_of_before": 0,
@@ -381,6 +403,8 @@ def onSearchEditTextChange(parent,
                 func_settext(already_in_line + d.selvalue + after)
                 newpos = len(already_in_line + d.selvalue)
                 return (newpos, override_autosearch_default)
+            elif vals["dict_for_dialog"] == "flags":
+                sel = d.selvalue
 
 
         if lineonly:
