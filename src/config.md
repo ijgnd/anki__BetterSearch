@@ -90,6 +90,7 @@ be added to the search history.
 ### Details
 Most of the options should have telling names. Here are some notes about some options:
 
+- `"lines shown in filter dialog"` (default is `500`). E.g. showing all about 20000 tags from a recent anking deck in the filter dialog means that it will take several seconds to show the filter dialog. Usually there's no reason to show all tags in the filter dialog because you are searching for certain tags and you narrow down the tags of interest by typing in some characters.
 - `"Add Button to the Browser Search Bar"` (default is `true`): whether the SearchDialog
 button is shown in the browser. In some special cases you might want to hide this button, e.g.
 if you also use the add-on

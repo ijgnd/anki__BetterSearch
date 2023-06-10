@@ -92,7 +92,7 @@ class FilterDialog(QDialog):
         parent_is_browser=False,
         values=None,
         windowtitle="",
-        max_items=10000,
+        max_items=gc("lines shown in filter dialog", 500),
         prefill="",
         adjPos=False,
         show_star=False,

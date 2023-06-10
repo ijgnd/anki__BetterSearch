@@ -18,6 +18,7 @@
     "date range dialog for introduced: string": "dintroduced:",
     "date range dialog for rated: string": "drated:",
     "ignore upper and lower case (case insensitive search)": false,
+    "lines shown in filter dialog": 500,
     "modifier for override autosearch default": "Shift",
     "modifier for override add * default": "Meta",
     "modifier for negate": "Alt",
