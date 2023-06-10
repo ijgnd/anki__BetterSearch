@@ -33,7 +33,7 @@ def decknames(col, also_include_filtered, prepend_with_deck=False):
 def tags(col, prepend_with_tag=False):
     tags = col.tags.all() + ["none"]
     if prepend_with_tag:  # for xx1 and xx2
-        tags =  ["tag:" + t for t in tags]
+        tags = ["tag:" + t for t in tags]
     return sorted(tags)
 
 
