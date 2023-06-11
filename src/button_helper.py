@@ -40,11 +40,11 @@ def _button_helper(pte, parent, mw, col, arg, remove_on_cancel):
         all_text = new
         pos = newpos
 
-    text_change_helper(pte, parent, mw, col, before=all_text, before_pos=pos)
+    text_change_helper(pte, parent, mw, col, before=all_text, before_pos=pos,from_button=True)
 
 
 # only change: parent=self.parent, -> parent=self
-def text_change_helper(pte, parent, mw, col, before=None, before_pos=None):
+def text_change_helper(pte, parent, mw, col, before=None, before_pos=None,from_button=False):
     pos = pte.textCursor().position()
     out = onSearchEditTextChange(
         parent=parent,
@@ -55,6 +55,7 @@ def text_change_helper(pte, parent, mw, col, before=None, before_pos=None):
         cursorpos=pos,
         mw=mw,
         col=col,
+        from_button=from_button,
         )
     if out:
         cursor = pte.textCursor()

@@ -59,7 +59,8 @@ def onSearchEditTextChange(parent,
                            func_settext,
                            cursorpos,
                            mw,
-                           col
+                           col,
+                           from_button=False
                            ):
     all_text = func_gettext()
     if cursorpos is None:
@@ -154,7 +155,7 @@ def onSearchEditTextChange(parent,
             "check_star": True,
         }
 
-    if before[-6:] == "field:" and gc("modify_field"):
+    if before[-6:] == "field:" and (gc("modify_field") or from_button):
         vals = {
             "remove_from_end_of_before": -6,
             "insert_space_at_pos_in_before": -6 ,
@@ -168,7 +169,7 @@ def onSearchEditTextChange(parent,
             "check_star": False,
         }
 
-    if before[-5:] == "prop:" and gc("modify_props"):
+    if before[-5:] == "prop:" and (gc("modify_props") or from_button):
         it = "<b>After closing the dialog you must adjust what's inserted with your numbers</b>"
         vals = {
             "remove_from_end_of_before": 0,
@@ -183,7 +184,7 @@ def onSearchEditTextChange(parent,
             "check_star": False,
         }
 
-    if before[-3:] == "is:" and gc("modify_is"):
+    if before[-3:] == "is:" and (gc("modify_is") or from_button):
         expl = gc("modify_is__show_explanations")
         vals = {
             "remove_from_end_of_before": 0 if expl else -3,
@@ -198,7 +199,7 @@ def onSearchEditTextChange(parent,
             "check_star": False,
         }
 
-    if before[-5:] == "flag:" and gc("modify_flag"):
+    if before[-5:] == "flag:" and (gc("modify_flag") or from_button):
         vals = {
             "remove_from_end_of_before": 0,
             "insert_space_at_pos_in_before": -5,
@@ -220,7 +221,7 @@ def onSearchEditTextChange(parent,
             "check_star": False,
         }
 
-    if before[-4:] == "tag:" and gc("modify_tag"):
+    if before[-4:] == "tag:" and (gc("modify_tag") or from_button):
         vals = {
             "remove_from_end_of_before": 0,
             "insert_space_at_pos_in_before": -4,
@@ -234,7 +235,7 @@ def onSearchEditTextChange(parent,
             "check_star": gc("tag insertion - add '*' to matches"),
         }
 
-    elif before[-5:] == "note:" and gc("modify_note"):
+    elif before[-5:] == "note:" and (gc("modify_note") or from_button):
         vals = {
             "remove_from_end_of_before": 0,
             "insert_space_at_pos_in_before": -5,
@@ -248,7 +249,7 @@ def onSearchEditTextChange(parent,
             "check_star": True,
         }
 
-    elif before[-5:] == "card:" and gc("modify_card"):
+    elif before[-5:] == "card:" and (gc("modify_card") or from_button):
         vals = {
             "remove_from_end_of_before": 0,
             "insert_space_at_pos_in_before": -5,
