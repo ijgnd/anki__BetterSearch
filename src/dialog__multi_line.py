@@ -110,11 +110,15 @@ class SearchBox(QDialog):
 
         if 41 > anki_point_version >= 26 and gc("Multiline Dialog: show Filter Button (only for Anki versions <=2.1.40)"):
             self.form.pb_filter.clicked.connect(self.filter_menu)
+            option_one_shown = True
         else:
+            option_one_shown = False
             self.form.pb_filter.setVisible(False)
             self.form.ql_filter.setVisible(False)
 
+        option_two_shown = True
         if not gc("Multiline Dialog: show Button Bar"):
+            option_two_shown = False
             self.form.ql_button_bar.setVisible(False)
             self.form.pb_nc.setVisible(False)
             self.form.pb_nf.setVisible(False)
@@ -125,6 +129,15 @@ class SearchBox(QDialog):
             self.form.pb_date_added.setVisible(False)
             self.form.pb_date_rated.setVisible(False)
             self.form.pb_date_introduced.setVisible(False)
+
+        
+        label1 = "add filter from a nested menu. This is similar to the button from the top left of the browser:"
+        label2 = "open dialog to select filter to limit by:"
+        if option_one_shown and option_two_shown:
+            label1 = f"Option 1: {label1}"
+            label2 = f"Option 2: {label2}"
+        self.form.ql_filter.setText(label1)
+        self.form.ql_button_bar.setText(label2)
 
         self.form.pb_nc.setToolTip('for note type use "note:",\nfor cards use "card:"')
         self.form.pb_nf.setToolTip('for note type use "note:",\nfor fields use "field:"')       

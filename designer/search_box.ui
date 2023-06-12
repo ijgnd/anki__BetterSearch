@@ -68,7 +68,7 @@
        <item>
         <widget class="QLabel" name="ql_filter">
          <property name="text">
-          <string>Option 1: add filter from a nested menu. This is similar to the button from the top left of the browser: </string>
+          <string>placeholder</string>
          </property>
         </widget>
        </item>
@@ -131,7 +131,7 @@
      <item>
       <widget class="QLabel" name="ql_button_bar">
        <property name="text">
-        <string>Option 2: open dialog to select filter to limit by:</string>
+        <string>placeholder</string>
        </property>
       </widget>
      </item>
