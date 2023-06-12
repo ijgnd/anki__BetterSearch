@@ -6,6 +6,10 @@
 
 
 from anki.decks import DeckManager
+
+# no fix needed for anki.lang import:
+#   _() is only used in the class filter_button_cls and this is used in my add-on only for anki_point_version <= 40
+#   see dialog__multi_line.py: self.form.ql_filter.setVisible(False)
 from anki.lang import _
 from anki.rsbackend import TR
 
