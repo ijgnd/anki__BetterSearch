@@ -60,6 +60,8 @@ were rated after 9 days (i.e. those rated on or after 2020-06-20).
 )
 
 class DateRangeDialog(QDialog):
+    silentlyClose = True
+
     def __init__(self, parent, search_word):
         self.search_word = search_word
         self.parent = parent

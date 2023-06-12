@@ -87,6 +87,8 @@ class PanelInputLine(QLineEdit):
 
 
 class FilterDialog(QDialog):
+    silentlyClose = True
+
     def __init__(
         self,
         parent=None,

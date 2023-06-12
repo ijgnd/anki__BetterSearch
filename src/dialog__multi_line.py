@@ -58,6 +58,8 @@ searchbox_geom_name = "BSMH"
 
 
 class SearchBox(QDialog):
+    silentlyClose = True
+
     def __init__(self, browser, searchstring):
         if browser_searchEdit_hint_shown(searchstring, browser):
             self.searchstring = ""
