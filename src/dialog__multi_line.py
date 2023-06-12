@@ -18,6 +18,7 @@ from aqt.utils import (
     openHelp,
     restoreGeom,
     saveGeom,
+    shortcut,
     tooltip,
 )
 
@@ -93,6 +94,23 @@ class SearchBox(QDialog):
         self.form.pb_help_long.clicked.connect(self.help_long)
         self.form.pb_history.clicked.connect(self.on_history)
 
+        but_to_cut_dict = {
+            self.form.pb_nc: gc("shortcut - focus search box and card from note dialog", "Alt+H, x"),
+            self.form.pb_nf: gc("shortcut - focus search box and field from note dialog", "Alt+H, f"),
+            self.form.pb_deck: gc("shortcut - focus search box and deck selector dialog", "Alt+H, d"),
+            self.form.pb_tag: gc("shortcut - focus search box and tag selector dialog", "Alt+H, t"),
+            self.form.pb_card_props: gc("shortcut - focus search box and prop dialog", "Alt+H, p"),
+            self.form.pb_card_state: gc("shortcut - focus search box and is dialog", "Alt+H, s"),
+            self.form.pb_date_added: gc("shortcut - focus search box and date added dialog", "Alt+H, a"),
+            self.form.pb_date_rated: gc("shortcut - focus search box and date rated dialog", "Alt+H, r"),
+            self.form.pb_date_introduced: gc("shortcut - focus search box and date introduced dialog", "Alt+H, i"),
+            self.form.pb_date_edited: gc("shortcut - focus search box and date edited dialog", "Alt+H, e"),
+
+        }
+        for but, cut in but_to_cut_dict.items():
+            if cut:
+               but.setShortcut(shortcut(cut))   # aqt.utils.shortcut replaces ctrl with cmd for macos
+                    
         history_tooltip_text = "overwrites the contents of the field"
         cut = gc("Multiline Dialog: Shortcut inside: Open History")
         if cut:
