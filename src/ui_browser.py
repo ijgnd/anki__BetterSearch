@@ -84,9 +84,9 @@ def search_history_helper(self):
 
 def setup_browser_menu(self):
     # self is browser
-    view = getMenu(self, "&View")
+    bs_menu = getMenu(self, "&BetterSearch")
     if not hasattr(self, "menuView"):
-        self.menuView = view
+        self.menuBettersearch = bs_menu
     cut = gc("Multiline Dialog: shortcut: open window")
     # if cut:
     #    cm = QShortcut(QKeySequence(cut), self)
@@ -95,7 +95,7 @@ def setup_browser_menu(self):
     action.setText("Show search string in multi-line dialog")
     if cut:
         action.setShortcut(QKeySequence(cut))
-    view.addAction(action)
+    bs_menu.addAction(action)
     action.triggered.connect(lambda _, b=self: open_multiline_searchwindow(b))
 
     self.BeSeAction = QAction(self)
@@ -112,22 +112,22 @@ def setup_browser_menu(self):
     action.setText("Select entry from search history")
     if cut:
         action.setShortcut(QKeySequence(cut))
-    view.addAction(action)
+    bs_menu.addAction(action)
     action.triggered.connect(lambda _, b=self: search_history_helper(b))
 
     action = QAction(self)
     action.setText("Show Date Range Dialog for Added")
-    view.addAction(action)
+    bs_menu.addAction(action)
     action.triggered.connect(lambda _, b=self, t="added": date_range_dialog_helper(b, t))
 
     if pointVersion() >= 28:
         action = QAction(self)
         action.setText("Show Date Range Dialog for Edited")
-        view.addAction(action)
+        bs_menu.addAction(action)
         action.triggered.connect(lambda _, b=self, t="edited": date_range_dialog_helper(b, t))
 
     action = QAction(self)
     action.setText("Show Date Range Dialog for Rated")
-    view.addAction(action)
+    bs_menu.addAction(action)
     action.triggered.connect(lambda _, b=self, t="rated": date_range_dialog_helper(b, t))
 browser_menus_did_init.append(setup_browser_menu)  # noqa
