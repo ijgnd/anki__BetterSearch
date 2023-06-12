@@ -88,9 +88,6 @@ def setup_browser_menu(self):
     if not hasattr(self, "menuView"):
         self.menuBettersearch = bs_menu
     cut = gc("Multiline Dialog: shortcut: open window")
-    # if cut:
-    #    cm = QShortcut(QKeySequence(cut), self)
-    #    qconnect(cm.activated, lambda b=self: open_multiline_searchwindow(b))
     action = QAction(self)
     action.setText("Show search string in multi-line dialog")
     if cut:
