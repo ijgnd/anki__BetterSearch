@@ -16,6 +16,9 @@ if anki_point_version >= 41:
         TR,
         tr,
     )
+from aqt.utils import (
+    openHelp,
+)
 
 from .config import gc
 from .dialog__date import DateRangeDialog
@@ -112,6 +115,8 @@ def setup_browser_menu(self):
     bs_menu.addAction(action)
     action.triggered.connect(lambda _, b=self: search_history_helper(b))
 
+    bs_menu.addSeparator()
+
     action = QAction(self)
     action.setText("Show Date Range Dialog for Added")
     bs_menu.addAction(action)
@@ -127,4 +132,12 @@ def setup_browser_menu(self):
     action.setText("Show Date Range Dialog for Rated")
     bs_menu.addAction(action)
     action.triggered.connect(lambda _, b=self, t="rated": date_range_dialog_helper(b, t))
+
+    bs_menu.addSeparator()
+
+    action = QAction(self)
+    action.setText("Show Manual for Searching (online)")
+    bs_menu.addAction(action)
+    action.triggered.connect(lambda _: openHelp("searching"))
+
 browser_menus_did_init.append(setup_browser_menu)  # noqa
