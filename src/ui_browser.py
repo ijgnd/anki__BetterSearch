@@ -18,10 +18,12 @@ if anki_point_version >= 41:
     )
 from aqt.utils import (
     openHelp,
+    tooltip,
 )
 
 from .config import gc
 from .dialog__date import DateRangeDialog
+from .dialog__help import MiniHelpSearch
 from .dialog__multi_line import SearchBox
 from .fuzzy_panel import FilterDialog
 from .helpers import overrides
@@ -85,7 +87,19 @@ def search_history_helper(self):
         self.onSearchActivated()
 
 
+def open_local_help_window(self):
+    if self.help_dialog:
+        tooltip("mini help window is already open (but maybe it's below another window of yours).")
+        self.help_dialog.raise_()  # doesn't work on MacOS
+    else:
+        self.help_dialog = MiniHelpSearch(self)
+        self.help_dialog.show()
+    #aqt.dialogs.open(mini_search_help_dialog_title, aqt.mw)
+
+
 def setup_browser_menu(self):
+    self.help_dialog = None
+
     # self is browser
     bs_menu = getMenu(self, "&BetterSearch")
     if not hasattr(self, "menuView"):
@@ -140,4 +154,8 @@ def setup_browser_menu(self):
     bs_menu.addAction(action)
     action.triggered.connect(lambda _: openHelp("searching"))
 
+    action = QAction(self)
+    action.setText("Show Manual for Searching (offline copy, possibly dated)")
+    bs_menu.addAction(action)
+    action.triggered.connect(lambda _,b=self: open_local_help_window(b))
 browser_menus_did_init.append(setup_browser_menu)  # noqa
