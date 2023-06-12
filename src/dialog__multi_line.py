@@ -1,6 +1,5 @@
 from anki.utils import (
     isMac,
-    pointVersion,
 )
 
 import aqt
@@ -109,7 +108,7 @@ class SearchBox(QDialog):
             history_tooltip_text += f"(shortcut: {cut})"
         self.form.pb_history.setToolTip(history_tooltip_text)
 
-        if 41 > pointVersion() >= 26 and gc("Multiline Dialog: show Filter Button (only for Anki versions <=2.1.40)"):
+        if 41 > anki_point_version >= 26 and gc("Multiline Dialog: show Filter Button (only for Anki versions <=2.1.40)"):
             self.form.pb_filter.clicked.connect(self.filter_menu)
         else:
             self.form.pb_filter.setVisible(False)
@@ -139,11 +138,11 @@ class SearchBox(QDialog):
         self.form.pb_date_rated.setToolTip(st)
         st = gc("date range dialog for edited: string")
         self.form.pb_date_edited.setToolTip(st)
-        if pointVersion() < 28:
+        if anki_point_version < 28:
             self.form.pb_date_edited.setVisible(False)
         st = gc("date range dialog for introduced: string")
         self.form.pb_date_introduced.setToolTip(st)
-        if pointVersion() < 45:
+        if anki_point_version < 45:
             self.form.pb_date_introduced.setVisible(False)
 
     def config_pte(self):

@@ -8,7 +8,6 @@
 from anki.decks import DeckManager
 from anki.lang import _
 from anki.rsbackend import TR
-from anki.utils import pointVersion
 
 from aqt.qt import (
     Qt
@@ -21,6 +20,8 @@ from aqt.utils import (
     getOnlyText,
     tr,
 )
+
+from .anki_version_detection import anki_point_version
 
 class filter_button_cls:
     def __init__(self, parent, browser, func_gettext, func_settext, overwrites):
@@ -163,7 +164,7 @@ class filter_button_cls:
     def _deckFilters(self):
         # deal with changes from commit 0c340eb
         # https://github.com/ankitects/anki/commit/0c340eba645b4babf9a6bda60160ee08b4e91854
-        if pointVersion() < 28:
+        if anki_point_version < 28:
             return self._deckFilters26()
         else:
             return self._deckFilters28()

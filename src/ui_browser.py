@@ -1,6 +1,5 @@
 from anki.utils import (
     isMac,
-    pointVersion,
 )
 from aqt.gui_hooks import (
     browser_menus_did_init,
@@ -11,7 +10,8 @@ from aqt.qt import (
     QShortcut,
     qconnect,
 )
-if pointVersion() >= 41:
+from .anki_version_detection import anki_point_version
+if anki_point_version >= 41:
     from aqt.utils import (
         TR,
         tr,
@@ -36,7 +36,7 @@ def date_range_dialog_helper(self, term):
         if override_autosearch_default:
             trigger_search_after ^= True
         le = self.form.searchEdit.lineEdit()
-        prompt_for_current_version = self._searchPrompt if pointVersion() < 41 else tr(TR.BROWSING_SEARCH_BAR_HINT)
+        prompt_for_current_version = self._searchPrompt if anki_point_version < 41 else tr(TR.BROWSING_SEARCH_BAR_HINT)
         if le.text() == prompt_for_current_version:
             new = d.searchtext
         else:
@@ -120,7 +120,7 @@ def setup_browser_menu(self):
     bs_menu.addAction(action)
     action.triggered.connect(lambda _, b=self, t="added": date_range_dialog_helper(b, t))
 
-    if pointVersion() >= 28:
+    if anki_point_version >= 28:
         action = QAction(self)
         action.setText("Show Date Range Dialog for Edited")
         bs_menu.addAction(action)

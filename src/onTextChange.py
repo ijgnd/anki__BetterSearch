@@ -1,5 +1,4 @@
-from anki.utils import pointVersion
-
+from .anki_version_detection import anki_point_version
 from .config import gc
 from .custom_fuzzy_dialogs import (
     note__card,
@@ -88,7 +87,7 @@ def onSearchEditTextChange(parent,
     da = gc("date range dialog for added: string")
     da_match = da and before[-len(da):] == da
     de = gc("date range dialog for edited: string")
-    de_match = de and before[-len(de):] == de and pointVersion() >= 28
+    de_match = de and before[-len(de):] == de and anki_point_version >= 28
     dr = gc("date range dialog for rated: string")
     dr_match = dr and before[-len(dr):] == dr
     di = gc("date range dialog for introduced: string")
@@ -165,7 +164,7 @@ def onSearchEditTextChange(parent,
             "infotext": field_infotext,
             "windowtitle": "Anki: Select field to search",
             "show_prepend_minus_button": True,
-            "show_star": False if pointVersion() < 24 else True,
+            "show_star": False if anki_point_version < 24 else True,
             "check_star": False,
         }
 
@@ -245,7 +244,7 @@ def onSearchEditTextChange(parent,
             "infotext": False,
             "windowtitle": "Anki: Select Note Type to search",
             "show_prepend_minus_button": True,
-            "show_star": False if pointVersion() < 24 else True,
+            "show_star": False if anki_point_version < 24 else True,
             "check_star": True,
         }
 
@@ -259,7 +258,7 @@ def onSearchEditTextChange(parent,
             "infotext": False,
             "windowtitle": "Anki: Select Card (Type) Name to search",
             "show_prepend_minus_button": True,
-            "show_star": False if pointVersion() < 24 else True,
+            "show_star": False if anki_point_version < 24 else True,
             "check_star": False,
         }
     

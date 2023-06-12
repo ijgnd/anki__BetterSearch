@@ -1,14 +1,13 @@
 from anki.hooks import wrap
 
-from anki.utils import pointVersion
-
+from .anki_version_detection import anki_point_version
 from .onTextChange import onSearchEditTextChange
 
 
 # TODO setup shortcuts
 
 
-if pointVersion() <= 44:
+if anki_point_version <= 44:
     from aqt.dyndeckconf import DeckConf  # noqa
 
     def dyn_setup_search(self):

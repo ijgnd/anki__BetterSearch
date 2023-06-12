@@ -1,8 +1,6 @@
-from anki.utils import (
-    pointVersion,
-)
 from aqt import mw
-if pointVersion() >= 41:
+from .anki_version_detection import anki_point_version
+if anki_point_version >= 41:
     from aqt.utils import (
         TR,
         tr,
@@ -151,7 +149,7 @@ def maybe_add_spaced_between(old, insert_space_at_pos_in_old):
 
 
 def browser_searchEdit_hint_shown(searchstring, browser=None):
-    hint_shown_old = pointVersion() < 41 and searchstring == browser._searchPrompt
-    hint_shown_new = 45 > pointVersion() >= 41 and searchstring == tr(TR.BROWSING_SEARCH_BAR_HINT)
-    hint_shown_45 =  pointVersion() >= 45 and searchstring == tr.browsing_search_bar_hint()
+    hint_shown_old = anki_point_version < 41 and searchstring == browser._searchPrompt
+    hint_shown_new = 45 > anki_point_version >= 41 and searchstring == tr(TR.BROWSING_SEARCH_BAR_HINT)
+    hint_shown_45 =  anki_point_version >= 45 and searchstring == tr.browsing_search_bar_hint()
     return hint_shown_old or hint_shown_new or hint_shown_45

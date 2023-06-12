@@ -1,5 +1,4 @@
-from anki.utils import pointVersion
-
+from .anki_version_detection import anki_point_version
 from .config import gc
 
 
@@ -40,10 +39,10 @@ def help_string_for_actions_used():
     if gc("date range dialog for added: string"):
         s = f'"{gc("date range dialog for added: string")}": date range dialog for date added'
         lines.append(s)
-    if gc("date range dialog for edited: string") and pointVersion() >= 28:
+    if gc("date range dialog for edited: string") and anki_point_version >= 28:
         s = f'"{gc("date range dialog for edited: string")}": date range dialog for date edited'
         lines.append(s)
-    if gc("date range dialog for introduced: string") and pointVersion() >= 45:
+    if gc("date range dialog for introduced: string") and anki_point_version >= 45:
         s = f'"{gc("date range dialog for introduced: string")}": date range dialog for date introduced'
         lines.append(s)
     if gc("date range dialog for rated: string"):

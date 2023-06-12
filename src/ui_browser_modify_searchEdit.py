@@ -1,7 +1,5 @@
 from anki.hooks import wrap
-from anki.utils import (
-    pointVersion,
-)
+
 from aqt.browser import Browser
 from aqt.gui_hooks import (
     browser_menus_did_init,
@@ -12,6 +10,7 @@ from aqt.qt import (
     QMenu,
     QPushButton,
 )
+from .anki_version_detection import anki_point_version
 from .button_helper import button_helper
 from .config import gc
 from .helpers import (
@@ -33,7 +32,7 @@ def mysearch_41(self, card=None, search=None):
     if gc("-Modify Search Bar") == "multiline":
         return
     self.form.searchEdit.editTextChanged.connect(self.onBrowserSearchEditTextChange)
-if pointVersion() < 41:
+if anki_point_version < 41:
     Browser.setupSearch = wrap(Browser.setupSearch, mysearch_before41)
 else:
     Browser.setupSearch = wrap(Browser.setupSearch, mysearch_41)
@@ -111,7 +110,7 @@ def fuzzy_menu(self):
 def modify_browser(self):
     # self is browser
     addbutton = gc("-Add Button to the Browser Search Bar")
-    justdown = True if gc("-Modify Search Bar") == "down" and pointVersion() < 41  else False
+    justdown = True if gc("-Modify Search Bar") == "down" and anki_point_version < 41  else False
     multiline = True if gc("-Modify Search Bar") == "multiline" else False
     # the following is needed for my add-on side-by-side so that it still moves the
     # search bar if it's not done here. The current function is run by the hook
@@ -164,7 +163,7 @@ def modify_browser(self):
         self.form.searchEdit.setFixedHeight(new_height)
         #self.form.searchEdit.setMaximumHeight(new_height)
 
-    if multiline and pointVersion() < 41:
+    if multiline and anki_point_version < 41:
         self.form.searchButton.setShortcut("Return")
         grid.addWidget(self.form.searchEdit, 1, 0, 1, -1)
         grid.addWidget(pb_hist, 0, 0, 1, 1)
@@ -172,7 +171,7 @@ def modify_browser(self):
         grid.addWidget(pb_fm, 0, gridcounter, 1, 1)
         gridcounter += 1
 
-    if addbutton and pointVersion() < 41:
+    if addbutton and anki_point_version < 41:
         grid.addWidget(pb_sd, 0, gridcounter, 1, 1)
         for idx, e in enumerate(elements):
             if e[1] == "filter":
@@ -181,7 +180,7 @@ def modify_browser(self):
         for idx, item in enumerate(elements):
             grid.addWidget(item[0], 0, gridcounter+2+idx, 1, 1)
 
-    if justdown:  # never True for pointVersion >= 41
+    if justdown:  # never True for anki_point_version >= 41
         # the code for "justdown" is copied verbatim from my older "side-by-side"
         # store lineedit and its index
         grid = self.form.gridLayout
@@ -193,7 +192,7 @@ def modify_browser(self):
                 searchbar = w
         self.form.gridLayout.addWidget(searchbar, 1, 0, 1, -1)
 
-    if pointVersion() >=41 and multiline:
+    if anki_point_version >=41 and multiline:
         pb_hist.setMaximumWidth(45)
         grid.addWidget(self.form.searchEdit, 0, 0, 1, 1)
         grid.addWidget(pb_hist, 0, 1, 1, 1)
