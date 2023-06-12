@@ -20,6 +20,8 @@ adapted from https://github.com/renerocksai/sublimeless_zk/tree/6738375c0e371f0c
 mainly from utils.py
 """
 
+import re
+
 
 def remove_linebreaks_and_leading_whitespace_on_lines(arg):
     search_string = ""
@@ -31,9 +33,10 @@ def remove_linebreaks_and_leading_whitespace_on_lines(arg):
 
 def merge_to_oneline_string(list_):
     r = "\n".join(list_)
-    r = r.replace( "(",    "(\n" )\
-         .replace( ")",    "\n)" )\
-         .replace( "\n\n", "\n"  )
+    # r = r.replace( "(",      "(\n" )  # this breaks some recent Anking tags that use xxx(2)xxx
+    r = re.sub(r"(?<=\s)\(", "(\n", r)  # postive lookbehind: ( that's preceeded by a space
+    r = re.sub(r"\)(?=\s)",  "\n)", r)  # postive lookahead:  ) followed by a space
+    r = r.replace( "\n\n",   "\n"  )
     return r
 
 
