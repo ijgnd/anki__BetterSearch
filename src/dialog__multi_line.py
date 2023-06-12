@@ -129,6 +129,7 @@ class SearchBox(QDialog):
             self.form.pb_date_added.setVisible(False)
             self.form.pb_date_rated.setVisible(False)
             self.form.pb_date_introduced.setVisible(False)
+            self.form.pb_date_edited.setVisible(False)
 
         
         label1 = "add filter from a nested menu. This is similar to the button from the top left of the browser:"
