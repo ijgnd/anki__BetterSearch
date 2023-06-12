@@ -17,6 +17,7 @@ from aqt.utils import (
 from aqt.theme import theme_manager
 from aqt.webview import AnkiWebView
 
+from .anki_version_detection import anki_point_version
 from .help_text import helptext
 
 
@@ -103,6 +104,10 @@ class MiniHelpSearch(QDialog):
 
     def __init__(self, parent):
         QDialog.__init__(self, parent, Qt.WindowType.Window)
+        if anki_point_version < 45:
+            aqt.mw.setupDialogGC(self)
+        else:
+            aqt.mw.garbage_collect_on_dialog_finish(self)
         self.parent = parent
         self.setWindowTitle("Anki - Search Cheatsheet")
         self.vbox = QVBoxLayout()

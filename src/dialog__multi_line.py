@@ -21,6 +21,8 @@ from aqt.utils import (
     saveGeom,
     tooltip,
 )
+
+from .anki_version_detection import anki_point_version
 from .button_helper import (
     button_helper,
     text_change_helper,
@@ -66,6 +68,10 @@ class SearchBox(QDialog):
         self.mw = browser.mw
         self.col = browser.col
         QDialog.__init__(self, self.parent, Qt.WindowType.Window)
+        if anki_point_version < 45:
+            aqt.mw.setupDialogGC(self)
+        else:
+            aqt.mw.garbage_collect_on_dialog_finish(self)
         self.form = search_box.Ui_Dialog()
         self.form.setupUi(self)
         self.help_dialog = None

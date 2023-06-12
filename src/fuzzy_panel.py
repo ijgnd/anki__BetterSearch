@@ -59,6 +59,7 @@ from aqt.qt import (
 )
 from aqt.utils import tooltip, restoreGeom, saveGeom
 
+from .anki_version_detection import anki_point_version
 from .config import gc
 
 
@@ -103,6 +104,10 @@ class FilterDialog(QDialog):
         sort_vals=True
     ):
         super().__init__(parent)
+        if anki_point_version < 45:
+            aqt.mw.setupDialogGC(self)
+        else:
+            aqt.mw.garbage_collect_on_dialog_finish(self)
         self.parent = parent
         self.parent_is_browser = parent_is_browser
         self.max_items = max_items

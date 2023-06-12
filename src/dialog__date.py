@@ -14,6 +14,7 @@ from aqt.utils import (
     tooltip,
 )
 
+from .anki_version_detection import anki_point_version
 if qtmajor == 5:
     from .forms5 import date_dialog_ui  # type: ignore  # noqa
 else:
@@ -63,6 +64,10 @@ class DateRangeDialog(QDialog):
         self.search_word = search_word
         self.parent = parent
         QDialog.__init__(self, self.parent, Qt.WindowType.Window)
+        if anki_point_version < 45:
+            mw.setupDialogGC(self)
+        else:
+            mw.garbage_collect_on_dialog_finish(self)
         self.form = date_dialog_ui.Ui_Dialog()
         self.form.setupUi(self)
         self.today_in_dt = today_as_datetime_adjusted_for_next_day_starts_at()
