@@ -29,6 +29,8 @@ def cutlist():
 [gc("shortcut - focus search box and card from note dialog"),    "cfn:"],
 [gc("shortcut - focus search box and field from note dialog"),   "ffn:"],
 [gc("shortcut - focus search box and date added dialog"),        gc("date range dialog for added: string")],
+[gc("shortcut - focus search box and date edited dialog"),       gc("date range dialog for edited: string")],
+[gc("shortcut - focus search box and date introduced dialog"),   gc("date range dialog for introduced: string")],
 [gc("shortcut - focus search box and date rated dialog"),        gc("date range dialog for rated: string")],
 ]
     return cl
