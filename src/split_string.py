@@ -66,7 +66,7 @@ def string_to_list__quoted_on_same_line(search_string):
             pos += 1
     if current_snippet:
         results.append(current_snippet)
-    # readd quotes
+    # re-add quotes
     for i, val in enumerate(results):
         if " " in val:
             if val.startswith("-"):
