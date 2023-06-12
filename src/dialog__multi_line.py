@@ -35,16 +35,8 @@ else:
     from .forms6 import search_box  # type: ignore  # noqa
 from .fuzzy_panel import FilterDialog
 from .helpers import (
-    # this is the order in helpers.py
-    tags,
-    is_values,
-    is_values_with_explanations,
-    props,
-    overrides,
-    field_infotext,
     browser_searchEdit_hint_shown,
 )
-from .onTextChange import onSearchEditTextChange
 from .split_string import (
     split_to_multiline,
 )
