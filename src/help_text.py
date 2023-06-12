@@ -66,10 +66,11 @@ BetterSearch Add-on: terms/keywords that open a filter dialog:
 helptext = help_string_for_actions_used() + """
 <br>
 <div>
-The following section is copied from the manual in 2021-08-04. So you have the search section with you 
-even if you are offline. In the future the rest of this page might get replaced with some shorter
-notes.
+The following section is copied from the manual in 2023-06-12. So you have the search section with you 
+even if you are offline. The downside is it might be dates. In the future the rest of this page might 
+get replaced with some shorter notes.
 </div>
+
 <ul>
 <li><a href="#simple-searches">Simple searches</a></li>
 <li><a href="#limiting-to-a-field">Limiting to a field</a></li>
@@ -127,7 +128,9 @@ finds notes with d, &lt;zero or more letters&gt;, g, like dg, dog, dung,
 etc.</p>
 <p><code>w:dog</code><br />
 search for &quot;dog&quot; on a word boundary - will match &quot;dog&quot;, but not &quot;doggy&quot;
-or &quot;underdog&quot;. Requires Anki 2.1.24+ or AnkiMobile 2.1.61+.</p>
+or &quot;underdog&quot;. Requires Anki 2.1.24+ or AnkiMobile 2.1.61+. Note that
+formatting changes may be interpreted as word boundaries e.g. searching
+for <code>w:exam</code> will match <strong>exam</strong>ple.</p>
 <p><code>w:dog*</code><br />
 will match &quot;dog&quot; and &quot;doggy&quot;, but not &quot;underdog&quot;.</p>
 <p><code>w:*dog</code><br />
@@ -159,8 +162,7 @@ parentheses, it matches either 'dog cat' or 'dog mouse', whereas
 without them it would match either 'dog and cat' or 'mouse'.</p>
 </li>
 <li>
-<p>Anki is only able to search within formatting in the <a href="editing.html#customizing-fields">sort
-field</a> you’ve configured. For example, if you add
+<p>Anki is only able to search within formatting in the <a href="editing.html#customizing-fields">sort field</a> you’ve configured. For example, if you add
 &quot;<strong>exa</strong>mple&quot; to one of your fields, this will not be matched when
 searching for &quot;example&quot; unless that field is the sort field. If a
 word is not formatted, or the formatting does not change in the
@@ -170,7 +172,7 @@ middle of the word, then Anki will be able to find it in any field.</p>
 <p>Standard searches are case insensitive for Latin characters - a-z will
 match A-Z, and vice versa. Other characters such as Cyrillic are case sensitive
 in a standard search, but can be made case insensitive by searching on a word
-boundary or regular expression (w:, re:).</p>
+boundary or regular expression (<code>w:</code>, <code>re:</code>).</p>
 </li>
 </ul>
 <h2 id="limiting-to-a-field"><a class="header" href="#limiting-to-a-field">Limiting to a field</a></h2>
@@ -180,6 +182,9 @@ match' by default.</p>
 <p><code>front:dog</code><br />
 find notes with a Front field of exactly &quot;dog&quot;. A field that says &quot;a
 dog&quot; will not match.</p>
+<p><code>&quot;animal front:a dog&quot;</code><br />
+find notes where the &quot;Animal Front&quot; field is exactly &quot;a dog&quot;. The double quotes are
+mandatory, see <a href="#matching-special-characters">below</a>.</p>
 <p><code>front:*dog*</code><br />
 find notes with Front field containing dog somewhere</p>
 <p><code>front:</code><br />
@@ -188,11 +193,11 @@ find notes that have an empty Front field</p>
 find notes that have a non-empty Front field</p>
 <p><code>front:*</code><br />
 find notes that have a Front field, empty or not</p>
-<p><code>fr*:text</code>
+<p><code>fr*:text</code><br />
 find notes in a field starting with &quot;fr&quot;. Requires Anki 2.1.24+ or AnkiMobile 2.1.60+.</p>
 <h2 id="tags-decks-cards-and-notes"><a class="header" href="#tags-decks-cards-and-notes">Tags, decks, cards and notes</a></h2>
 <p><code>tag:animal</code><br />
-find notes with the tag &quot;animal&quot;</p>
+find notes with the tag &quot;animal&quot;, or subtags like &quot;animal::mammal&quot;</p>
 <p><code>tag:none</code><br />
 find notes with no tags</p>
 <p><code>tag:ani*</code><br />
@@ -213,7 +218,7 @@ normal decks only</p>
 search for Forward cards</p>
 <p><code>card:1</code><br />
 search for cards by template number - eg, to find the second cloze
-deletion for a note, you’d use card:2</p>
+deletion for a note, you’d use <code>card:2</code></p>
 <p><code>note:basic</code><br />
 search for cards with a Basic note type</p>
 <h2 id="ignoring-accentscombining-characters"><a class="header" href="#ignoring-accentscombining-characters">Ignoring accents/combining characters</a></h2>
@@ -240,10 +245,15 @@ in a specific field, regular expressions in fields don't require an exact match.
 matches uppercase or lowercase a1, B1 or c1 that occurs anywhere in the &quot;Front&quot; field</p>
 <p><code>front:re:^[a-c]1$</code><br />
 like the above, but will not match if any other text falls before or after a1/b1/c1.</p>
+<p>Anki 2.1.50 added regex support for tags:</p>
+<p><code>tag:re:^parent$</code><br />
+find notes with the exact tag &quot;parent&quot;, disregarding any child tags like &quot;parent::child&quot;</p>
+<p><code>&quot;tag:re:lesson-(1[7-9]|2[0-5])&quot;</code><br />
+find notes with tags &quot;lesson-17&quot; through &quot;lesson-25&quot;</p>
 <p>You can learn more about regular expressions here: <a href="https://regexone.com/lesson/introduction_abcs">https://regexone.com/lesson/introduction_abcs</a></p>
 <p>Some things to be aware of:</p>
 <ul>
-<li>The search is case-insensitive by default; use (?-i) at the start to turn on case sensitivity.</li>
+<li>The search is case-insensitive by default; use <code>(?-i)</code> at the start to turn on case sensitivity.</li>
 <li>Some text like spaces and newlines may be represented differently in HTML - you can
 use the HTML editor in the editing screen to see the underlying HTML contents.</li>
 <li>For the specifics of Anki's regex support, please see the regex crate documentation: <a href="https://docs.rs/regex/1.3.9/regex/#syntax">https://docs.rs/regex/1.3.9/regex/#syntax</a></li>
@@ -281,6 +291,12 @@ cards with an orange flag</p>
 cards with a green flag</p>
 <p><code>flag:4</code><br />
 cards with a blue flag</p>
+<p><code>flag:5</code><br />
+cards with a pink flag</p>
+<p><code>flag:6</code><br />
+cards with a turquoise flag</p>
+<p><code>flag:7</code><br />
+cards with a purple flag</p>
 <h2 id="card-properties"><a class="header" href="#card-properties">Card properties</a></h2>
 <p><code>prop:ivl&gt;=10</code><br />
 cards with interval of 10 days or more</p>
@@ -296,9 +312,6 @@ cards that have been answered less than 10 times</p>
 cards that have moved into relearning more than 3 times</p>
 <p><code>prop:ease!=2.5</code><br />
 cards easier or harder than default</p>
-<p>Note that due only matches review cards and learning cards with an
-interval of a day or more: cards in learning with small intervals like
-10 minutes are not included.</p>
 <h2 id="recent-events"><a class="header" href="#recent-events">Recent Events</a></h2>
 <h3 id="added"><a class="header" href="#added">Added</a></h3>
 <p><code>added:1</code><br />
@@ -339,7 +352,7 @@ you need to tell Anki not to treat them specially.</p>
 <p><em>Space</em><br />
 To match something including spaces, enclose the <code>&quot;entire term&quot;</code> in double
 quotes. If it is a colon search, you also have the option to only quote the
-<code>part:&quot;after the colon&quot;</code>.</p>
+<code>part:&quot;after the colon&quot;</code> (unless there are spaces before the colon as well).</p>
 </li>
 <li>
 <p><code>&quot;</code>, <code>*</code> and <code>_</code><br />
@@ -372,10 +385,17 @@ So <code>w:e:b</code> is a word boundary search for <code>e:b</code>, <code>w\:e
 <code>w:e:b</code> and <code>w\:e:b</code> searches the field <code>w:e</code> for <code>b</code> (see
 <a href="#limiting-to-a-field">field searches</a>).</p>
 </li>
+<li>
+<p><code>&amp;</code>, <code>&lt;</code>, and <code>&gt;</code><br />
+<code>&amp;</code>, <code>&lt;</code>, and <code>&gt;</code> are treated as HTML when searching in Anki, and as such searches
+containing them don't work as expected. However, you can search for them by using their
+corresponding HTML entity names (<code>&amp;amp;</code> for <code>&amp;</code>, <code>&amp;lt;</code> for <code>&lt;</code>, and <code>&amp;gt;</code> for <code>&gt;</code>).
+For example, searching <code>&amp;lt;&amp;amp;text&amp;gt;</code> searches for a card with <code>&lt;&amp;text&gt;</code> in a field.</p>
+</li>
 </ul>
 <h3 id="raw-input"><a class="header" href="#raw-input">Raw input</a></h3>
 <p>Text preceded by certain keywords (like <code>re:</code>) will be treated as raw input. That is,
-the charcters listed above largely lose their special meaning. In such a context, only
+the characters listed above largely lose their special meaning. In such a context, only
 a minimum of escaping is required to prevent ambiguity:</p>
 <ul>
 <li>
@@ -390,12 +410,10 @@ a minimum of escaping is required to prevent ambiguity:</p>
 </ul>
 <h2 id="object-ids"><a class="header" href="#object-ids">Object IDs</a></h2>
 <p><code>nid:123</code><br />
-all cards of the note with note id 123</p>
-<p><code>cid:123</code><br />
-the card with card id 123</p>
+the note with note id 123</p>
+<p><code>cid:123,456,789</code><br />
+all cards with card ids 123, 456 or 789</p>
 <p>Note and card IDs can be found in the <a href="stats.html">card info</a> dialog in the
 browser. These searches may also be helpful when doing add-on
 development or otherwise working closely with the database.</p>
-<p>Object IDs will not work in the mobile clients, and are not intended to
-be used in filtered decks at the moment.</p>
 """
