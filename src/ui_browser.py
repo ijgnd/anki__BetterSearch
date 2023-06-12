@@ -155,7 +155,7 @@ def setup_browser_menu(self):
     action.triggered.connect(lambda _: openHelp("searching"))
 
     action = QAction(self)
-    action.setText("Show Manual for Searching (offline copy, possibly dated)")
+    action.setText("Show Manual for Searching (offline copy, version from 2023-06)")
     bs_menu.addAction(action)
     action.triggered.connect(lambda _,b=self: open_local_help_window(b))
 browser_menus_did_init.append(setup_browser_menu)  # noqa
