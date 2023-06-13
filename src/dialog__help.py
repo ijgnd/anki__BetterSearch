@@ -207,16 +207,19 @@ class MiniHelpSearch(QDialog):
         self.next_button = QPushButton("∨")
         self.next_button.clicked.connect(self.on_find_next)
         self.next_button.setToolTip("Ctrl+F")
+        self.next_button.setMaximumWidth(40)
         self.bottom_layout.addWidget(self.next_button)
 
         self.prev_button = QPushButton("∧")
         self.prev_button.clicked.connect(self.on_find_previous)
         self.prev_button.setToolTip("Ctrl+R")
+        self.prev_button.setMaximumWidth(40)
         self.bottom_layout.addWidget(self.prev_button)
             
         self.close_bottom_button = QPushButton("x")
         self.close_bottom_button.clicked.connect(self.hide_bottom)
         self.close_bottom_button.setToolTip("Esc")
+        self.close_bottom_button.setMaximumWidth(40)
         self.bottom_layout.addWidget(self.close_bottom_button)
 
         self.vbox.addLayout(self.bottom_layout)
