@@ -155,8 +155,8 @@ def help_as_webpage():
 
 class AnkiWebViewWrapper(AnkiWebView):
     def on_theme_did_change(self):
-        self.setHtml(help_as_webpage())
-
+        # self.setHtml(help_as_webpage())
+        pass
 
 # TODO maybe use https://stackoverflow.com/a/54888872 by eyllanesc
 # Since its from Feb 26, 2019 its CC BY-SA 4.0 (see https://stackoverflow.com/help/licensing)
@@ -185,7 +185,7 @@ class MiniHelpSearch(QDialog):
         self.vbox = QVBoxLayout()
         self.vbox.setContentsMargins(0, 0, 0, 0)
         
-        self.webview = AnkiWebViewWrapper()
+        self.webview = AnkiWebViewWrapper()  # QWebEngineView
         self.webview.setHtml(help_as_webpage())
         self.vbox.addWidget(self.webview)
         
@@ -319,6 +319,9 @@ class MiniHelpSearch(QDialog):
             self.parent.help_dialog = None
             # print(f"in rejected, width: {self.width()}, height: {self.height()}") 
             saveGeom(self, minihelp_geom_name)
+            # for AnkiWebView:
+            self.webview.cleanup()
+            self.webview = None
             # aqt.dialogs.markClosed(mini_search_help_dialog_title)  # dialog manager
             QDialog.reject(self)
 
