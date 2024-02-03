@@ -51,6 +51,14 @@ def note__field__card__helper(parent, term, before, after, char_to_del, func_set
         return (newpos, override_autosearch_default)
 
 
+def matches_search_operator(before, term):
+    if before == term:
+        return True
+    # in my multiline dialog users can type RETURN or TAB
+    if before[-(len(term)+1):] in [f" {term}", f"\n{term}", f"\t{term}"]:
+        return True
+
+
 def onSearchEditTextChange(parent, 
                            move_dialog_in_browser,
                            include_filtered_in_deck, 
@@ -154,7 +162,7 @@ def onSearchEditTextChange(parent,
             "check_star": True,
         }
 
-    if before[-6:] == "field:" and (gc("modify_field") or from_button):
+    if matches_search_operator(before, "field:") and (gc("modify_field") or from_button):
         vals = {
             "remove_from_end_of_before": -6,
             "insert_space_at_pos_in_before": -6 ,
@@ -168,7 +176,7 @@ def onSearchEditTextChange(parent,
             "check_star": False,
         }
 
-    if before[-5:] == "prop:" and (gc("modify_props") or from_button):
+    if matches_search_operator(before, "prop:") and (gc("modify_props") or from_button):
         it = "<b>After closing the dialog you must adjust what's inserted with your numbers</b>"
         vals = {
             "remove_from_end_of_before": 0,
@@ -183,7 +191,7 @@ def onSearchEditTextChange(parent,
             "check_star": False,
         }
 
-    if before[-3:] == "is:" and (gc("modify_is") or from_button):
+    if matches_search_operator(before, "is:") and (gc("modify_is") or from_button):
         expl = gc("modify_is__show_explanations")
         vals = {
             "remove_from_end_of_before": 0 if expl else -3,
@@ -198,7 +206,7 @@ def onSearchEditTextChange(parent,
             "check_star": False,
         }
 
-    if before[-5:] == "flag:" and (gc("modify_flag") or from_button):
+    if matches_search_operator(before, "flag:") and (gc("modify_flag") or from_button):
         vals = {
             "remove_from_end_of_before": 0,
             "insert_space_at_pos_in_before": -5,
@@ -220,7 +228,7 @@ def onSearchEditTextChange(parent,
             "check_star": False,
         }
 
-    if before[-4:] == "tag:" and (gc("modify_tag") or from_button):
+    if matches_search_operator(before, "tag:") and (gc("modify_tag") or from_button):
         vals = {
             "remove_from_end_of_before": 0,
             "insert_space_at_pos_in_before": -4,
@@ -234,7 +242,7 @@ def onSearchEditTextChange(parent,
             "check_star": gc("tag insertion - add '*' to matches"),
         }
 
-    elif before[-5:] == "note:" and (gc("modify_note") or from_button):
+    elif matches_search_operator(before, "note:") and (gc("modify_note") or from_button):
         vals = {
             "remove_from_end_of_before": 0,
             "insert_space_at_pos_in_before": -5,
@@ -248,7 +256,7 @@ def onSearchEditTextChange(parent,
             "check_star": True,
         }
 
-    elif before[-5:] == "card:" and (gc("modify_card") or from_button):
+    elif matches_search_operator(before, "card:") and (gc("modify_card") or from_button):
         vals = {
             "remove_from_end_of_before": 0,
             "insert_space_at_pos_in_before": -5,
@@ -262,7 +270,7 @@ def onSearchEditTextChange(parent,
             "check_star": False,
         }
     
-    elif before[-4:] == "cfn:":  # cards from note
+    elif matches_search_operator(before, "cfn:"):  # cards from note
         def cardnames_modelname_dict():
             d = {}
             for m in col.models.all():
@@ -283,7 +291,7 @@ def onSearchEditTextChange(parent,
             "check_star": False,
         }
 
-    if before[-4:] == "ffn:":
+    if matches_search_operator(before, "ffn:"):
         ffn_infotext = (
 "<b>"
 "Besides the note type name this dialog only inserts the field name to search. After closing <br>"
@@ -310,7 +318,7 @@ def onSearchEditTextChange(parent,
             "check_star": False,
         }
 
-    elif before[-5:] == "deck:" and gc("modify_deck"):
+    elif matches_search_operator(before, "deck:") and gc("modify_deck"):
         vals = {
             "remove_from_end_of_before": 0,
             "insert_space_at_pos_in_before": -5,
