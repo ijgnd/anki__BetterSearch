@@ -36,7 +36,7 @@ syntax for the default search method:
 - strings (separated by space) can be in any order, 
 - ! to exclude a string, 
 - " to search for space (e.g. "the wind"), 
-- _ to indicate that the line must start with this string (e.g. _wind won't match some wind)
+- ^ to indicate that the line must start with this string (e.g. _wind won't match some wind)
 
 """
 
@@ -363,7 +363,7 @@ def split_search_terms_withStart(search_string):
 
     literal_quote_sign = '"'
     exclude_sign = "!"
-    startswith_sign = "_"
+    startswith_sign = "^"
 
     while pos < str_len:
         if search_string[pos:].startswith(literal_quote_sign):
