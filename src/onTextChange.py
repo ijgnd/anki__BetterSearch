@@ -229,7 +229,8 @@ def onSearchEditTextChange(parent,
             "check_star": False,
         }
 
-    if matches_search_operator(before, "tag:") and (gc("modify_tag") or from_button):
+    tag_search = matches_search_operator(before, "tag:") and (gc("modify_tag") or from_button)
+    if tag_search:
         vals = {
             "remove_from_end_of_before": 0,
             "insert_space_at_pos_in_before": -4,
@@ -383,6 +384,9 @@ def onSearchEditTextChange(parent,
         # vals["dict_for_dialog"]: UseFilterDialogValue: if values tuple with info, if list is False
         if not vals["dict_for_dialog"]:
             sel = emc(d.selkey)
+            chars_that_needs_quoting = ["(", ")"]
+            if tag_search and any(c in sel for c in chars_that_needs_quoting):
+                vals["surround_with_quotes"] = True
             #print(f"sel is {sel}")
         else:
             # workaround: return from function here
