@@ -7,6 +7,7 @@ from aqt.gui_hooks import (
 from aqt.qt import (
     QAction,
     QKeySequence,
+    QMenu,
     QShortcut,
     qconnect,
 )
@@ -21,7 +22,7 @@ from aqt.utils import (
     tooltip,
 )
 
-from .config import gc
+from .config import gc, wcs
 from .dialog__date import DateRangeDialog
 from .dialog__help import MiniHelpSearch
 from .dialog__multi_line import SearchBox
@@ -97,6 +98,11 @@ def open_local_help_window(self):
     #aqt.dialogs.open(mini_search_help_dialog_title, aqt.mw)
 
 
+def toggle_preference(what):
+    key = f"modify_{what}"
+    wcs(key=key, new_val=not gc(key))
+
+
 def setup_browser_menu(self):
     self.help_dialog = None
 
@@ -158,4 +164,26 @@ def setup_browser_menu(self):
     action.setText("Show Manual for Searching (offline copy, version from 2023-06)")
     bs_menu.addAction(action)
     action.triggered.connect(lambda _,b=self: open_local_help_window(b))
+
+
+    edm = QMenu("(en-/dis-)able dialog for search terms/dialog triggered by ...", self)
+    bs_menu.addMenu(edm)
+    elements = [
+        "card",
+        "deck",
+        "field",
+        "flag",
+        "is",
+        "note",
+        "props",
+        "tag",
+    ]
+    for e in elements:
+        a = edm.addAction(f"{e}:")
+        a.setCheckable(True)
+        if gc(f"modify_{e}"):
+            a.setChecked(True)
+        a.toggled.connect(lambda _, arg=e: toggle_preference(arg))
+
+
 browser_menus_did_init.append(setup_browser_menu)  # noqa

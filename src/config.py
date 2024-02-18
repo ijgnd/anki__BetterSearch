@@ -13,6 +13,18 @@ def gc(arg, fail=False):
         return fail
 
 
+def wcs(key, new_val, addnew=False):
+    config = mw.addonManager.getConfig(__name__)
+    if not config:
+        return
+    if not (key in config or addnew):
+        return
+    else:
+        config[key] = new_val
+        mw.addonManager.writeConfig(__name__, config)
+        return True
+
+
 def shiftdown():
     return mw.app.keyboardModifiers() & Qt.KeyboardModifier.ShiftModifier
 
