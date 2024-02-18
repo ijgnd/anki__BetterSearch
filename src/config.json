@@ -48,5 +48,6 @@
     "shortcut - focus search box and date rated dialog": "Alt+H, r",
     "shortcut - select entry from history in fuzzy dialog": "Alt+H, h",
     "shortcuts trigger search by default": true,
+    "tag dialog exit on re:": true,
     "tag insertion - add '*' to matches": "all"
 } 

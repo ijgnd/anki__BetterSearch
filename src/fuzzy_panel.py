@@ -103,7 +103,8 @@ class FilterDialog(QDialog):
         infotext="",
         show_prepend_minus_button=True,
         check_prepend_minus_button=True,
-        sort_vals=True
+        sort_vals=True,
+        context=""
     ):
         super().__init__(parent)
         if anki_point_version < 45:
@@ -119,6 +120,8 @@ class FilterDialog(QDialog):
         self.show_prepend_minus_button = show_prepend_minus_button
         self.check_prepend_minus_button = check_prepend_minus_button
         self.infotext = infotext
+        self.context = context
+        self.tooltip_after_exit_for_parent = ""
         self.setObjectName("FilterDialog")
         if windowtitle:
             self.setWindowTitle(windowtitle)
@@ -266,6 +269,15 @@ class FilterDialog(QDialog):
 
     def text_changed(self):
         search_string = self.input_line.text()
+        if search_string == "re:" and self.context == "tag" and gc("tag dialog exit on re:"):
+            msg = "re: directly exists the tag filter dialog. If you don't want this adjust the BetterSearch settings"
+            self.tooltip_after_exit_for_parent = msg
+            self.selkey = "re:"
+            self.addstar = False
+            self.neg = False
+            self.lineonly = False
+            saveGeom(self, "BrowserSearchInserterFP")
+            QDialog.accept(self)
         FILTER_WITH = "slzk_mod"  # "slzk", "fuzzyfinder"
         if FILTER_WITH == "fuzzyfinder":  # https://pypi.org/project/fuzzyfinder/
             if search_string:

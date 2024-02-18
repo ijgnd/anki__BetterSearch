@@ -191,6 +191,11 @@
             "default": true,
             "description": ""
         },
+        "tag dialog exit on re:": {
+            "type": "boolean",
+            "default": true,
+            "description": ""
+        },
         "tag insertion - add '*' to matches": {
             "type": "string",
             "default": "all",

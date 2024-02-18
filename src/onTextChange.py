@@ -1,3 +1,5 @@
+from aqt.utils import tooltip
+
 from .anki_version_detection import anki_point_version
 from .config import gc
 from .custom_fuzzy_dialogs import (
@@ -242,6 +244,7 @@ def onSearchEditTextChange(parent,
             "show_prepend_minus_button": True,
             "show_star": True,
             "check_star": gc("tag insertion - add '*' to matches"),
+            "context": "tag",
         }
 
     elif matches_search_operator(before, "note:") and (gc("modify_note") or from_button):
@@ -348,6 +351,7 @@ def onSearchEditTextChange(parent,
         infotext=vals["infotext"],
         show_prepend_minus_button=vals["show_prepend_minus_button"],
         check_prepend_minus_button=False,
+        context=vals.get("context")
     )
     if not d.exec():
         return False
@@ -380,6 +384,8 @@ def onSearchEditTextChange(parent,
         # print(f"b is:  {b}")
 
 
+        if d.tooltip_after_exit_for_parent:
+            tooltip(d.tooltip_after_exit_for_parent, period=6000)
 
         # vals["dict_for_dialog"]: UseFilterDialogValue: if values tuple with info, if list is False
         if not vals["dict_for_dialog"]:
@@ -435,7 +441,7 @@ def onSearchEditTextChange(parent,
 
         #######
         ############  maybe add '*' to match other deeper nested hierarchical tags
-        if sel in ["none", "filtered", "tag:none", "deck:filtered"]:
+        if sel in ["none", "filtered", "tag:none", "deck:filtered", "re:"]:
             pass
         elif before[-4:] == "tag:":
             if not override_add_star:
