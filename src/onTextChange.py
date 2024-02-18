@@ -10,6 +10,7 @@ from .helpers import (
     # this is the order in helpers.py
     cardnames,
     decknames,
+    emc,
     tags,
     is_values,
     is_values_with_explanations,
@@ -381,14 +382,14 @@ def onSearchEditTextChange(parent,
 
         # vals["dict_for_dialog"]: UseFilterDialogValue: if values tuple with info, if list is False
         if not vals["dict_for_dialog"]:
-            sel = d.selkey
+            sel = emc(d.selkey)
             #print(f"sel is {sel}")
         else:
             # workaround: return from function here
             if vals["dict_for_dialog"] == "cfn":
                 mycard = d.selvalue[0]
                 mynote = d.selvalue[1]
-                mysearch = f'''("card:{mycard}" and "note:{mynote}")'''
+                mysearch = f'''("card:{emc(mycard)}" and "note:{emc(mynote)}")'''
                 already_in_line = b[:-4]  # substract cfn:
                 func_settext(already_in_line + mysearch + after)
                 newpos = len(already_in_line + mysearch)
@@ -396,7 +397,7 @@ def onSearchEditTextChange(parent,
             if vals["dict_for_dialog"] == "ffn":
                 field = d.selvalue[0]
                 mynote = d.selvalue[1]
-                mysearch = f''' "note:{mynote}" "{field}:**" '''
+                mysearch = f''' "note:{emc(mynote)}" "{emc(field)}:**" '''
                 already_in_line = b[:-4]  # substract ffn:
                 func_settext(already_in_line + mysearch + after)
                 newpos = len(already_in_line + mysearch)

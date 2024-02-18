@@ -153,3 +153,7 @@ def browser_searchEdit_hint_shown(searchstring, browser=None):
     hint_shown_new = 45 > anki_point_version >= 41 and searchstring == tr(TR.BROWSING_SEARCH_BAR_HINT)
     hint_shown_45 =  anki_point_version >= 45 and searchstring == tr.browsing_search_bar_hint()
     return hint_shown_old or hint_shown_new or hint_shown_45
+
+
+def emc(s):  # escape some metachars, relevant for search, see rslib
+    return s.replace("*", "\\*").replace("_", "\\_")

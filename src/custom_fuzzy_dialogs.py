@@ -4,6 +4,7 @@ from aqt.utils import tooltip
 from .fuzzy_panel import FilterDialog
 from .helpers import (
     cardnames,
+    emc,
     fieldnames,
     overrides,
 )
@@ -203,10 +204,12 @@ add some text to limit to a certain term.
             return None, None
 
     posback = 0
+    field_search_string = emc(field_search_string)
     if field_search_string:
         field_search_string += ":**"
         posback = -2
     # quote if needed
+    model_search_string = emc(model_search_string)
     if " " in model_search_string:
         model_search_string = '"' + model_search_string + '"'
     # always quote field search string so that user can type in spaces
