@@ -29,8 +29,6 @@ def mysearch_before41(self):
         return
     self.form.searchEdit.editTextChanged.connect(self.onBrowserSearchEditTextChange)
 def mysearch_41(self, card=None, search=None):
-    if gc("-Modify Search Bar") == "multiline":
-        return
     self.form.searchEdit.editTextChanged.connect(self.onBrowserSearchEditTextChange)
 if anki_point_version < 41:
     Browser.setupSearch = wrap(Browser.setupSearch, mysearch_before41)
@@ -111,7 +109,7 @@ def modify_browser(self):
     # self is browser
     addbutton = gc("-Add Button to the Browser Search Bar")
     justdown = True if gc("-Modify Search Bar") == "down" and anki_point_version < 41  else False
-    multiline = True if gc("-Modify Search Bar") == "multiline" else False
+    multiline = True if gc("-Modify Search Bar") == "multiline" and anki_point_version < 41 else False
     # the following is needed for my add-on side-by-side so that it still moves the
     # search bar if it's not done here. The current function is run by the hook
     # browser_menus_did_init which is run before the hook browser_will_show that the side-by-side 
