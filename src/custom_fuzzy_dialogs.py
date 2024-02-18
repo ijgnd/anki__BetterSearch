@@ -142,8 +142,8 @@ card template/type/name you want to search.
     maybe_space = " " if model_search_string and card_search_string else ""
     out = model_search_string + maybe_space + card_search_string
 
-    if model_search_string and card_search_string:
-        out = '(' + out + ')'
+    # if model_search_string and card_search_string:
+    #     out = '(' + out + ')'
     if modelneg or cardneg:
         out = "-" + out
     if iscloze:
@@ -215,9 +215,9 @@ add some text to limit to a certain term.
     maybe_space = " " if model_search_string and field_search_string else ""
     out = model_search_string + maybe_space + field_search_string
 
-    if model_search_string and field_search_string:
-        out = '(' + out + ')'
-        posback = -3
+    # if model_search_string and field_search_string:
+    #     out = '(' + out + ')'
+    #     posback = -3
     if modelneg or fieldneg:
         out = "-" + out
     # self.button_helper(out, False)
