@@ -1,3 +1,5 @@
+import re
+
 from aqt.utils import tooltip
 
 from .anki_version_detection import anki_point_version
@@ -79,6 +81,53 @@ def onSearchEditTextChange(parent,
     else:
         before = all_text[:cursorpos]
         after = all_text[cursorpos:]
+    
+
+    # This offers similar functionality to 
+    #     - my addon "browser search aliases/abbreviations", https://ankiweb.net/shared/info/546509374
+    #       difference: the search aliases replaces only when you execute the search
+    #       I'm not sure if this is worse, e.g. maybe I don't know that the orange flag has the number two.
+    #       Direct replacements after each character typed means I'll never have an understandable term like "florange"
+    #       in a longer search term that I might want to check ...
+    #     - Symbols as you type, https://ankiweb.net/shared/info/2040501954
+    #       difference: "Symbols as you type" does not offer a regex replacement in 2024-02
+    #       Both addons can be used at the same time.
+
+    if gc("--aliases Replace while typing") and not after:
+        alias_dict = gc("--aliases dictionary")
+        if alias_dict and isinstance(alias_dict, dict):
+            """
+            the following doesn't make sense here because I replace after each char typed
+            so I can never get to longer strings (as in my separate alias addon)
+            # sort dict by length of keys, so that "added:1" is replaced before "added:"
+            # in python 3.7 keeps insertion order
+            # for original in sorted(alias_dict, key=len, reverse=True):
+            for abbrev in sorted(alias_dict, key=lambda k: len(alias_dict[k]), reverse=True):
+                repl = alias_dict[abbrev]
+                if ...
+            """
+            for abbrev, repl in alias_dict.items():
+                if before == abbrev or before.endswith(f" {abbrev}"):
+                    before = before.replace(abbrev, repl)
+                    func_settext(before + after)
+                    newpos = len(before + after)            
+                    return (newpos, False)
+
+    if gc("--aliases_regex Replace while typing") and not after:
+        regex_alias_dict = gc("--aliases_regex dictionary")
+        if regex_alias_dict and isinstance(regex_alias_dict, dict):
+            for abbrev, repl in regex_alias_dict.items():
+                before, number_replacements = re.subn(abbrev, repl, before)
+                if number_replacements:
+                    func_settext(before + after)
+                    newpos = len(before + after)            
+                    return (newpos, False)
+
+
+
+
+
+
     if after and not after.startswith(" "):
         after = " " + after
 
