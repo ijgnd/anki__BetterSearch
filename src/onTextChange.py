@@ -113,6 +113,45 @@ def onSearchEditTextChange(parent,
                     newpos = len(before + after)            
                     return (newpos, False)
 
+    """
+    e.g.:
+
+        --aliases_regex dictionary": {
+            "aa(\\d{1,4})(?= |$)" : "added:\\1",
+            "ee(\\d{1,4})(?= |$)" : "edited:\\1",
+            "ii(\\d{1,4})(?= |$)" : "introduced:\\1",
+            "rr(\\d{1,4})(?= |$|:)" : "rated:\\1",
+            "nid(\\d{13})(?= |$)" : "nid:\\1",
+            "cid(\\d{13})(?= |$)" : "cid:\\1",
+            "due(\\!?=?>?<?-?)(?=\\d{1,4})" : "prop:due\\1",
+            "laps(\\!?=?>?<?-?)(?=\\d{1,4})" : "prop:lapses\\1",
+            "lapses(\\!?=?>?<?-?)(?=\\d{1,4})" : "prop:lapses\\1",
+            "ease(\\!?=?>?<?-?)(?=\\d{1,4})" : "prop:ease\\1",
+            "ivl(\\!?=?>?<?-?)(?=\\d{1,4})" : "prop:ivl\\1",
+            "isdue(?= |$)": "is:due",
+            "isnew(?= |$)": "is:new",
+            "islearn(?= |$)" : "is:learn",
+            "isreview(?= |$)" : "is:review",
+            "issuspended(?= |$)" : "is:suspended",
+            "issuspend(?= |$)" : "is:suspended",
+            "isburied(?= |$)" : "is:buried",
+            "isbury(?= |$)" : "is:buried",
+            "flag(\\d{1,2})(?= |$)": "flag:\\1",
+            "flred(?= |$)" : "flag:1",
+            "florange(?= |$)" : "flag:2",
+            "flgreen(?= |$)" : "flag:3",
+            "flblue(?= |$)" : "flag:4",
+            "flpink(?= |$)" : "flag:5",
+            "flturquoise(?= |$)" : "flag:6",
+            "fltur(?= |$)" : "flag:6",
+            "flpurple(?= |$)" : "flag7",
+            "flpurp(?= |$)" : "flag7",
+            "flpur(?= |$)" : "flag7",
+            "flpu(?= |$)" : "flag7",
+            "flp(?= |$)" : "flag7",
+            "retag:": "tag:re:"
+        },
+    """
     if gc("--aliases_regex Replace while typing") and not after:
         regex_alias_dict = gc("--aliases_regex dictionary")
         if regex_alias_dict and isinstance(regex_alias_dict, dict):
