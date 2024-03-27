@@ -81,7 +81,6 @@ allowed_values_dict = {("misc", "config dialog style"): ["GroupBoxes", "Collapsi
 
 def on_settings():
     gui_config_helper(
-        addon_name="BetterSearch",
         text_above="",
         text_below="",
         text_right_side="config.md",
