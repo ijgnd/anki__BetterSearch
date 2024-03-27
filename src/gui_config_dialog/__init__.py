@@ -29,7 +29,6 @@ def get_default_conf_for_this_addon(addon_folder_name):
 
 def gui_config_helper(
         addon_name,
-        addon_folder,
         text_above,
         text_below,
         text_right_side,
@@ -52,12 +51,14 @@ def gui_config_helper(
     ## nested test:
     # list_of_dict_keys_as_tuples_that_should_create_sections.extend([("misc", "regex replacements while typing")])
 
-    addon_path = os.path.dirname(os.path.dirname(__file__))
-    schema = read_json_file_abs(os.path.join(addon_path, "config.schema.json"))
+    addon_abs_path = os.path.dirname(os.path.dirname(__file__))
+    addon_folder_name = os.path.basename(addon_abs_path)
+    schema = read_json_file_abs(os.path.join(addon_abs_path, "config.schema.json"))
     if not schema:
         schema = {}
 
-    default_conf = get_default_conf_for_this_addon(addon_folder)
+
+    default_conf = get_default_conf_for_this_addon(addon_folder_name)
     nested_DEFAULT_conf_list = []
     for key, val in default_conf.items():
         nested_DEFAULT_conf_list.append([key, "", copy.deepcopy(val), ""])
