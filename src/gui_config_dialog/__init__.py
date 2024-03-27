@@ -60,6 +60,9 @@ def gui_config_helper(
         if os.path.isfile(config_md_abs):
             with open(config_md_abs) as f:
                 text_right_side = f.read()
+        else:
+            # avoid getting the text "config.md" on top of the dialog ...
+            text_right_side == ""
 
     addon_name = ""
     places_for_name = ["meta.json", "manifest.json"]
