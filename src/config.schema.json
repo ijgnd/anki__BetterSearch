@@ -291,7 +291,7 @@
                 "description": ""
             }
         },
-        "open window after typing these search operators": {
+        "open filter dialog after typing these search operators": {
             "type": "object",
             "properties": {
                 "modify_card": {

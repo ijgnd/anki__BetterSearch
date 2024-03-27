@@ -63,7 +63,7 @@
         "Multiline Dialog: show Button Bar": true,
         "Multiline Dialog: use bigger typewriter font": true
     },
-    "open window after typing these search operators": {
+    "open filter dialog after typing these search operators": {
         "modify_card": true,
         "modify_deck": true,
         "modify_field": true,

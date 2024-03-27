@@ -121,15 +121,15 @@ old_conf_up_to_202303_to_new_conf_dict = {
     # "modifier for negate": None,
     # "modifier for insert current text only": None,
     # "modify: window opened by search strings triggers search by default": None,
-    "modify_card": ["open window after typing these search operators", "modify_card"],
-    "modify_deck": ["open window after typing these search operators", "modify_deck"],
-    "modify_field": ["open window after typing these search operators", "modify_field"],
-    "modify_flag": ["open window after typing these search operators", "modify_flag"],
-    "modify_is": ["open window after typing these search operators", "modify_is"],
-    "modify_is__show_explanations": ["open window after typing these search operators", "modify_is__show_explanations"],
-    "modify_note": ["open window after typing these search operators", "modify_note"],
-    "modify_props": ["open window after typing these search operators", "modify_props"],
-    "modify_tag": ["open window after typing these search operators", "modify_tag"],
+    "modify_card": ["open filter dialog after typing these search operators", "modify_card"],
+    "modify_deck": ["open filter dialog after typing these search operators", "modify_deck"],
+    "modify_field": ["open filter dialog after typing these search operators", "modify_field"],
+    "modify_flag": ["open filter dialog after typing these search operators", "modify_flag"],
+    "modify_is": ["open filter dialog after typing these search operators", "modify_is"],
+    "modify_is__show_explanations": ["open filter dialog after typing these search operators", "modify_is__show_explanations"],
+    "modify_note": ["open filter dialog after typing these search operators", "modify_note"],
+    "modify_props": ["open filter dialog after typing these search operators", "modify_props"],
+    "modify_tag": ["open filter dialog after typing these search operators", "modify_tag"],
     # "shortcut - focus search box and card selector dialog": None,  # no one is using those and they might interfer with other addons
     # "shortcut - focus search box and deck selector dialog": None,
     # "shortcut - focus search box and note selector dialog": None,
@@ -159,7 +159,7 @@ and [Anki: How to Find Cards and Tags in the Browser](https://www.youtube.com/wa
 
 Most of the settings are not relevant for regular users. You'll find the settings mentioned in
 the Anking videos below in the sections "browser shortcuts" and "custom search operators for 
-custom filter dialogs" and "open window after typing these search operators".
+custom filter dialogs" and "open filter dialog after typing these search operators".
 
 Override keys are no longer working in this version. Also some config options from old versions were removed. 
 I removed the functionality to just insert the current text from the filter dialog: Just use 

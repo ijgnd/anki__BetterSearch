@@ -4,29 +4,29 @@ from .config import gc
 # for multiline add-on
 def help_string_for_actions_used():
     lines = []
-    if gc(["open window after typing these search operators", "modify_note"]):
+    if gc(["open filter dialog after typing these search operators", "modify_note"]):
         s = '"note:" filter by note type (model) name'
         lines.append(s)
-    if gc(["open window after typing these search operators", "modify_card"]):
+    if gc(["open filter dialog after typing these search operators", "modify_card"]):
         s = '"card:" filter for card (type) names'
         lines.append(s)
-    if gc(["open window after typing these search operators", "modify_field"]):
+    if gc(["open filter dialog after typing these search operators", "modify_field"]):
         s = '"field:" filter by field name'
         lines.append(s)
-    if gc(["open window after typing these search operators", "modify_deck"]):
+    if gc(["open filter dialog after typing these search operators", "modify_deck"]):
         s = '"deck:" filter by deck name'
         lines.append(s)
     s = '"ffn:" select two filters: field from note'
     lines.append(s)
     s = '"cfn:" select two filters: card from note'
     lines.append(s)
-    if gc(["open window after typing these search operators", "modify_tag"]):
+    if gc(["open filter dialog after typing these search operators", "modify_tag"]):
         s = '"tag:" filter by tag'
         lines.append(s)
-    if gc(["open window after typing these search operators", "modify_is"]):
+    if gc(["open filter dialog after typing these search operators", "modify_is"]):
         s = '"is:" filter by card state'
         lines.append(s)
-    if gc(["open window after typing these search operators", "modify_props"]):
+    if gc(["open filter dialog after typing these search operators", "modify_props"]):
         s = '"prop:" filter by card properties (like due date, ease)'
         lines.append(s)
     if gc(["custom search operators for custom filter dialogs", "custom tag&deck string 1"]):

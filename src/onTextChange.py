@@ -568,7 +568,7 @@ def onSearchEditTextChange(
         }
 
     if matches_search_operator(before, "field:") and (
-        gc(["open window after typing these search operators", "modify_field"]) or from_button
+        gc(["open filter dialog after typing these search operators", "modify_field"]) or from_button
     ):
         field_infotext = """
 <div><b>This dialog inserts the field name to search. After closing the dialog you <br>
@@ -593,7 +593,7 @@ which doesn't limit your search. You must put your search term between the "**".
         }
 
     if matches_search_operator(before, "prop:") and (
-        gc(["open window after typing these search operators", "modify_props"]) or from_button
+        gc(["open filter dialog after typing these search operators", "modify_props"]) or from_button
     ):
         it = "<b>After closing the dialog you must adjust what's inserted with your numbers</b>"
         prefixed_with_minus = True if minus_precedes_search_operator(before, "prop:") else False
@@ -614,9 +614,9 @@ which doesn't limit your search. You must put your search term between the "**".
         }
 
     if matches_search_operator(before, "is:") and (
-        gc(["open window after typing these search operators", "modify_is"]) or from_button
+        gc(["open filter dialog after typing these search operators", "modify_is"]) or from_button
     ):
-        expl = gc(["open window after typing these search operators", "modify_is__show_explanations"])
+        expl = gc(["open filter dialog after typing these search operators", "modify_is__show_explanations"])
         prefixed_with_minus = True if minus_precedes_search_operator(before, "is:") else False
         vals = {
             "remove_from_end_of_before": (0 if expl else -3) - (1 if prefixed_with_minus else 0),
@@ -635,7 +635,7 @@ which doesn't limit your search. You must put your search term between the "**".
         }
 
     if matches_search_operator(before, "flag:") and (
-        gc(["open window after typing these search operators", "modify_flag"]) or from_button
+        gc(["open filter dialog after typing these search operators", "modify_flag"]) or from_button
     ):
         prefixed_with_minus = True if minus_precedes_search_operator(before, "flag:") else False
         vals = {
@@ -663,7 +663,7 @@ which doesn't limit your search. You must put your search term between the "**".
         }
 
     tag_search = matches_search_operator(before, "tag:") and (
-        gc(["open window after typing these search operators", "modify_tag"]) or from_button
+        gc(["open filter dialog after typing these search operators", "modify_tag"]) or from_button
     )
     if tag_search:
         prefixed_with_minus = True if minus_precedes_search_operator(before, "tag:") else False
@@ -685,7 +685,7 @@ which doesn't limit your search. You must put your search term between the "**".
         }
 
     elif matches_search_operator(before, "note:") and (
-        gc(["open window after typing these search operators", "modify_note"]) or from_button
+        gc(["open filter dialog after typing these search operators", "modify_note"]) or from_button
     ):
         prefixed_with_minus = True if minus_precedes_search_operator(before, "note:") else False
         vals = {
@@ -705,7 +705,7 @@ which doesn't limit your search. You must put your search term between the "**".
         }
 
     elif matches_search_operator(before, "card:") and (
-        gc(["open window after typing these search operators", "modify_card"]) or from_button
+        gc(["open filter dialog after typing these search operators", "modify_card"]) or from_button
     ):
         prefixed_with_minus = True if minus_precedes_search_operator(before, "card:") else False
         vals = {
@@ -786,7 +786,7 @@ which doesn't limit your search. You must put your search term between the "**".
         }
 
     elif matches_search_operator(before, "deck:") and gc(
-        ["open window after typing these search operators", "modify_deck"]
+        ["open filter dialog after typing these search operators", "modify_deck"]
     ):
         prefixed_with_minus = True if minus_precedes_search_operator(before, "deck:") else False
         vals = {
@@ -935,7 +935,7 @@ which doesn't limit your search. You must put your search term between the "**".
             elif before[-5:] == "note:":
                 if d.addstar and not override_add_star:
                     member = member + "*"
-            elif before[-5:] == "deck:" and gc(["open window after typing these search operators", "modify_deck"]):
+            elif before[-5:] == "deck:" and gc(["open filter dialog after typing these search operators", "modify_deck"]):
                 if d.addstar and not override_add_star:
                     member = member + "*"
                 join_list_with = " " if is_exclusion else " OR "
