@@ -204,6 +204,7 @@ class ConfDialog(QDialog):
         labels_or_side_explanations_threshold,
         dict_settings_and_their_allowed_values,
         conf_gui_type,
+        workaround_spacer_height,
     ):
         # super().__init__(parent)
         QDialog.__init__(self, parent, Qt.WindowType.Window)
@@ -225,6 +226,7 @@ class ConfDialog(QDialog):
         self.labels_or_side_explanations_threshold = labels_or_side_explanations_threshold
         self.dict_allowed_values = dict_settings_and_their_allowed_values
         self.conf_gui_type = conf_gui_type
+        self.workaround_spacer_height = workaround_spacer_height
 
         self.check_input()
         self.conf = sort_nested_dict_alphabetically(self.conf)
@@ -301,7 +303,7 @@ class ConfDialog(QDialog):
                 # is too small. A proper solution would be to resize the parent which should
                 # be some work (if it's the custom collapsible element I use)
                 # width(int), heigt(int), hPolicy(QSizePolicy), vPolicy(QSizePolicy)
-                spacer = QSpacerItem(10, 125, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding)
+                spacer = QSpacerItem(10, self.workaround_spacer_height, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding)
                 outer_layout.addItem(spacer)
         if has_collapsible:
             # this is an ugly workaround for two problems:
@@ -309,7 +311,7 @@ class ConfDialog(QDialog):
             #    much spacing around the non collapsible elements, i.e. the rows are not aligned to the top.
             #  - avoid too much space at bottom of collapsible
             # width(int), heigt(int), hPolicy(QSizePolicy), vPolicy(QSizePolicy)
-            spacer = QSpacerItem(10, 125, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding)
+            spacer = QSpacerItem(10, self.workaround_spacer_height, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding)
             outer_layout.addItem(spacer)
 
         if not desc_or_right_text:

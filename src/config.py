@@ -1,6 +1,7 @@
 import copy
 import json
 import os
+from pprint import pprint as pp
 
 from aqt import mw
 from aqt.utils import showInfo, tooltip
@@ -206,24 +207,21 @@ def on_settings():
         return
 
     list_of_dict_keys_as_tuples_that_should_create_sections = [(l,) for l in list(current_conf.keys())]
-    list_of_dict_keys_as_tuples_that_should_create_sections.append(("misc", "nested test"))
-    # list_of_dict_keys_as_tuples_that_should_create_sections = [("misc",)]
-    # list_of_dict_keys_as_tuples_that_should_create_sections = [("misc",), ("misc", "nested test")]
+    ## nested test:
+    # list_of_dict_keys_as_tuples_that_should_create_sections.extend([("misc", "regex replacements while typing")])
 
     # I'm assuming you rarely need an explanation. So I think a flat dict
     # with tuples is simpler than a nested dict that mirrors your full conf
     # or reading from a config.schema.json
     explanations_dict = {
         # ("misc", "config dialog style"): "This settings allows you change how the gui config dialog looks like",
-        # ("misc",): "This text should go the right side. Bla sdfas fasdf asfasd fasdf asdf asdf asdf asdf asdf asdf sadf sadf ",
-        # ("browser shortcuts",): "label",
     }
 
     # I'm assuming you rarely have limited allowed values. So I think a flat dict
     # with tuples is simpler than a nested dict that mirrors your full conf
     # or reading from a config.schema.json
     allowed_values_dict = {("misc", "config dialog style"): ["GroupBoxes", "CollapsibleSections"]}
-    print(f"allowed_values_dict is --{type(allowed_values_dict)}--")
+    # print(f"allowed_values_dict is --{type(allowed_values_dict)}--")
 
     nested_dialog_conf_list = []
     for key, val in current_conf.items():
@@ -255,6 +253,7 @@ def on_settings():
         labels_or_side_explanations_threshold=60,
         dict_settings_and_their_allowed_values=allowed_values_dict,
         conf_gui_type=gc(["misc", "config dialog style"]),
+        workaround_spacer_height = 125,
     )
     if d.exec():
         mw.addonManager.writeConfig(__name__, d.new_conf)
