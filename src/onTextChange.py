@@ -935,7 +935,9 @@ which doesn't limit your search. You must put your search term between the "**".
             elif before[-5:] == "note:":
                 if d.addstar and not override_add_star:
                     member = member + "*"
-            elif before[-5:] == "deck:" and gc(["open filter dialog after typing these search operators", "modify_deck"]):
+            elif before[-5:] == "deck:" and gc(
+                ["open filter dialog after typing these search operators", "modify_deck"]
+            ):
                 if d.addstar and not override_add_star:
                     member = member + "*"
                 join_list_with = " " if is_exclusion else " OR "

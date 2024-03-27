@@ -66,7 +66,10 @@ old_conf_up_to_202303_to_new_conf_dict = {
     "modify_field": ["open filter dialog after typing these search operators", "modify_field"],
     "modify_flag": ["open filter dialog after typing these search operators", "modify_flag"],
     "modify_is": ["open filter dialog after typing these search operators", "modify_is"],
-    "modify_is__show_explanations": ["open filter dialog after typing these search operators", "modify_is__show_explanations"],
+    "modify_is__show_explanations": [
+        "open filter dialog after typing these search operators",
+        "modify_is__show_explanations",
+    ],
     "modify_note": ["open filter dialog after typing these search operators", "modify_note"],
     "modify_props": ["open filter dialog after typing these search operators", "modify_props"],
     "modify_tag": ["open filter dialog after typing these search operators", "modify_tag"],
@@ -88,7 +91,6 @@ old_conf_up_to_202303_to_new_conf_dict = {
     "tag dialog exit on re:": ["filter dialog", "filter dialog for tags: exit on typing re:"],
     # "tag insertion - add '*' to matches": None,
 }
-
 
 
 ##### update to new config from 2024-04

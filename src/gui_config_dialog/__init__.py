@@ -63,6 +63,11 @@ def gui_config_helper(
     for key, val in default_conf.items():
         nested_DEFAULT_conf_list.append([key, "", copy.deepcopy(val), ""])
 
+    if text_right_side == "config.md":
+        config_md_abs = os.path.join(addon_abs_path, "config.md")
+        if os.path.isfile(config_md_abs):
+            with open(config_md_abs) as f:
+                text_right_side = f.read()
 
     d = ConfDialog(
         parent=mw,

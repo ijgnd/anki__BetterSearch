@@ -120,14 +120,16 @@ except:
 else:
     in_full_anki_with_gui = True
     from . import browser_shortcuts_for_insert_dialog
-    from . import config    
+    from . import config
     from . import ui_browser
     from . import ui_browser_modify_searchEdit
     from . import ui_filtered_decks_dialog
 
     from .gui_config_dialog.gui_config_dialog import show_test_config_dialogs_on_startup
     from aqt import gui_hooks
+
     gui_hooks.profile_did_open.append(show_test_config_dialogs_on_startup)
 
     from .config_update import maybe_update_config
+
     maybe_update_config()
