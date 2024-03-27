@@ -163,7 +163,7 @@ custom filter dialogs" and "open filter dialog after typing these search operato
 
 Override keys are no longer working in this version. Also some config options from old versions were removed. 
 I removed the functionality to just insert the current text from the filter dialog: Just use 
-Ctrl+A,Esc,Ctrl+V. I also removed the functionality to add a star at the end, just edit the 
+Ctrl+A,Ctrl+C,Esc,Ctrl+V. I also removed the functionality to add a star at the end, just edit the 
 inserted string after closing the dialog. Those features were hardly used based on reports I got.
 Whether closing the dialog triggers a search can now only be set in the lower left of each filter
 dialog by using a checkbox.
