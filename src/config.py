@@ -90,8 +90,8 @@ def on_settings():
         dict_settings_tuple_to_labels_or_side_explanations_or_tooltips=explanations_dict,
         labels_or_side_explanations_threshold=60,
         dict_settings_and_their_allowed_values=allowed_values_dict,
-        conf_gui_type=gc(["misc", "config dialog style"]),
         workaround_spacer_height=125,
+        conf_gui_type=gc(["misc", "config dialog style"]),  # allowed: "CollapsibleSections" (default), "GroupBoxes"
     )
 
 

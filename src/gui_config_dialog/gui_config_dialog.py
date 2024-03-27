@@ -557,11 +557,10 @@ QTextEdit, QListView {{
                 else:
                     widget = subdict.get("widget")
                     if widget:
-                        print(f"for key {key} widget is {widget}")
                         success, current = get_value(widget)
                         if not success:
                             msg = f"Can't save: error in key '{key}': {current}"
-                            print(msg)
+                            print(f"key: {key}, widget: {widget}, error-msg: {msg}")
                             tooltip(msg, period=7000, parent=self)
                             return None
                         else:

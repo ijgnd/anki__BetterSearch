@@ -37,10 +37,12 @@ def gui_config_helper(
         dict_settings_tuple_to_labels_or_side_explanations_or_tooltips,
         labels_or_side_explanations_threshold,
         dict_settings_and_their_allowed_values,
-        conf_gui_type,
-        workaround_spacer_height,
+        workaround_spacer_height=125,
+        conf_gui_type="CollapsibleSections",  # or "GroupBoxes"
     ):
-
+    addon_abs_path = os.path.dirname(os.path.dirname(__file__))
+    addon_folder_name = os.path.basename(addon_abs_path)
+    default_conf = get_default_conf_for_this_addon(addon_folder_name)
     current_conf = mw.addonManager.getConfig(__name__)
     if not current_conf:
         tooltip("No Config Available. Aborting ...")
@@ -51,17 +53,9 @@ def gui_config_helper(
     ## nested test:
     # list_of_dict_keys_as_tuples_that_should_create_sections.extend([("misc", "regex replacements while typing")])
 
-    addon_abs_path = os.path.dirname(os.path.dirname(__file__))
-    addon_folder_name = os.path.basename(addon_abs_path)
     schema = read_json_file_abs(os.path.join(addon_abs_path, "config.schema.json"))
     if not schema:
         schema = {}
-
-
-    default_conf = get_default_conf_for_this_addon(addon_folder_name)
-    nested_DEFAULT_conf_list = []
-    for key, val in default_conf.items():
-        nested_DEFAULT_conf_list.append([key, "", copy.deepcopy(val), ""])
 
     if text_right_side == "config.md":
         config_md_abs = os.path.join(addon_abs_path, "config.md")
