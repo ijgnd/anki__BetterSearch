@@ -267,7 +267,6 @@ if gc(["misc", "use gui config window instead of built-in dialog"]):
 ##### update to new config from 2024-04
 
 
-# https://www.phind.com/search?cache=or8dmk52ywmdk6nc2def61e1
 def update_nested_dict(nested_dict, keys, new_value):
     if len(keys) == 1:
         nested_dict[keys[0]] = new_value
