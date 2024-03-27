@@ -22,20 +22,19 @@ from aqt.utils import (
     tooltip,
 )
 
-from .anki_version_detection import anki_point_version
 from .button_helper import (
     button_helper,
     text_change_helper,
 )
 from .config import gc
 from .dialog__help import MiniHelpSearch, mini_search_help_dialog_title
-from .filter_button import filter_button_cls
+
 if qtmajor == 5:
     from .forms5 import search_box  # type: ignore  # noqa
 else:
     from .forms6 import search_box  # type: ignore  # noqa
-from .fuzzy_panel import FilterDialog
-from .helpers import (
+from .filter_dialog import FilterDialog
+from .hint import (
     browser_searchEdit_hint_shown,
 )
 from .split_string import (
@@ -62,10 +61,7 @@ class SearchBox(QDialog):
         self.mw = browser.mw
         self.col = browser.col
         QDialog.__init__(self, self.parent, Qt.WindowType.Window)
-        if anki_point_version < 45:
-            aqt.mw.setupDialogGC(self)
-        else:
-            aqt.mw.garbage_collect_on_dialog_finish(self)
+        aqt.mw.garbage_collect_on_dialog_finish(self)
         self.form = search_box.Ui_Dialog()
         self.form.setupUi(self)
         self.help_dialog = None
@@ -95,39 +91,38 @@ class SearchBox(QDialog):
         self.form.pb_history.clicked.connect(self.on_history)
 
         but_to_cut_dict = {
-            self.form.pb_nc: gc("shortcut - focus search box and card from note dialog", "Alt+H, x"),
-            self.form.pb_nf: gc("shortcut - focus search box and field from note dialog", "Alt+H, f"),
-            self.form.pb_deck: gc("shortcut - focus search box and deck selector dialog", "Alt+H, d"),
-            self.form.pb_tag: gc("shortcut - focus search box and tag selector dialog", "Alt+H, t"),
-            self.form.pb_card_props: gc("shortcut - focus search box and prop dialog", "Alt+H, p"),
-            self.form.pb_card_state: gc("shortcut - focus search box and is dialog", "Alt+H, s"),
-            self.form.pb_date_added: gc("shortcut - focus search box and date added dialog", "Alt+H, a"),
-            self.form.pb_date_rated: gc("shortcut - focus search box and date rated dialog", "Alt+H, r"),
-            self.form.pb_date_introduced: gc("shortcut - focus search box and date introduced dialog", "Alt+H, i"),
-            self.form.pb_date_edited: gc("shortcut - focus search box and date edited dialog", "Alt+H, e"),
-
+            self.form.pb_nc: gc(["browser shortcuts", "shortcut - focus search box and card from note dialog"], ""),
+            self.form.pb_nf: gc(["browser shortcuts", "shortcut - focus search box and field from note dialog"], ""),
+            self.form.pb_deck: gc(["browser shortcuts", "shortcut - focus search box and deck selector dialog"], ""),
+            self.form.pb_tag: gc(["browser shortcuts", "shortcut - focus search box and tag selector dialog"], ""),
+            self.form.pb_card_props: gc(["browser shortcuts", "shortcut - focus search box and prop dialog"], ""),
+            self.form.pb_card_state: gc(["browser shortcuts", "shortcut - focus search box and is dialog"], ""),
+            self.form.pb_date_added: gc(["browser shortcuts", "shortcut - focus search box and date added dialog"], ""),
+            self.form.pb_date_rated: gc(["browser shortcuts", "shortcut - focus search box and date rated dialog"], ""),
+            self.form.pb_date_introduced: gc(
+                ["browser shortcuts", "shortcut - focus search box and date introduced dialog"], ""
+            ),
+            self.form.pb_date_edited: gc(
+                ["browser shortcuts", "shortcut - focus search box and date edited dialog"], ""
+            ),
         }
         for but, cut in but_to_cut_dict.items():
             if cut:
-               but.setShortcut(shortcut(cut))   # aqt.utils.shortcut replaces ctrl with cmd for macos
-                    
+                but.setShortcut(shortcut(cut))  # aqt.utils.shortcut replaces ctrl with cmd for macos
+
         history_tooltip_text = "overwrites the contents of the field"
-        cut = gc("Multiline Dialog: Shortcut inside: Open History")
+        cut = gc(["multiline search window", "Multiline Dialog: Shortcut inside: Open History"])
         if cut:
             self.form.pb_history.setShortcut(QKeySequence(cut))
             history_tooltip_text += f"(shortcut: {cut})"
         self.form.pb_history.setToolTip(history_tooltip_text)
 
-        if 41 > anki_point_version >= 26 and gc("Multiline Dialog: show Filter Button (only for Anki versions <=2.1.40)"):
-            self.form.pb_filter.clicked.connect(self.filter_menu)
-            option_one_shown = True
-        else:
-            option_one_shown = False
-            self.form.pb_filter.setVisible(False)
-            self.form.ql_filter.setVisible(False)
+        option_one_shown = False
+        self.form.pb_filter.setVisible(False)
+        self.form.ql_filter.setVisible(False)
 
         option_two_shown = True
-        if not gc("Multiline Dialog: show Button Bar"):
+        if not gc(["multiline search window", "Multiline Dialog: show Button Bar"]):
             option_two_shown = False
             self.form.ql_button_bar.setVisible(False)
             self.form.pb_nc.setVisible(False)
@@ -141,7 +136,6 @@ class SearchBox(QDialog):
             self.form.pb_date_introduced.setVisible(False)
             self.form.pb_date_edited.setVisible(False)
 
-        
         label1 = "add filter from a nested menu. This is similar to the button from the top left of the browser:"
         label2 = "open dialog to select filter to limit by:"
         if option_one_shown and option_two_shown:
@@ -151,26 +145,29 @@ class SearchBox(QDialog):
         self.form.ql_button_bar.setText(label2)
 
         self.form.pb_nc.setToolTip('for note type use "note:",\nfor cards use "card:"')
-        self.form.pb_nf.setToolTip('for note type use "note:",\nfor fields use "field:"')       
+        self.form.pb_nf.setToolTip('for note type use "note:",\nfor fields use "field:"')
         self.form.pb_deck.setToolTip("deck:")
         self.form.pb_tag.setToolTip("tag:")
         self.form.pb_card_props.setToolTip("prop:")
         self.form.pb_card_state.setToolTip("is:")
-        st = gc("date range dialog for added: string")
-        self.form.pb_date_added.setToolTip(st)
-        st = gc("date range dialog for rated: string")
-        self.form.pb_date_rated.setToolTip(st)
-        st = gc("date range dialog for edited: string")
-        self.form.pb_date_edited.setToolTip(st)
-        if anki_point_version < 28:
-            self.form.pb_date_edited.setVisible(False)
-        st = gc("date range dialog for introduced: string")
-        self.form.pb_date_introduced.setToolTip(st)
-        if anki_point_version < 45:
-            self.form.pb_date_introduced.setVisible(False)
+        st = gc(["custom search operators for custom filter dialogs", "date range dialog for added: string"])
+        if st:
+            self.form.pb_date_added.setToolTip(st)
+        st = gc(["custom search operators for custom filter dialogs", "date range dialog for rated: string"])
+        if st:
+            self.form.pb_date_rated.setToolTip(st)
+        st = gc(["custom search operators for custom filter dialogs", "date range dialog for edited: string"])
+        if st:
+            self.form.pb_date_edited.setToolTip(st)
+        st = gc(["custom search operators for custom filter dialogs", "date range dialog for introduced: string"])
+        if st:
+            self.form.pb_date_introduced.setToolTip(st)
+        st = gc(["custom search operators for custom filter dialogs", "date range dialog for resched: string"])
+        if st:
+            self.form.pb_date_introduced.setToolTip(st)
 
     def config_pte(self):
-        #self.form.pte.setTabStopDistance(20)
+        # self.form.pte.setTabStopDistance(20)
         # as in  clayout
         if qtmajor == 5 and qtminor < 10:
             self.form.pte.setTabStopWidth(30)
@@ -180,11 +177,11 @@ class SearchBox(QDialog):
             else:
                 tab_width = self.fontMetrics().horizontalAdvance(" " * 4)
             self.form.pte.setTabStopDistance(tab_width)
-        if gc("Multiline Dialog: use bigger typewriter font"):
+        if gc(["multiline search window", "Multiline Dialog: use bigger typewriter font"]):
             font = QFont("Monospace")
             font.setStyleHint(QFont.StyleHint.TypeWriter)
             defaultFontSize = font.pointSize()
-            font.setPointSize(int(defaultFontSize*1.1))
+            font.setPointSize(int(defaultFontSize * 1.1))
             self.form.pte.setFont(font)
 
     def makeConnections(self):
@@ -195,17 +192,29 @@ class SearchBox(QDialog):
         self.form.pb_tag.clicked.connect(lambda _, a="tag:": self.onButton(a))
         self.form.pb_card_props.clicked.connect(lambda _, a="prop:": self.onButton(a))
         self.form.pb_card_state.clicked.connect(lambda _, a="is:": self.onButton(a))
-        da = gc("date range dialog for added: string", "dadded")
+        da = gc(["custom search operators for custom filter dialogs", "date range dialog for added: string"], "dadded")
         self.form.pb_date_added.clicked.connect(lambda _, a=da: self.onButton(a))
-        de = gc("date range dialog for edited: string", "dedited")
+        de = gc(
+            ["custom search operators for custom filter dialogs", "date range dialog for edited: string"], "dedited"
+        )
         self.form.pb_date_edited.clicked.connect(lambda _, a=de: self.onButton(a))
-        dr = gc("date range dialog for rated: string", "drated")
-        self.form.pb_date_rated.clicked.connect(lambda _, a=dr: self.onButton(a))
-        di = gc("date range dialog for introduced: string", "dintroduced")
+        drat = gc(
+            ["custom search operators for custom filter dialogs", "date range dialog for rated: string"], "drated"
+        )
+        self.form.pb_date_rated.clicked.connect(lambda _, a=drat: self.onButton(a))
+        di = gc(
+            ["custom search operators for custom filter dialogs", "date range dialog for introduced: string"],
+            "dintroduced",
+        )
         self.form.pb_date_introduced.clicked.connect(lambda _, a=di: self.onButton(a))
+        dresch = gc(
+            ["custom search operators for custom filter dialogs", "date range dialog for resched: string"],
+            "dresched",
+        )
+        self.form.pb_date_resched.clicked.connect(lambda _, a=dresch: self.onButton(a))
 
     def onButton(self, arg, remove_on_cancel=True):
-        # this will ultimately insert the arg into the QPlainTextEdit 
+        # this will ultimately insert the arg into the QPlainTextEdit
         # which will trigger onSearchEditTextChange
         button_helper(self.form.pte, self.browser, self.mw, self.col, arg, remove_on_cancel)
         self.raise_()
@@ -220,7 +229,7 @@ class SearchBox(QDialog):
         else:
             self.help_dialog = MiniHelpSearch(self)
             self.help_dialog.show()
-        #aqt.dialogs.open(mini_search_help_dialog_title, aqt.mw)
+        # aqt.dialogs.open(mini_search_help_dialog_title, aqt.mw)
 
     def help_long(self):
         openHelp("searching")
@@ -231,7 +240,7 @@ class SearchBox(QDialog):
         d = FilterDialog(
             parent=self.parent,
             parent_is_browser=True,
-            values=processed_list,
+            values_as_list_or_dict=processed_list,
             windowtitle="Filter Anki Browser Search History",
             adjPos=False,
             show_star=False,
@@ -239,21 +248,12 @@ class SearchBox(QDialog):
             infotext=False,
             show_prepend_minus_button=False,
             check_prepend_minus_button=False,
+            multi_selection_enabled=False,
         )
         if d.exec():
-            new = split_to_multiline(d.selkey)
+            new = split_to_multiline(d.sel_keys_list[0])
             self.form.pte.setPlainText(new)
-            self.form.pte.moveCursor(QTextCursor.End)
-
-    def filter_menu(self):
-        func_gettext = self.form.pte.toPlainText
-        func_settext = self.form.pte.setPlainText
-        d = filter_button_cls(self, self.browser, func_gettext, func_settext, False)
-        # detect if closed e.g. with "Esc"
-        if not hasattr(d, "txt") or not isinstance(d.txt, str):
-            self.form.pte.setFocus()
-            return
-        self.onButton(d.txt, False)
+            self.form.pte.moveCursor(QTextCursor.MoveOperation.End)
 
     def process_text(self):
         text = self.form.pte.toPlainText()
@@ -276,5 +276,5 @@ class SearchBox(QDialog):
             le.setText(self.newsearch)
             le.setFocus()
             self.browser.onSearchActivated()
-        
+
         QDialog.accept(self)

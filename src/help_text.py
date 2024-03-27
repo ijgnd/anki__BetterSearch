@@ -1,52 +1,54 @@
-from .anki_version_detection import anki_point_version
 from .config import gc
 
 
 # for multiline add-on
 def help_string_for_actions_used():
     lines = []
-    if gc("modify_note"):
+    if gc(["open window after typing these search operators", "modify_note"]):
         s = '"note:" filter by note type (model) name'
         lines.append(s)
-    if gc("modify_card"):
+    if gc(["open window after typing these search operators", "modify_card"]):
         s = '"card:" filter for card (type) names'
         lines.append(s)
-    if gc("modify_field"):
+    if gc(["open window after typing these search operators", "modify_field"]):
         s = '"field:" filter by field name'
         lines.append(s)
-    if gc("modify_deck"):
+    if gc(["open window after typing these search operators", "modify_deck"]):
         s = '"deck:" filter by deck name'
         lines.append(s)
     s = '"ffn:" select two filters: field from note'
     lines.append(s)
     s = '"cfn:" select two filters: card from note'
     lines.append(s)
-    if gc("modify_tag"):
+    if gc(["open window after typing these search operators", "modify_tag"]):
         s = '"tag:" filter by tag'
         lines.append(s)
-    if gc("modify_is"):
+    if gc(["open window after typing these search operators", "modify_is"]):
         s = '"is:" filter by card state'
         lines.append(s)
-    if gc("modify_props"):
+    if gc(["open window after typing these search operators", "modify_props"]):
         s = '"prop:" filter by card properties (like due date, ease)'
         lines.append(s)
-    if gc("custom tag&deck string 1"):
-        s = f'"{gc("custom tag&deck string 1")}": filter by deck or tag'
+    if gc(["custom search operators for custom filter dialogs", "custom tag&deck string 1"]):
+        s = f'"{gc(["custom search operators for custom filter dialogs", "custom tag&deck string 1"])}": filter by deck or tag'
         lines.append(s)
-    if gc("custom tag&deck string 2"):
-        s = f'"{gc("custom tag&deck string 2")}": filter by deck or tag'
+    if gc(["custom search operators for custom filter dialogs", "custom tag&deck string 2"]):
+        s = f'"{gc(["custom search operators for custom filter dialogs", "custom tag&deck string 2"])}": filter by deck or tag'
         lines.append(s)
-    if gc("date range dialog for added: string"):
-        s = f'"{gc("date range dialog for added: string")}": date range dialog for date added'
+    if gc(["custom search operators for custom filter dialogs", "date range dialog for added: string"]):
+        s = f'"{gc(["custom search operators for custom filter dialogs", "date range dialog for added: string"])}": date range dialog for date added'
         lines.append(s)
-    if gc("date range dialog for edited: string") and anki_point_version >= 28:
-        s = f'"{gc("date range dialog for edited: string")}": date range dialog for date edited'
+    if gc(["custom search operators for custom filter dialogs", "date range dialog for edited: string"]):
+        s = f'"{gc(["custom search operators for custom filter dialogs", "date range dialog for edited: string"])}": date range dialog for date edited'
         lines.append(s)
-    if gc("date range dialog for introduced: string") and anki_point_version >= 45:
-        s = f'"{gc("date range dialog for introduced: string")}": date range dialog for date introduced'
+    if gc(["custom search operators for custom filter dialogs", "date range dialog for introduced: string"]):
+        s = f'"{gc(["custom search operators for custom filter dialogs", "date range dialog for introduced: string"])}": date range dialog for date introduced'
         lines.append(s)
-    if gc("date range dialog for rated: string"):
-        s = f'"{gc("date range dialog for rated: string")}": date range dialog for date rated'
+    if gc(["custom search operators for custom filter dialogs", "date range dialog for resched: string"]):
+        s = f'"{gc(["custom search operators for custom filter dialogs", "date range dialog for resched: string"])}": date range dialog for date introduced'
+        lines.append(s)
+    if gc(["custom search operators for custom filter dialogs", "date range dialog for rated: string"]):
+        s = f'"{gc(["custom search operators for custom filter dialogs", "date range dialog for rated: string"])}": date range dialog for date rated'
         lines.append(s)
     s = """
 <div style="font-size: 120%;">
@@ -62,12 +64,13 @@ BetterSearch Add-on: terms/keywords that open a filter dialog:
     return s
 
 
-
-helptext = help_string_for_actions_used() + """
+helptext = (
+    help_string_for_actions_used()
+    + """
 <br>
 <div>
-The following section is copied from the manual in 2023-06-12. So you have the search section with you 
-even if you are offline. The downside is it might be dates. In the future the rest of this page might 
+The following section is copied from the manual in 2024-03-06. So you have the search section with you 
+even if you are offline. The downside is it might be dated. In the future the rest of this page might 
 get replaced with some shorter notes.
 </div>
 
@@ -230,7 +233,7 @@ matches notes with &quot;uber&quot;, &quot;über&quot;, &quot;Über&quot; and so
 matches &quot;は&quot;, &quot;ば&quot;, and &quot;ぱ&quot;</p>
 <p>Searches that ignore combining characters are slower than regular searches.</p>
 <h2 id="regular-expressions"><a class="header" href="#regular-expressions">Regular expressions</a></h2>
-<p>Anki 2.1.24+ and AnkiMobile 2.0.60+ support searching in notes with &quot;regular expressions&quot;,
+<p>Anki 2.1.24+, AnkiMobile 2.0.60+ and AnkiDroid 2.17+ support searching in notes with &quot;regular expressions&quot;,
 a standard and powerful way of searching in text.</p>
 <p>Start a search with <code>re:</code> to search by regular expression. To make things easier, Anki will
 treat the following as <a href="#raw-input">raw input</a>, so bear in mind the rules listed there.</p>
@@ -312,6 +315,16 @@ cards that have been answered less than 10 times</p>
 cards that have moved into relearning more than 3 times</p>
 <p><code>prop:ease!=2.5</code><br />
 cards easier or harder than default</p>
+<p><code>prop:cdn:d&gt;5</code> (Requires Anki 2.1.64+.)<br />
+cards with the value of <code>d</code> in custom data (usually refers to Difficulty in FSRS) greater than 5</p>
+<p><code>prop:cds:v=reschedule</code> (Requires Anki 23.10+.)<br />
+cards with the string <code>v</code> in custom data equal to <code>reschedule</code></p>
+<p><code>prop:s&gt;21</code> (Requires Anki 23.10+ and FSRS enabled.)<br />
+cards with stability greater than 21 days</p>
+<p><code>prop:d&gt;0.3</code> (Requires Anki 23.10+ and FSRS enabled.)<br />
+cards with difficulty greater than 0.3</p>
+<p><code>prop:r&lt;0.9</code> (Requires Anki 23.10+ and FSRS enabled.)<br />
+cards with retention less than 0.9</p>
 <h2 id="recent-events"><a class="header" href="#recent-events">Recent Events</a></h2>
 <h3 id="added"><a class="header" href="#added">Added</a></h3>
 <p><code>added:1</code><br />
@@ -417,3 +430,4 @@ all cards with card ids 123, 456 or 789</p>
 browser. These searches may also be helpful when doing add-on
 development or otherwise working closely with the database.</p>
 """
+)

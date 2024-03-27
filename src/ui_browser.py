@@ -7,49 +7,54 @@ from aqt.gui_hooks import (
 from aqt.qt import (
     QAction,
     QKeySequence,
-    QMenu,
     QShortcut,
     qconnect,
 )
-from .anki_version_detection import anki_point_version
-if anki_point_version >= 41:
-    from aqt.utils import (
-        TR,
-        tr,
-    )
+
+from aqt.utils import (
+    TR,
+    tr,
+)
 from aqt.utils import (
     openHelp,
+    showInfo,
     tooltip,
 )
 
-from .config import gc, wcs
-from .dialog__date import DateRangeDialog
+from .config import gc, on_settings
+from .dialog__date import get_date_range_string
 from .dialog__help import MiniHelpSearch
 from .dialog__multi_line import SearchBox
-from .fuzzy_panel import FilterDialog
-from .helpers import overrides
+from .filter_dialog import FilterDialog
+from .overrides import overrides
 from .split_string import split_to_multiline
-from .ui_browser_ComboReplacer import ComboReplacer  # noqa
 from .toolbar import getMenu
 
 
-def date_range_dialog_helper(self, term):
+def settings_helper():
+    txt = "After changing settings close the browser window so that your change take effect"
+    showInfo(txt)
+    on_settings()
+
+
+def date_range_dialog_helper(browser, search_operator):
     # self is browser
-    d = DateRangeDialog(self, term)
-    if d.exec():
-        trigger_search_after = gc("modify: window opened by search strings triggers search by default")
+    success, searchtext, trigger_search_after = get_date_range_string(
+        parent=browser, col=browser.col, search_operator=search_operator, prefixed_with_minus=False
+    )
+    if success:
         _, override_autosearch_default, _, _ = overrides()
         if override_autosearch_default:
             trigger_search_after ^= True
-        le = self.form.searchEdit.lineEdit()
-        prompt_for_current_version = self._searchPrompt if anki_point_version < 41 else tr(TR.BROWSING_SEARCH_BAR_HINT)
+        le = browser.form.searchEdit.lineEdit()
+        prompt_for_current_version = tr(TR.BROWSING_SEARCH_BAR_HINT)
         if le.text() == prompt_for_current_version:
-            new = d.searchtext
+            new = searchtext
         else:
-            new = le.text() + "  " + d.searchtext
+            new = le.text() + " " + searchtext
         le.setText(new)
         if trigger_search_after:
-            self.onSearchActivated()
+            browser.onSearchActivated()
 
 
 def open_multiline_searchwindow(browser):
@@ -64,15 +69,15 @@ def open_multiline_searchwindow(browser):
             browser.onSearchActivated()
 
 
-def search_history_helper(self):
+def search_history_helper(browser):
     # self is browser
     # similar to method from dialog__multi_line
-    hist_list = self.mw.pm.profile["searchHistory"]
+    hist_list = browser.mw.pm.profile["searchHistory"]
     processed_list = [split_to_multiline(e) for e in hist_list]
     d = FilterDialog(
-        parent=self,
+        parent=browser,
         parent_is_browser=True,
-        values=processed_list,
+        values_as_list_or_dict=processed_list,
         windowtitle="Filter Anki Browser Search History",
         adjPos=False,
         show_star=False,
@@ -80,12 +85,13 @@ def search_history_helper(self):
         infotext=False,
         show_prepend_minus_button=False,
         check_prepend_minus_button=False,
+        multi_selection_enabled=False,
     )
     if d.exec():
-        new = d.selkey.replace("\n", "  ")
-        le = self.form.searchEdit.lineEdit()
+        new = d.sel_keys_list[0].replace("\n", " ")
+        le = browser.form.searchEdit.lineEdit()
         le.setText(new)
-        self.onSearchActivated()
+        browser.onSearchActivated()
 
 
 def open_local_help_window(self):
@@ -95,12 +101,7 @@ def open_local_help_window(self):
     else:
         self.help_dialog = MiniHelpSearch(self)
         self.help_dialog.show()
-    #aqt.dialogs.open(mini_search_help_dialog_title, aqt.mw)
-
-
-def toggle_preference(what):
-    key = f"modify_{what}"
-    wcs(key=key, new_val=not gc(key))
+    # aqt.dialogs.open(mini_search_help_dialog_title, aqt.mw)
 
 
 def setup_browser_menu(self):
@@ -110,21 +111,26 @@ def setup_browser_menu(self):
     bs_menu = getMenu(self, "&BetterSearch")
     if not hasattr(self, "menuView"):
         self.menuBettersearch = bs_menu
-    cut = gc("Multiline Dialog: shortcut: open window")
+    cut1 = gc(["browser shortcuts", "Multiline Dialog: shortcut: open window"])
     action = QAction(self)
     action.setText("Show search string in multi-line dialog")
-    if cut:
-        action.setShortcut(QKeySequence(cut))
+    if cut1:
+        action.setShortcut(QKeySequence(cut1))
     bs_menu.addAction(action)
     action.triggered.connect(lambda _, b=self: open_multiline_searchwindow(b))
 
+    cut2 = gc(["browser shortcuts", "Multiline Dialog: shortcut: open window (alternative)"])
+    if cut2:
+        self.CutFilterDialogAlternative = QShortcut(QKeySequence(cut2), self)
+        qconnect(self.CutFilterDialogAlternative.activated, lambda b=self: open_multiline_searchwindow(b))
+
     self.BeSeAction = QAction(self)
     self.BeSeAction.setText("BetterSearch")
-    if cut:
-        self.BeSeAction.setToolTip(cut)
+    if cut1:
+        self.BeSeAction.setToolTip(cut1)
     self.BeSeAction.triggered.connect(lambda _, b=self: open_multiline_searchwindow(b))
 
-    cut = gc("shortcut - select entry from history in fuzzy dialog")
+    cut = gc(["browser shortcuts", "shortcut - select entry from history in fuzzy dialog"])
     # if cut:
     #    cm = QShortcut(QKeySequence(cut), self)
     #    qconnect(cm.activated, lambda b=self: search_history_helper(b))
@@ -142,11 +148,10 @@ def setup_browser_menu(self):
     bs_menu.addAction(action)
     action.triggered.connect(lambda _, b=self, t="added": date_range_dialog_helper(b, t))
 
-    if anki_point_version >= 28:
-        action = QAction(self)
-        action.setText("Show Date Range Dialog for Edited")
-        bs_menu.addAction(action)
-        action.triggered.connect(lambda _, b=self, t="edited": date_range_dialog_helper(b, t))
+    action = QAction(self)
+    action.setText("Show Date Range Dialog for Edited")
+    bs_menu.addAction(action)
+    action.triggered.connect(lambda _, b=self, t="edited": date_range_dialog_helper(b, t))
 
     action = QAction(self)
     action.setText("Show Date Range Dialog for Rated")
@@ -161,29 +166,16 @@ def setup_browser_menu(self):
     action.triggered.connect(lambda _: openHelp("searching"))
 
     action = QAction(self)
-    action.setText("Show Manual for Searching (offline copy, version from 2023-06)")
+    action.setText("Show Manual for Searching (offline copy, version from 2024-03)")
     bs_menu.addAction(action)
-    action.triggered.connect(lambda _,b=self: open_local_help_window(b))
+    action.triggered.connect(lambda _, b=self: open_local_help_window(b))
 
+    bs_menu.addSeparator()
 
-    edm = QMenu("(en-/dis-)able dialog for search terms/dialog triggered by ...", self)
-    bs_menu.addMenu(edm)
-    elements = [
-        "card",
-        "deck",
-        "field",
-        "flag",
-        "is",
-        "note",
-        "props",
-        "tag",
-    ]
-    for e in elements:
-        a = edm.addAction(f"{e}:")
-        a.setCheckable(True)
-        if gc(f"modify_{e}"):
-            a.setChecked(True)
-        a.toggled.connect(lambda _, arg=e: toggle_preference(arg))
+    action = QAction(self)
+    action.setText("AddonSettings")
+    bs_menu.addAction(action)
+    action.triggered.connect(lambda _: settings_helper())
 
 
 browser_menus_did_init.append(setup_browser_menu)  # noqa

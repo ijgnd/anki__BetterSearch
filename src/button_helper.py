@@ -3,7 +3,7 @@ from .onTextChange import onSearchEditTextChange
 
 # some changes
 def button_helper(pte, parent, mw, col, arg, remove_on_cancel=True):
-    # pte = QPlainTextEdit-Instance, 
+    # pte = QPlainTextEdit-Instance,
     # arg = string inserted by button that will later be processed
     #       by onSearchEditTextChange
 
@@ -40,26 +40,24 @@ def _button_helper(pte, parent, mw, col, arg, remove_on_cancel):
         all_text = new
         pos = newpos
 
-    text_change_helper(pte, parent, mw, col, before=all_text, before_pos=pos,from_button=True)
+    text_change_helper(pte, parent, mw, col, before=all_text, before_pos=pos, from_button=True)
 
 
 # only change: parent=self.parent, -> parent=self
-def text_change_helper(pte, parent, mw, col, before=None, before_pos=None,from_button=False):
+def text_change_helper(pte, parent, mw, col, before=None, before_pos=None, from_button=False):
     pos = pte.textCursor().position()
-    out = onSearchEditTextChange(
+    newtext, newpos, triggersearch = onSearchEditTextChange(
         parent=parent,
         move_dialog_in_browser=False,
         include_filtered_in_deck=True,
-        func_gettext=pte.toPlainText,
-        func_settext=pte.setPlainText,
+        input_text=pte.toPlainText(),
         cursorpos=pos,
-        mw=mw,
-        col=col,
         from_button=from_button,
-        )
-    if out:
+    )
+    if newtext != None:
+        pte.setPlainText(newtext)
         cursor = pte.textCursor()
-        cursor.setPosition(out[0])
+        cursor.setPosition(newpos)
         pte.setTextCursor(cursor)
     elif before is not None:
         pte.setPlainText(before)

@@ -35,8 +35,8 @@ def merge_to_oneline_string(list_):
     r = "\n".join(list_)
     # r = r.replace( "(",      "(\n" )  # this breaks some recent Anking tags that use xxx(2)xxx
     r = re.sub(r"(?<=\s)\(", "(\n", r)  # postive lookbehind: ( that's preceeded by a space
-    r = re.sub(r"\)(?=\s)",  "\n)", r)  # postive lookahead:  ) followed by a space
-    r = r.replace( "\n\n",   "\n"  )
+    r = re.sub(r"\)(?=\s)", "\n)", r)  # postive lookahead:  ) followed by a space
+    r = r.replace("\n\n", "\n")
     return r
 
 
@@ -45,7 +45,7 @@ def string_to_list__quoted_on_same_line(search_string):
     pos = 0
     str_len = len(search_string)
     results = []
-    current_snippet = ''
+    current_snippet = ""
     while pos < str_len:
         if search_string[pos:].startswith('"'):
             in_quotes = not in_quotes
@@ -53,13 +53,13 @@ def string_to_list__quoted_on_same_line(search_string):
                 # finish this snippet
                 if current_snippet:
                     results.append(current_snippet)
-                current_snippet = ''
+                current_snippet = ""
             pos += 1
-        elif search_string[pos] in (' ') and not in_quotes:
+        elif search_string[pos] in (" ") and not in_quotes:
             # push current snippet
             if current_snippet:
                 results.append(current_snippet)
-            current_snippet = ''
+            current_snippet = ""
             pos += 1
         else:
             current_snippet += search_string[pos]
@@ -70,9 +70,9 @@ def string_to_list__quoted_on_same_line(search_string):
     for i, val in enumerate(results):
         if " " in val:
             if val.startswith("-"):
-                results[i] = '-"' + val[1:]  + '"'
+                results[i] = '-"' + val[1:] + '"'
             else:
-                results[i] = '"' + val  + '"'
+                results[i] = '"' + val + '"'
     return results
 
 

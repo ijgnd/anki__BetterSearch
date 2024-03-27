@@ -1,8 +1,6 @@
 import os
 
-from anki.utils import (
-    is_lin
-)
+from anki.utils import is_lin
 
 import aqt
 
@@ -15,13 +13,11 @@ from aqt.utils import (
 from aqt.theme import theme_manager
 from aqt.webview import AnkiWebView
 
-from .anki_version_detection import anki_point_version
 from .help_text import helptext
 
 
 minihelp_geom_name = "minihelp"
 mini_search_help_dialog_title = "search_cheat_sheet"  # dialog manager
-
 
 
 # adjusted from my half-baked ir add-on
@@ -42,18 +38,18 @@ def move_window(left, right, newpos):
     lh = left.height()
     if newpos == "side-by-side":
         if rx > lw:  # if there's enough space left of the right dialog, don't move right
-                     # and just put the left dialog next to it.
+            # and just put the left dialog next to it.
             # try to level top of windows, doesn't really work on my computer?
-            if (height-ry) > lh:
+            if (height - ry) > lh:
                 ly = ry
-            left.setGeometry(rx-lw, ly, lw, lh)
+            left.setGeometry(rx - lw, ly, lw, lh)
         elif lw + rw <= width:  # if there's enough space on the screen, if you move the right dialog
-                               # move
-            leftspace = (width - (lw+rw))/2
+            # move
+            leftspace = (width - (lw + rw)) / 2
             # try to level top of windows, doesn't really work on my computer?
-            if (height-ry) > lh:
+            if (height - ry) > lh:
                 ly = ry
-            left.setGeometry( leftspace,      ly, lw, lh)
+            left.setGeometry(leftspace, ly, lw, lh)
             right.setGeometry(leftspace + lw, ry, rw, rh)
         else:  # total width over screen width: shrink and move
             # fully fixing is too complicated, just resize info box and move to left and hope for
@@ -61,9 +57,9 @@ def move_window(left, right, newpos):
             if lw > 350:
                 lw = 350
             # try to level top of windows, doesn't really work on my computer?
-            if (height-ry) > lh:
+            if (height - ry) > lh:
                 ly = ry
-            left.setGeometry(  0, ly, lw, lh)
+            left.setGeometry(0, ly, lw, lh)
             right.setGeometry(rx, ry, rw, rh)
 
 
@@ -83,10 +79,14 @@ def get_theme():
         filename = "sakura.css"
     return return_file_content(filename)
 
+
 def maybe_inject_css_for_night_mode_scrollbar():
     # copied over from 8ea9702 from anki__reviewer_deck_and_card_info_sidebar
     # TODO Fixme
-    return "" if not theme_manager.night_mode else """
+    return (
+        ""
+        if not theme_manager.night_mode
+        else """
 :root {
 --canvas:#2c2c2c;
 --scrollbar-bg:#454545;
@@ -137,6 +137,7 @@ html body:not(.isMac) *::-webkit-scrollbar-thumb:vertical {
     min-height: 40px;
 }
 """
+    )
 
 
 def help_as_webpage():
@@ -146,11 +147,11 @@ def help_as_webpage():
 %(SCROLLBAR_WORKAROUND)s
     </style>
 %(HELPTEXT)s
-"""  % {
-"THEME": get_theme(),
-"SCROLLBAR_WORKAROUND": maybe_inject_css_for_night_mode_scrollbar(),
-"HELPTEXT": helptext,
-}
+""" % {
+        "THEME": get_theme(),
+        "SCROLLBAR_WORKAROUND": maybe_inject_css_for_night_mode_scrollbar(),
+        "HELPTEXT": helptext,
+    }
 
 
 class AnkiWebViewWrapper(AnkiWebView):
@@ -158,20 +159,19 @@ class AnkiWebViewWrapper(AnkiWebView):
         # self.setHtml(help_as_webpage())
         pass
 
+
 # TODO maybe use https://stackoverflow.com/a/54888872 by eyllanesc
 # Since its from Feb 26, 2019 its CC BY-SA 4.0 (see https://stackoverflow.com/help/licensing)
 # so that it should be useable
 # also possibly relevant: https://doc.qt.io/qtforpython-6/examples/example_webenginewidgets_tabbedbrowser.html
+
 
 class MiniHelpSearch(QDialog):
     silentlyClose = True  # dialog manager
 
     def __init__(self, parent):
         QDialog.__init__(self, parent, Qt.WindowType.Window)
-        if anki_point_version < 45:
-            aqt.mw.setupDialogGC(self)
-        else:
-            aqt.mw.garbage_collect_on_dialog_finish(self)
+        aqt.mw.garbage_collect_on_dialog_finish(self)
         self.parent = parent
         self.setup_ui()
         self.setup_shortcuts()
@@ -184,11 +184,11 @@ class MiniHelpSearch(QDialog):
         self.setWindowTitle("Anki - Search Cheatsheet")
         self.vbox = QVBoxLayout()
         self.vbox.setContentsMargins(0, 0, 0, 0)
-        
+
         self.webview = AnkiWebViewWrapper()  # QWebEngineView
         self.webview.setHtml(help_as_webpage())
         self.vbox.addWidget(self.webview)
-        
+
         self.bottom_layout = QHBoxLayout()
 
         self.line_edit = QLineEdit()
@@ -199,7 +199,7 @@ class MiniHelpSearch(QDialog):
 
         # TODO when focusing the line edit this first button is also
         # focused and triggered by Return. So I do not need
-        # to connect the returnPressed signal (and if I did a 
+        # to connect the returnPressed signal (and if I did a
         # search would be run twice)
         # Though I wonder why this button has focus?
         # Ideally I should switch this with the prev button (but then
@@ -215,7 +215,7 @@ class MiniHelpSearch(QDialog):
         self.prev_button.setToolTip("Ctrl+R")
         self.prev_button.setMaximumWidth(40)
         self.bottom_layout.addWidget(self.prev_button)
-            
+
         self.close_bottom_button = QPushButton("x")
         self.close_bottom_button.clicked.connect(self.hide_bottom)
         self.close_bottom_button.setToolTip("Esc")
@@ -269,21 +269,21 @@ class MiniHelpSearch(QDialog):
 
     def log(self, text):
         pass
-        
+
     def on_text_change(self):
         self.log("on_text_change")
         self.on_find_next()
 
     def on_return_pressed(self):
-        self.log('on_return_pressed')
-        #self.on_find_next()
+        self.log("on_return_pressed")
+        # self.on_find_next()
 
     def handle_shortcut_find_next(self):
         if not self.bottom_is_visible:
             self.show_bottom()
             self.line_edit.setFocus()
         else:
-            self.log('handle_shortcut_find_next')
+            self.log("handle_shortcut_find_next")
             self.next_button.animateClick()
 
     def handle_shortcut_find_prev(self):
@@ -291,21 +291,21 @@ class MiniHelpSearch(QDialog):
             self.show_bottom()
             self.line_edit.setFocus()
         else:
-            self.log('handle_shortcut_find_prev')
-            self.prev_button.animateClick() 
-    
+            self.log("handle_shortcut_find_prev")
+            self.prev_button.animateClick()
+
     def on_find_previous(self):
-        self.log('on_find_previous')
+        self.log("on_find_previous")
         self.update_searching(QWebEnginePage.FindFlag.FindBackward)
 
     def on_find_next(self):
-        self.log('on_find_next')
+        self.log("on_find_next")
         self.update_searching()
 
     def update_searching(self, backward=False):
-        self.log('update_searching')
+        self.log("update_searching")
         if backward:
-            self.webview.findText(self.line_edit.text(), backward)  
+            self.webview.findText(self.line_edit.text(), backward)
         else:
             self.webview.findText(self.line_edit.text())
 
@@ -317,7 +317,7 @@ class MiniHelpSearch(QDialog):
             self.hide_bottom()
         else:
             self.parent.help_dialog = None
-            # print(f"in rejected, width: {self.width()}, height: {self.height()}") 
+            # print(f"in rejected, width: {self.width()}, height: {self.height()}")
             saveGeom(self, minihelp_geom_name)
             # for AnkiWebView:
             self.webview.cleanup()
@@ -329,4 +329,3 @@ class MiniHelpSearch(QDialog):
         saveGeom(self, minihelp_geom_name)
         # aqt.dialogs.markClosed(mini_search_help_dialog_title)  # dialog manager
         QDialog.accept(self)
-

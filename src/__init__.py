@@ -20,12 +20,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
 
-This add-on uses the file fuzzy_panel.py which has this copyright and permission notice:
+This add-on uses the file filter_dialog.py which has this copyright and permission notice:
 
     Copyright (c): 2018  Rene Schallner
                    2019- ijgnd
         
-    This file (fuzzy_panel.py) is free software: you can redistribute it and/or modify
+    This file (filter_dialog.py) is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
@@ -86,10 +86,24 @@ which have this copyright and permission notice:
 
 """
 
+try:
+    from aqt import mw
+except:
+    in_full_anki_with_gui = False
+else:
+    in_full_anki_with_gui = True
+    from . import browser_shortcuts_for_insert_dialog
+    from . import ui_browser
+    from . import ui_browser_modify_searchEdit
+    from . import ui_filtered_decks_dialog  # from .ui_filtered_decks_dialog import *
 
-from . import browser_shortcuts_for_insert_dialog
-from . import ui_browser
-from . import ui_browser_modify_searchEdit
-from . import ui_filtered_decks_dialog  # from .ui_filtered_decks_dialog import *
+    version = 3  # maybe useful when querying from other add-ons
 
-version = 2  # maybe useful when querying from other add-ons
+    from .dialog__config_helper import show_test_config_dialogs_on_startup
+    from aqt import gui_hooks
+
+    gui_hooks.profile_did_open.append(show_test_config_dialogs_on_startup)
+
+    from .config import maybe_update_config
+
+    maybe_update_config()

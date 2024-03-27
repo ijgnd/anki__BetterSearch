@@ -49,15 +49,11 @@ from aqt.qt import (
     pyqtSignal,
 )
 
-from .anki_version_detection import anki_point_version
 from .config import gc
-from .helpers import (
+from .hint import (
     browser_searchEdit_hint_shown,
 )
 from .onTextChange import onSearchEditTextChange
-
-
-
 
 
 def _onSearchActivated_dont_add_to_history(self):
@@ -81,25 +77,20 @@ def _onSearchActivated_dont_add_to_history(self):
     self.form.searchEdit.addItems(sh)
     self.mw.pm.profile["searchHistory"] = sh
     """
-    
+
     # keep track of search string so that we reuse identical search when
     # refreshing, rather than whatever is currently in the search field
     self._lastSearchTxt = txt
     self.search()
 
 
-
-
-
-
 class ComboReplacer(QPlainTextEdit):
     returnPressed = pyqtSignal()
     # add-on "symbols as you type" depends on this signal
-    # which is emited from the embeded lineEdit of a 
+    # which is emited from the embeded lineEdit of a
     # qcombobox
-    textEdited = pyqtSignal(str)  
+    textEdited = pyqtSignal(str)
 
-    
     def __init__(self, parent):
         self.parent = parent
         self.browser = parent
@@ -121,7 +112,7 @@ class ComboReplacer(QPlainTextEdit):
 
     def addItems(self, list_):
         pass
-    
+
     def clear(self):
         # _onSearchActivated clears but I don't need this here
         pass
@@ -136,26 +127,15 @@ class ComboReplacer(QPlainTextEdit):
         cursor.setPosition(pos)
         self.setTextCursor(cursor)
 
-
-
     def makeConnectionsEtc(self):
         self.textChanged.connect(self.text_change_helper)
 
     def keyPressEvent(self, event):
         key = event.key()
-        if key == Qt.Key_Space and gc("-Multiline bar Auto Search on space (only for Anki versions <=2.1.40)") and anki_point_version < 41:
-            _onSearchActivated_dont_add_to_history(self.browser)
         # modshift = True if (mw.app.keyboardModifiers() & Qt.ShiftModifier) else False
         # modctrl = True if (mw.app.keyboardModifiers() & Qt.ControlModifier) else False
         modalt = True if (mw.app.keyboardModifiers() & Qt.AltModifier) else False
         if modalt and key in (Qt.Key_Return, Qt.Key_Enter):
-            #self.returnPressed.emit()  # doesn't work - needed for add-ons?
-            
-            if gc("-Multiline bar Auto Search on space (only for Anki versions <=2.1.40)") and anki_point_version < 41:
-                _onSearchActivated_dont_add_to_history(self.browser)
-            # I use this complicated way for two reasons: It was very quick to make because
-            # I could reuse code I have. It was quicker than finding out how the
-            # pyqtSignal returnPressed would behave, etc.
             self.insert_newline()
         elif key in (Qt.Key_Return, Qt.Key_Enter):
             self.browser.onSearchActivated()
@@ -168,23 +148,20 @@ class ComboReplacer(QPlainTextEdit):
         new = all_text[:pos] + "\n" + all_text[pos:]
         self.setPlainText(new)
         cursor = self.textCursor()
-        cursor.setPosition(pos+1)
+        cursor.setPosition(pos + 1)
         self.setTextCursor(cursor)
 
     def text_change_helper(self):
         pos = self.textCursor().position()
-        out = onSearchEditTextChange(
+        newtext, newpos, triggersearch = onSearchEditTextChange(
             parent=self,
             move_dialog_in_browser=False,
             include_filtered_in_deck=True,
-            func_gettext=self.toPlainText,
-            func_settext=self.setPlainText,
+            input_text=self.toPlainText(),
             cursorpos=pos,
-            mw=self.browser.mw,
-            col=self.browser.col,
-            )
-        if out:
-            newpos, triggersearch = out
+        )
+        if newtext != None:
+            self.setPlainText(newtext)
             cursor = self.textCursor()
             cursor.setPosition(newpos)
             self.setTextCursor(cursor)
