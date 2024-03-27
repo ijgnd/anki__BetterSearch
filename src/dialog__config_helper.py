@@ -247,7 +247,7 @@ class ConfDialog(QDialog):
         outer_layout = QVBoxLayout()
         form_layout = False
         has_text_edit = False
-        has_no_collapsible = True
+        has_collapsible = False
 
         for key, val in this_conf_dict.items():
             this_full_key = this_conf_key + (key,)
@@ -257,7 +257,7 @@ class ConfDialog(QDialog):
             explan_text = self.dict_explanations.get(this_full_key)
             # print(f"...this_full_key is {this_full_key}")
             if isinstance(val, dict) and this_full_key in self.list_of_sections:
-                has_no_collapsible = False
+                has_collapsible = True
                 is_section = True
                 widget_with_conf_val = False
                 if self.conf_gui_type == "CollapsibleSections":
@@ -303,7 +303,7 @@ class ConfDialog(QDialog):
                 # width(int), heigt(int), hPolicy(QSizePolicy), vPolicy(QSizePolicy)
                 spacer = QSpacerItem(10, 125, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding)
                 outer_layout.addItem(spacer)
-        if not has_no_collapsible:
+        if has_collapsible:
             # this is an ugly workaround for two problems:
             #  - otherwise when collapsible is mixed with regular key-val conf on same level there's too
             #    much spacing around the non collapsible elements, i.e. the rows are not aligned to the top.
