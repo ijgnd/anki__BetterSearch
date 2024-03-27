@@ -99,7 +99,7 @@ else:
 
     version = 3  # maybe useful when querying from other add-ons
 
-    from .dialog__config_helper import show_test_config_dialogs_on_startup
+    from .gui_config_dialog import show_test_config_dialogs_on_startup
     from aqt import gui_hooks
 
     gui_hooks.profile_did_open.append(show_test_config_dialogs_on_startup)

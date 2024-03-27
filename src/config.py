@@ -5,7 +5,7 @@ import os
 from aqt import mw
 from aqt.utils import showInfo, tooltip
 
-from .dialog__config_helper import (
+from .gui_config_dialog import (
     ConfDialog,
 )
 
