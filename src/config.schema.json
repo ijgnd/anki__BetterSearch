@@ -344,12 +344,17 @@
         "regex replacements while typing": {
             "type": "object",
             "properties": {
+                "matching with normal strings: active": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": ""
+                },
                 "matching with normal strings: dictionary": {
                     "type": "object",
                     "default": {},
                     "description": ""
                 },
-                "matching with normal strings: enabled": {
+                "matching with regular expressions strings: active": {
                     "type": "boolean",
                     "default": false,
                     "description": ""
@@ -357,11 +362,6 @@
                 "matching with regular expressions strings: dictionary": {
                     "type": "object",
                     "default": {},
-                    "description": ""
-                },
-                "matching with regular expressions strings: enabled": {
-                    "type": "boolean",
-                    "default": false,
                     "description": ""
                 }
             }

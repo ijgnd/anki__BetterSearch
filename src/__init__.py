@@ -84,6 +84,33 @@ which have this copyright and permission notice:
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
 
+    
+This add-on reuses/modifies from https://github.com/cameel/auto-resizing-text-edit in gui_config_dialog/
+auto_resizing_text_widget.py which originally has this copyright and permission notice:
+
+    Copyright © Kamil Śliwak
+    Released under the MIT License.
+
+    
+This addon reuses/modifies https://github.com/MichaelVoelkel/qt-collapsible-section/blob/master/Section.py
+in gui_config_dialog/collapsible_section_for_qwidget. The original copyright and permission notice is this:
+
+    Elypson/qt-collapsible-section
+    (c) 2016 Michael A. Voelkel - michael.alexander.voelkel@gmail.com
+    This file is part of Elypson/qt-collapsible section.
+
+    Elypson/qt-collapsible-section is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, version 3 of the License, or
+    (at your option) any later version.
+
+    Elypson/qt-collapsible-section is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Elypson/qt-collapsible-section. If not, see <http:#www.gnu.org/licenses/>.
 """
 
 try:
@@ -93,17 +120,14 @@ except:
 else:
     in_full_anki_with_gui = True
     from . import browser_shortcuts_for_insert_dialog
+    from . import config    
     from . import ui_browser
     from . import ui_browser_modify_searchEdit
-    from . import ui_filtered_decks_dialog  # from .ui_filtered_decks_dialog import *
+    from . import ui_filtered_decks_dialog
 
-    version = 3  # maybe useful when querying from other add-ons
-
-    from .gui_config_dialog import show_test_config_dialogs_on_startup
+    from .gui_config_dialog.gui_config_dialog import show_test_config_dialogs_on_startup
     from aqt import gui_hooks
-
     gui_hooks.profile_did_open.append(show_test_config_dialogs_on_startup)
 
-    from .config import maybe_update_config
-
+    from .config_update import maybe_update_config
     maybe_update_config()

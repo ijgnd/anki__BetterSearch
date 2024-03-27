@@ -75,9 +75,9 @@
         "modify_tag": true
     },
     "regex replacements while typing": {
+        "matching with normal strings: active": false,
         "matching with normal strings: dictionary": {},
-        "matching with normal strings: enabled": false,
-        "matching with regular expressions strings: dictionary": {},
-        "matching with regular expressions strings: enabled": false
+        "matching with regular expressions strings: active": false,
+        "matching with regular expressions strings: dictionary": {}
     }
 }

@@ -213,7 +213,7 @@ class ConfDialog(QDialog):
         self.parent = parent
         self.addon_name = addon_name
         self.window_title = window_title
-        self.context = context
+        self.context = context  # at the moment only used to remember the dialog size
         self.text_above = text_above
         self.text_below = text_below
         self.text_right_side = text_right_side
@@ -244,7 +244,7 @@ class ConfDialog(QDialog):
         restoreGeom(self, self.context)
 
     def process_conf(self, this_conf_dict, this_conf_key, outer_widget, desc_or_right_text):
-        print(f"\n\n\n\n\n...........in process_conf and this_conf_key is --{this_conf_key}--")
+        # print(f"\n\n\n\n\n...........in process_conf and this_conf_key is --{this_conf_key}--")
         out_dict = {}
         outer_layout = QVBoxLayout()
         form_layout = False
@@ -254,8 +254,8 @@ class ConfDialog(QDialog):
         for key, val in this_conf_dict.items():
             this_full_key = this_conf_key + (key,)
             allowed_members = self.dict_allowed_values.get(this_full_key)
-            if allowed_members:
-                print(f"---allowed_members is {allowed_members} for key {key}")
+            # if allowed_members:
+            #     print(f"---allowed_members is {allowed_members} for key {key}")
             explan_text = self.dict_explanations.get(this_full_key)
             # print(f"...this_full_key is {this_full_key}")
             if isinstance(val, dict) and this_full_key in self.list_of_sections:
@@ -521,7 +521,7 @@ QTextEdit, QListView {{
         if allowed_members:
             # for tup in self.dict_allowed_values.keys():
             #    if tup == this_full_key:
-            print(f"!!!!!!!!!for key '{key}' only limited values allowed")
+            # print(f"!!!!!!!!!for key '{key}' only limited values allowed")
             right = QComboBox()
         self.set_value_for_widget_in_form_layout(right, key, val, allowed_members)
 

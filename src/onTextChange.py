@@ -391,7 +391,7 @@ def regex_replacements(before, after):
     #       difference: "Symbols as you type" does not offer a regex replacement in 2024-02
     #       Both addons can be used at the same time.
 
-    if gc(["regex replacements while typing", "matching with normal strings: enabled"]) and not after:
+    if gc(["regex replacements while typing", "matching with normal strings: active"]) and not after:
         alias_dict = gc(["regex replacements while typing", "matching with normal strings: dictionary"])
         if alias_dict and isinstance(alias_dict, dict):
             """
@@ -450,7 +450,7 @@ def regex_replacements(before, after):
             "retag:": "tag:re:"
         },
     """
-    if gc(["regex replacements while typing", "matching with regular expressions strings: enabled"]) and not after:
+    if gc(["regex replacements while typing", "matching with regular expressions strings: active"]) and not after:
         regex_alias_dict = gc(
             ["regex replacements while typing", "matching with regular expressions strings: dictionary"]
         )
