@@ -68,7 +68,7 @@ addon_folder_abs_path = os.path.dirname(__file__)
 
 def return_file_content(filename):
     file = os.path.join(addon_folder_abs_path, filename)
-    with open(file) as fo:
+    with open(file, encoding="utf8") as fo:
         return fo.read()
 
 

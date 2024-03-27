@@ -4,7 +4,7 @@ import os
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
-with open(os.path.join(SCRIPT_DIR, "config.json")) as f:
+with open(os.path.join(SCRIPT_DIR, "config.json"), encoding="utf8") as f:
     conf = json.load(f)
 
 

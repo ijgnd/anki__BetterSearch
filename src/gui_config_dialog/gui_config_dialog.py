@@ -70,7 +70,7 @@ def gui_select_json_file_and_return_content(parent, window_title):
     if not file:
         return
     try:
-        with open(file, "r") as fp:
+        with open(file, encoding="utf8") as fp:
             content = json.load(fp)
     except:
         showInfo("Aborting. Error while reading file.")

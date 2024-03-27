@@ -12,7 +12,7 @@ from .gui_config_dialog import (
 
 def read_json_file_abs(file):
     try:
-        with open(file, "r") as fp:
+        with open(file, encoding="utf8") as fp:
             # TODO
             content = json.load(fp)
     except:
@@ -58,7 +58,7 @@ def gui_config_helper(
     if text_right_side == "config.md":
         config_md_abs = os.path.join(addon_abs_path, "config.md")
         if os.path.isfile(config_md_abs):
-            with open(config_md_abs) as f:
+            with open(config_md_abs, encoding="utf8") as f:
                 text_right_side = f.read()
         else:
             # avoid getting the text "config.md" on top of the dialog ...
