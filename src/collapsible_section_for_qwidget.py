@@ -100,6 +100,7 @@ class CollapsibleSection(QWidget):
         # self.contentArea.setLayout(contentLayout)
         collapsedHeight = self.sizeHint().height() - self.contentArea.maximumHeight()
         contentHeight = contentLayout.sizeHint().height()
+        contentHeight += 25  # my change: I like some additional space at the bottom
         for i in range(0, self.toggleAnimation.animationCount() - 1):
             SectionAnimation = self.toggleAnimation.animationAt(i)
             SectionAnimation.setDuration(self.animationDuration)
