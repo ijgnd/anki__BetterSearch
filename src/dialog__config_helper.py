@@ -1,5 +1,7 @@
 import datetime
+from functools import reduce
 import json
+from operator import getitem
 from pprint import pprint as pp
 
 import aqt
@@ -163,26 +165,21 @@ def sort_nested_dict_alphabetically(d):
         return d
 
 
-"""
-# https://www.phind.com/search?cache=g9irzeb3p6u89lw7zx0k8ips
-This function takes two arguments: d, which is the dictionary you're querying, and keys, 
-which is a tuple of keys representing the path to the value you want to retrieve. The 
-reduce function applies getitem to the dictionary and each key in the tuple, effectively 
-navigating through the nested dictionaries. If any key in the path does not exist, a 
-KeyError is raised, which is caught and handled by returning None.
-"""
-from functools import reduce
-from operator import getitem
-
-
-def get_nested_value(d, keys):
+def get_nested_value(source_dict, keys):
+    """
+    source_dict: the dictionary you're querying
+    keys: tuple of keys representing the path to the value you want to retrieve
+    The  reduce function applies getitem to the dictionary and each key in the tuple, effectively 
+    navigating through the nested dictionaries. If any key in the path does not exist, a 
+    KeyError is raised, which is caught and handled by returning None.
+    """
     try:
-        return reduce(getitem, keys, d)
+        return reduce(getitem, keys, source_dict)
     except KeyError:
         return None
 
 
-# P: multiple nested don't work: the spacing is not properly adjusted in the parent dialogs
+# P: multiple nested don't really work: the spacing is not properly adjusted in the parent dialogs
 #    so breaks when longer nested settings on second level
 #    -> signal to resize parent or another spacer workaround?
 # P: import
