@@ -103,13 +103,16 @@ def export_config_to_file(parent, addon_name, conf):
 
 
 def json_formatted_as_in_anki_addon_conf(val):
-    return json.dumps(
+    text = json.dumps(
         val,
         ensure_ascii=False,
         sort_keys=True,
         indent=4,
         separators=(",", ": "),
     )
+    # two functions: hack to have proper spacing on Macs, also makes it visually clearer that you can extend this field
+    text += "\n\n"
+    return text
 
 
 def get_value(widget):
