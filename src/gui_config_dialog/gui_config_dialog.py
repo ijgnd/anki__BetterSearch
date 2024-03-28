@@ -205,6 +205,8 @@ class ConfDialog(QDialog):
         dict_settings_and_their_allowed_values,
         conf_gui_type,
         workaround_spacer_height,
+        import_setting_text,
+        import_setting_value,
     ):
         # super().__init__(parent)
         QDialog.__init__(self, parent, Qt.WindowType.Window)
@@ -227,6 +229,8 @@ class ConfDialog(QDialog):
         self.dict_allowed_values = dict_settings_and_their_allowed_values
         self.conf_gui_type = conf_gui_type
         self.workaround_spacer_height = workaround_spacer_height
+        self.import_setting_text = import_setting_text  # """misc->'use gui config window instead of built-in dialog'"""
+        self.import_setting_value = import_setting_value  # False
 
         self.check_input()
         self.conf = sort_nested_dict_alphabetically(self.conf)
@@ -454,15 +458,13 @@ QTextEdit, QListView {{
                             tooltip(msg)
 
     def on_import(self):
-        showInfo(
-            (
-                """Not implemented yet ... set misc->"use gui config window instead of built-in dialog" to """
-                """false and restart and copy it in the regular config, then change the config again and restar again."""
+        msg = "Not implemented yet ..."
+        if self.import_setting_text:
+            msg += (
+                f"""\n\nset {self.import_setting_text} to {self.import_setting_value}"""
+                """ and restart and copy it in the regular config, then change the config again and restart again."""
             )
-        )
-        # conf = gui_select_json_file_and_return_content(self, "Anki: addon BetterSearch: Select config file to import")
-        # self.update_conf_dicts()
-        # self.maybe_update_values_shown(conf)
+        showInfo(msg)
         # TODO validate that keys from imported match existing fields?
         #      OR maybe if not matching: just restart dialog with new values?
         #      what about descriptions and help_texts?

@@ -37,6 +37,8 @@ def gui_config_helper(
         dict_settings_and_their_allowed_values={},
         workaround_spacer_height=125,
         conf_gui_type="CollapsibleSections",  # or "GroupBoxes"
+        import_setting_text="",
+        import_setting_value=False,
     ):
     addon_abs_path = os.path.dirname(os.path.dirname(__file__))
     addon_folder_name = os.path.basename(addon_abs_path)
@@ -95,6 +97,8 @@ def gui_config_helper(
         dict_settings_and_their_allowed_values=dict_settings_and_their_allowed_values,
         conf_gui_type=conf_gui_type,
         workaround_spacer_height=workaround_spacer_height,
+        import_setting_text=import_setting_text,
+        import_setting_value=import_setting_value,
     )
     if d.exec():
         mw.addonManager.writeConfig(__name__, d.new_conf)

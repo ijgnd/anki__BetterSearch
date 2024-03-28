@@ -91,6 +91,8 @@ def on_settings():
         dict_settings_and_their_allowed_values=allowed_values_dict,
         workaround_spacer_height=125,
         conf_gui_type=gc(["misc", "config dialog style"]),  # allowed: "CollapsibleSections" (default), "GroupBoxes"
+        import_setting_text="""misc->'use gui config window instead of built-in dialog'""",
+        import_setting_value=False,
     )
 
 
