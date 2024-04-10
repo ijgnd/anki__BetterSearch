@@ -84,6 +84,7 @@ def on_settings():
         text_above="",
         text_below="",
         text_right_side="config.md",
+        ankiwebview_for_right=True,
         text_about_in_more=text_about_in_more,
         list_of_dict_keys_as_tuples_that_should_create_sections="all_level_one",
         dict_settings_tuple_to_labels_or_side_explanations_or_tooltips=explanations_dict,

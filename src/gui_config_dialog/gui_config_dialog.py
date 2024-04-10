@@ -1,6 +1,8 @@
 import datetime
 from functools import reduce
 import json
+import markdown
+from markdown.extensions import md_in_html
 from operator import getitem
 from pprint import pprint as pp
 
@@ -41,7 +43,7 @@ from aqt.utils import (
     tooltip,
 )
 
-# from aqt.webview import AnkiWebView, AnkiWebViewKind
+from aqt.webview import AnkiWebView, AnkiWebViewKind
 
 from .auto_resizing_text_widget import AutoResizingTextEdit, AutoResizingTextBrowser
 from .collapsible_section_for_qwidget import CollapsibleSection
@@ -195,6 +197,7 @@ class ConfDialog(QDialog):
         addon_name,
         window_title,
         context,
+        ankiwebview_for_right,
         text_above,
         text_below,
         text_right_side,
@@ -219,6 +222,7 @@ class ConfDialog(QDialog):
         self.addon_name = addon_name
         self.window_title = window_title
         self.context = context  # at the moment only used to remember the dialog size
+        self.ankiwebview_for_help = ankiwebview_for_right
         self.text_above = text_above
         self.text_below = text_below
         self.text_right_side = text_right_side
@@ -339,7 +343,7 @@ class ConfDialog(QDialog):
                 sizePolicy.setVerticalStretch(0)
                 helper_widget.setSizePolicy(sizePolicy)
                 top_layout.addWidget(helper_widget)
-                help_text = self.get_read_only_auto_resizing_text_widget(desc_or_right_text)
+                help_text = self.get_read_only_auto_resizing_text_widget(desc_or_right_text, self.ankiwebview_for_help)
                 sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
                 sizePolicy.setHorizontalStretch(2)
                 sizePolicy.setVerticalStretch(0)
@@ -368,9 +372,9 @@ class ConfDialog(QDialog):
             self.setWindowTitle(self.window_title)
 
         if self.text_above:
-            self.info_text_top = self.get_read_only_auto_resizing_text_widget(self.text_above)
+            self.info_text_top = self.get_read_only_auto_resizing_text_widget(self.text_above, False)
         if self.text_below:
-            self.info_text_bottom = self.get_read_only_auto_resizing_text_widget(self.text_below)
+            self.info_text_bottom = self.get_read_only_auto_resizing_text_widget(self.text_below, False)
 
         self.buttonBox = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         self.buttonBox.accepted.connect(self.accept)
@@ -390,29 +394,35 @@ class ConfDialog(QDialog):
         self.outer_layout.addWidget(self.buttonBox)
         self.setLayout(self.outer_layout)
 
-    def get_read_only_auto_resizing_text_widget(self, text):
-        text_widget = AutoResizingTextBrowser()
-        text_widget.setMarkdown(text)
-        text_widget.setReadOnly(True)
-        ### The following parts don't work with the Anki styling (native styling should work):
-        # color = self.palette().color(QPalette.ColorRole.Window)
-        # palette = text_widget.viewport().palette()
-        # palette.setColor(text_widget.viewport().backgroundRole(), color)
-        # palette.setColor(text_widget.viewport().backgroundRole(), None)  # needds qcolor - can't remove like this
-        # text_widget.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
-        # text_widget.viewport().setPalette(palette)
-        ### So I use:
-        bgcol = "#2C2C2C" if theme_manager.night_mode else "#F5F5F5"
-        text_widget.setStyleSheet(
-            f"""
+    def get_read_only_auto_resizing_text_widget(self, text, use_webview):
+        if use_webview:
+            text_widget = AnkiWebView()
+            text_widget.stdHtml(markdown.markdown(text, extensions=[md_in_html.makeExtension()]))  # setHtml ignores nightmode settings
+            # even with the following the minimal height of a webview is too much for one short sentence imo.
+            # for the regular side bar the following doesn't help.
+            # text_widget.adjustHeightToFit()  # that's used in the class BottomBar (the bottom webview of the main window)
+        else:
+            text_widget = AutoResizingTextBrowser()
+            text_widget.setMarkdown(text)
+            text_widget.setReadOnly(True)
+            ### The following parts don't work with the Anki styling (native styling should work):
+            # color = self.palette().color(QPalette.ColorRole.Window)
+            # palette = text_widget.viewport().palette()
+            # palette.setColor(text_widget.viewport().backgroundRole(), color)
+            # palette.setColor(text_widget.viewport().backgroundRole(), None)  # needds qcolor - can't remove like this
+            # text_widget.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
+            # text_widget.viewport().setPalette(palette)
+            ### So I use:
+            bgcol = "#2C2C2C" if theme_manager.night_mode else "#F5F5F5"
+            sheet = f"""
 QTextEdit, QListView {{
     background-color: {bgcol} !important;
     border:none;
 
 }}
 """
-        )
-        text_widget.setFrameStyle(QFrame.Shape.NoFrame)  # no border
+            text_widget.setStyleSheet(sheet)
+            text_widget.setFrameStyle(QFrame.Shape.NoFrame)  # no border
         return text_widget
 
     def show_export_import_menu(self):

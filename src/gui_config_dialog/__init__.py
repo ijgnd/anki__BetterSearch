@@ -30,6 +30,7 @@ def gui_config_helper(
         text_above="",
         text_below="",
         text_right_side="config.md",
+        ankiwebview_for_right=True,
         text_about_in_more="",
         list_of_dict_keys_as_tuples_that_should_create_sections=[],
         dict_settings_tuple_to_labels_or_side_explanations_or_tooltips={},
@@ -83,6 +84,7 @@ def gui_config_helper(
         parent=mw,
         addon_name="BetterSearch",
         window_title=f"Anki: Add-on Config for '{addon_name}'",
+        ankiwebview_for_right=ankiwebview_for_right,
         context=f"{addon_name}Config",  # at the moment only used to remember the dialog size
         text_above=text_above,
         text_below=text_below,
