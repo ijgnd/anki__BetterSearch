@@ -55,11 +55,11 @@ def get_date_range_string(
                 d.run_search_on_exit,
             )
         else:
-            return None, None
+            return None, None, None
     else:
         return True, date_range_string_from_upper_and_lower(
             test_lower, test_upper, search_operator, prefixed_with_minus
-        )
+        ), None
 
 
 # TODO: simplify this
