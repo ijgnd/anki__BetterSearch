@@ -1,3 +1,5 @@
+import os
+
 from aqt import mw
 from aqt.utils import showInfo
 
@@ -118,7 +120,11 @@ def maybe_update_config():
         # then the new config is already used: fresh install or already updated ...
         return
 
-    new_conf = get_default_conf_for_this_addon()
+
+    # since 3.9 __file__ is always an abspath, see
+    # https://stackoverflow.com/questions/7116889/is-module-file-attribute-absolute-or-relative
+    addon_folder_name = os.path.basename(os.path.dirname(__file__))
+    new_conf = get_default_conf_for_this_addon(addon_folder_name)
 
     for old_key, new_key in old_conf_up_to_202303_to_new_conf_dict.items():
         old_val = old_conf.get(old_key)
