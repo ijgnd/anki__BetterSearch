@@ -637,20 +637,13 @@ which doesn't limit your search. You must put your search term between the "**".
     if matches_search_operator(before, "flag:") and (
         gc(["open filter dialog after typing these search operators", "modify_flag"]) or from_button
     ):
+        expl = gc(["open filter dialog after typing these search operators", "modify_flag__show_explanations"])
         prefixed_with_minus = True if minus_precedes_search_operator(before, "flag:") else False
         vals = {
-            "remove_from_end_of_before": -1 if prefixed_with_minus else 0,
+            "remove_from_end_of_before": (0 if expl else -5) - (1 if prefixed_with_minus else 0),
             "insert_space_at_pos_in_before": -5,
-            "dict_for_dialog": "flags",
-            "values_for_filter_dialog": {
-                "red": "1",
-                "orange": "2",
-                "green": "3",
-                "blue": "4",
-                "pink": "5",
-                "turquoise": "6",
-                "purple": "7",
-            },
+            "dict_for_dialog": "flags_with_explanations" if expl else False,
+            "values_for_filter_dialog": flag_values_with_explanations() if expl else flag_values(),
             "surround_with_quotes": False,
             "infotext": False,
             "windowtitle": "Anki: Search by Flag",
@@ -893,7 +886,16 @@ which doesn't limit your search. You must put your search term between the "**".
             )  # triggering a search makes no sense here: the user needs to fill in the search term for prop:
 
         ############ generate sel_list
-        if vals["dict_for_dialog"] == "flags":
+        if vals["dict_for_dialog"] == "flags_with_explanations":
+            already_in_line = befmod[:-5]  # substract flag:
+            new_text = already_in_line + ("-" if is_exclusion else "") + d.sel_value_from_dict + after
+            new_pos = len(already_in_line + ("-" if is_exclusion else "") + d.sel_value_from_dict)
+            return (
+                new_text,
+                new_pos,
+                False,
+            )  # triggering a search makes no sense here: the user needs to fill in the search term for is:
+        elif vals["dict_for_dialog"] == "flags":
             sel_list = [d.sel_value_from_dict]
 
         if just_returned_input_line_content:

@@ -314,6 +314,11 @@
                     "default": true,
                     "description": ""
                 },
+                "modify_flag__show_explanations": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": ""
+                },
                 "modify_is": {
                     "type": "boolean",
                     "default": true,

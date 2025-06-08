@@ -68,6 +68,7 @@
         "modify_deck": true,
         "modify_field": true,
         "modify_flag": true,
+        "modify_flag__show_explanations": true,
         "modify_is": true,
         "modify_is__show_explanations": true,
         "modify_note": true,

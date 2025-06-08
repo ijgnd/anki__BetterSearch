@@ -67,6 +67,10 @@ old_conf_up_to_202303_to_new_conf_dict = {
     "modify_deck": ["open filter dialog after typing these search operators", "modify_deck"],
     "modify_field": ["open filter dialog after typing these search operators", "modify_field"],
     "modify_flag": ["open filter dialog after typing these search operators", "modify_flag"],
+    "modify_flag__show_explanations": [
+        "open filter dialog after typing these search operators",
+        "modify_flag__show_explanations",
+    ],
     "modify_is": ["open filter dialog after typing these search operators", "modify_is"],
     "modify_is__show_explanations": [
         "open filter dialog after typing these search operators",

@@ -55,6 +55,34 @@ def is_values_with_explanations():
         "is:learn -is:review (cards that are in learning for the first time)": "is:learn -is:review",
     }
 
+def flag_values():
+    return [
+        "flag:1",
+        "flag:2",
+        "flag:3",
+        "flag:4",
+        "flag:5",
+        "flag:6",
+        "flag:7",
+        "flag:0",
+        "-flag:0",
+        "-flag:1",
+    ]
+
+
+def flag_values_with_explanations():
+    return {
+         "red flag": "flag:1",
+        "orange flag": "flag:2",
+        "green flag": "flag:3",
+        "blue flag": "flag:4",
+        "pink flag": "flag:5",
+        "turquoise flag": "flag:6",
+        "purple flag": "flag:7",
+        "no flags": "flag:0",
+        "any flag": "-flag:0",
+        "no red flags": "-flag:1",
+    }
 
 def props():
     all_version_texts = {
