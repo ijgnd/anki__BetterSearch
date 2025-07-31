@@ -650,6 +650,7 @@ which doesn't limit your search. You must put your search term between the "**".
                 "pink": "5",
                 "turquoise": "6",
                 "purple": "7",
+                "no flags": "0",
             },
             "surround_with_quotes": False,
             "infotext": False,
