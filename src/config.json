@@ -15,11 +15,13 @@
         "shortcut - focus search box and prop dialog": "",
         "shortcut - focus search box and tag selector dialog": "",
         "shortcut - focus search box and tag/deck selector dialog": "",
-        "shortcut - select entry from history in fuzzy dialog": "Ctrl+Shift+H, h"
+        "shortcut - select entry from history in fuzzy dialog": "Ctrl+Shift+H, h",
+        "shortcut - select entry from saved searches in fuzzy dialog": "Ctrl+Shift+H, f"
     },
     "custom search operators for custom filter dialogs": {
         "custom tag&deck string 1": "xx",
         "custom tag&deck string 2": "all:",
+        "saved searches": "qq",
         "date range dialog for added: string": "dadded:",
         "date range dialog for edited: string": "dedited:",
         "date range dialog for introduced: string": "dintroduced:",
@@ -32,7 +34,7 @@
         "filter dialog: allow multiple selections (only in some dialogs)": true,
         "filter dialog: endswith character(s)": "$$",
         "filter dialog: exclude character (max one char)": "~",
-        "filter dialog: highlight matches in list": true,
+        "filter dialog: highlight matches in list": false,
         "filter dialog: ignore upper and lower case (case insensitive search)": false,
         "filter dialog: lines shown": 750,
         "filter dialog: show info text about endwith/exclude/start char at bottom": false,
@@ -40,11 +42,12 @@
         "filter dialog: typing this restores inputline content from last time": "qq"
     },
     "filter dialog automatically search on close": {
+        "Browser history": true,
+        "Browser saved searches": true,
+        "Date Dialogs": false,
         "card": false,
         "card_from_note_cfn": false,
-        "Date Dialogs": false,
         "deck": false,
-        "dnc": false,
         "field": false,
         "field_from_note_ffn": false,
         "flag": false,
@@ -62,6 +65,9 @@
         "Multiline Dialog: Shortcut inside: Open History": "Ctrl+Shift+H, h",
         "Multiline Dialog: show Button Bar": true,
         "Multiline Dialog: use bigger typewriter font": true
+    },
+    "modifier keys": {
+        "modifier to trigger search (irrespective of general config)": "Ctrl"
     },
     "open filter dialog after typing these search operators": {
         "modify_card": true,

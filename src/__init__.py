@@ -1,135 +1,107 @@
 """
-Add-on for Anki
-Copyright (c): 2020- ijgnd
-               Ankitects Pty Ltd and contributors (filter_button.py)
-               lovac42 (toolbar.py)
-
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as
-published by the Free Software Foundation, either version 3 of the
-License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Affero General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
-
-
-This add-on uses the file filter_dialog.py which has this copyright and permission notice:
-
-    Copyright (c): 2018  Rene Schallner
-                   2019- ijgnd
-        
-    This file (filter_dialog.py) is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This file is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this file.  If not, see <http://www.gnu.org/licenses/>.
-
-
-
-This add-on uses the file "split_string.py" which has this copyright and permission notice:
-
-    Copyright (c): 2018  Rene Schallner
-                   2020- ijgnd
-        
-    This file (split_string.py) is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This file is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this file.  If not, see <http://www.gnu.org/licenses/>.
-
-
-This add-on uses the files "sakura.css" and "sakura-dark.css" from https://github.com/oxalorg/sakura
-which have this copyright and permission notice:
-
-    MIT License
-
-    Copyright (c) 2016 Mitesh Shah
-
-    Permission is hereby granted, free of charge, to any person obtaining a copy
-    of this software and associated documentation files (the "Software"), to deal
-    in the Software without restriction, including without limitation the rights
-    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-    copies of the Software, and to permit persons to whom the Software is
-    furnished to do so, subject to the following conditions:
-
-    The above copyright notice and this permission notice shall be included in all
-    copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-    SOFTWARE.
-
-    
-This add-on reuses/modifies from https://github.com/cameel/auto-resizing-text-edit in gui_config_dialog/
-auto_resizing_text_widget.py which originally has this copyright and permission notice:
-
-    Copyright © Kamil Śliwak
-    Released under the MIT License.
-
-    
-This addon reuses/modifies https://github.com/MichaelVoelkel/qt-collapsible-section/blob/master/Section.py
-in gui_config_dialog/collapsible_section_for_qwidget. The original copyright and permission notice is this:
-
-    Elypson/qt-collapsible-section
-    (c) 2016 Michael A. Voelkel - michael.alexander.voelkel@gmail.com
-    This file is part of Elypson/qt-collapsible section.
-
-    Elypson/qt-collapsible-section is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, version 3 of the License, or
-    (at your option) any later version.
-
-    Elypson/qt-collapsible-section is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Elypson/qt-collapsible-section. If not, see <http:#www.gnu.org/licenses/>.
+for copyright information & licensing information see
+new/__init__.py resp old/__init__.py
 """
 
-try:
-    from aqt import mw
-except:
-    in_full_anki_with_gui = False
+import datetime
+import importlib
+import json
+import os
+import shutil
+
+from aqt import mw
+
+
+def load_module(name):
+    try:
+        module = importlib.import_module(f".{name}", package=__name__)
+    except ImportError as e:
+        print(f"Error importing module for version '{name}': {e}")
+        pass
+    else:
+        if hasattr(module, "main"):
+            module.main()
+        else:
+            print(f"Error: The module '{module.__name__}' does not define a main() function.")
+            pass
+
+
+def backup_this_conf(arg):
+    conf = mw.addonManager.getConfig(__name__)
+    path = NEW_USER_CONF_PATH if arg == "new" else OLD_CONF_PATH
+    with open(path, mode="w", encoding="utf8") as f:
+        json.dump(conf, f)
+
+
+def write_this_conf_to_meta(arg):
+    path = NEW_USER_CONF_PATH if arg == "new" else OLD_CONF_PATH
+    if os.path.isfile(NEW_USER_CONF_PATH):
+        with open(path, mode="r", encoding="utf8") as f:
+            conf = json.load(f)
+    else:
+        conf = {}
+    addon_folder_name = os.path.basename(os.path.dirname(__file__))  # works because I'm in the outer folder
+    addon = mw.addonManager.addonFromModule(addon_folder_name)
+    meta = mw.addonManager.addonMeta(addon)
+    meta["config"] = conf
+    mw.addonManager.writeAddonMeta(addon, meta)
+
+
+def load_new_conf():
+    backup_this_conf("old")
+    shutil.copy(NEW_CONF_PATH, CONF_PATH)
+    write_this_conf_to_meta("new")
+    with open(use_this_version, mode="w", encoding="utf8") as f:
+        f.write("NEW")
+
+
+def load_old_conf():
+    backup_this_conf("new")
+    shutil.copy(OLD_CONF_PATH, CONF_PATH)
+    write_this_conf_to_meta("old")
+    with open(use_this_version, mode="w", encoding="utf8") as f:
+        f.write("OLD")
+
+
+now = datetime.datetime.today().strftime('%Y-%m-%d__%H:%M:%S')
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+USER_FILES = os.path.join(SCRIPT_DIR, "user_files")
+
+NEW_ABS = os.path.join(SCRIPT_DIR, "new")
+OLD_ABS = os.path.join(SCRIPT_DIR, "old")
+
+CONF_PATH = os.path.join(SCRIPT_DIR, "config.json")
+NEW_CONF_PATH = os.path.join(NEW_ABS, "config.json")
+OLD_CONF_PATH = os.path.join(OLD_ABS, "config.json")
+
+NEW_USER_CONF_PATH = os.path.join(USER_FILES, "config_new")
+OLD_USER_CONF_PATH = os.path.join(USER_FILES, "config_old")
+
+use_this_version = os.path.join(USER_FILES, "use_this_version")
+
+
+if os.path.isfile(use_this_version):
+    with open(use_this_version) as f:
+        content = f.read().strip()
+        if content == "NEW":
+            shutil.copy(NEW_CONF_PATH, CONF_PATH)
+            load_module("new")
+        elif content == "OLD":
+            shutil.copy(OLD_CONF_PATH, CONF_PATH)
+            load_module("old")
 else:
-    in_full_anki_with_gui = True
-    from . import browser_shortcuts_for_insert_dialog
-    from . import config
-    from . import ui_browser
-    from . import ui_browser_modify_searchEdit
-    from . import ui_filtered_decks_dialog
+    if not os.path.exists(USER_FILES):
+        os.makedirs(USER_FILES)
+    with open(use_this_version, "w") as f:
+        f.write("NEW")
 
-    from .gui_config_dialog.gui_config_dialog import show_test_config_dialogs_on_startup
-    from aqt import gui_hooks
+    # backup old user custom config (changes from old default)
+    # it's not enough to read the config key from the addon meta because a user
+    # might have an unchanged config. 
+    shutil.copy(OLD_CONF_PATH, CONF_PATH)
+    conf = mw.addonManager.getConfig(__name__)
+    with open(OLD_USER_CONF_PATH, "w") as f:
+        json.dump(conf, f)
 
-    gui_hooks.profile_did_open.append(show_test_config_dialogs_on_startup)
-
-    from .config_update import maybe_update_config
-
-    maybe_update_config()
+    shutil.copy(NEW_CONF_PATH, CONF_PATH)
+    load_module("new")
