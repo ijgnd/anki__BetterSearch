@@ -1,6 +1,7 @@
-from anki.utils import (
-    isMac,
-)
+try:
+    from anki.utils import is_mac
+except ImportError:
+    from anki.utils import isMac as is_mac
 from aqt.gui_hooks import (
     browser_menus_did_init,
 )
@@ -60,7 +61,7 @@ def date_range_dialog_helper(browser, search_operator):
 def open_multiline_searchwindow(browser):
     le = browser.form.searchEdit.lineEdit()
     sbi = SearchBox(browser, le.text())
-    if isMac:
+    if is_mac:
         sbi.open()
     else:
         if sbi.exec():

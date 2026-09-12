@@ -1,6 +1,7 @@
-from anki.utils import (
-    isMac,
-)
+try:
+    from anki.utils import is_mac
+except ImportError:
+    from anki.utils import isMac as is_mac
 
 import aqt
 from aqt.qt import (
@@ -271,7 +272,7 @@ class SearchBox(QDialog):
             self.help_dialog.reject()
         self.newsearch = self.process_text()
 
-        if isMac:
+        if is_mac:
             le = self.browser.form.searchEdit.lineEdit()
             le.setText(self.newsearch)
             le.setFocus()
